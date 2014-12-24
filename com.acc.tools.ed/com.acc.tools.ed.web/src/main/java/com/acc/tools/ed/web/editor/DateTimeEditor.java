@@ -11,6 +11,7 @@ public class DateTimeEditor extends  PropertyEditorSupport {
 
 	private final DateTimeFormatter formatter;
     private final boolean allowEmpty;
+    private final int temp=0;
 
     /**
      * Create a new DateTimeEditor instance, using the given format for
