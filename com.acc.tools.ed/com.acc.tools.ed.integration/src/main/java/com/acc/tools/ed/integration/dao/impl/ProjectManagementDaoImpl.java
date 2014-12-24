@@ -579,15 +579,13 @@ public List<ReferenceData> editRelease(String releaseId,String editRelArti,Strin
 		 
 		try{
 					
-				final String employeeTable="insert into EDB_PROJ_COMPNT(PROJ_ID,COMPNT_NAME,COMPNT_FUNC_DESC,COMPNT_ST_DT,COMPNT_END_DT,EMP_ENTERPRISE_ID,MLSTN_ID) values (?,?,?,?,?,?,?)";
+				final String employeeTable="insert into EDB_PROJ_COMPNT(COMPNT_NAME,COMPNT_FUNC_DESC,COMPNT_ST_DT,COMPNT_END_DT,MLSTN_ID) values (?,?,?,?,?)";
 				PreparedStatement  preparedStatement = getConnection().prepareStatement(employeeTable);
-				preparedStatement.setInt(1, Integer.valueOf(projectId));
-				preparedStatement.setString(2, componentName);
-				preparedStatement.setString(3, functionalDesc);
-				preparedStatement.setString(4, compStartDate);
-				preparedStatement.setString(5, compEndDate);
-				preparedStatement.setInt(6, Integer.valueOf(compResource));
-				preparedStatement.setInt(7, Integer.valueOf(releaseId));
+				preparedStatement.setString(1, componentName);
+				preparedStatement.setString(2, functionalDesc);
+				preparedStatement.setString(3, compStartDate);
+				preparedStatement.setString(4, compEndDate);
+				preparedStatement.setInt(5, Integer.valueOf(releaseId));
 				preparedStatement.executeUpdate();
 				preparedStatement.close();
 				
