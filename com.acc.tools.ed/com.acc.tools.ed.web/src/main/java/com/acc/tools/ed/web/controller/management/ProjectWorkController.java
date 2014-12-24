@@ -1,5 +1,6 @@
 package com.acc.tools.ed.web.controller.management;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import org.slf4j.Logger;
@@ -31,6 +32,14 @@ public class ProjectWorkController extends AbstractEdbBaseController {
 	
 	@RequestMapping(value = "/taskDetails.do")
 	public String projectPlan(Model model) {
+		//Mock Data Start
+		List<ComponentForm> list=new ArrayList<ComponentForm>();
+		ComponentForm cf=new ComponentForm();
+		cf.setComponentId(1);
+		cf.setComponentName("componentName");
+		list.add(cf);
+		//Mock Data End
+		model.addAttribute("componentList", list);
 		return "/projectwork/taskDetails";
 	}
 	

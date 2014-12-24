@@ -7,8 +7,7 @@
 					<table class="ebdtable" id="release">
 						<tr>
 							<th style="text-align: right; height: 25px;">Project Name</th>
-							<td><div id="projName" />
-							<input type="hidden" id="projectId" name="projectId"/></td>
+							<td><div id="projName"></div></td>
 
 							<th style="text-align: right;">Release Name</th>
 							<td><input type="text" name="releaseName" class="textbox" /></td>

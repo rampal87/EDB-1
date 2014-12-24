@@ -304,7 +304,7 @@
 		<td><input type="text" id ="compStartDate" name="compStartDate" class="textbox" /></td>
 		<td><input type="text" id="compEndDate" name="compEndDate" class="textbox" /></td>
 		<td><select id = "compResourceList" name="compResourceList" class="textbox">
-			<c:forEach items="${resourceList}" var="resource">
+			<c:forEach items="${projectResourceList}" var="resource">
 			        <option value="${resource.id}" <c:if test="${resource.selected==true}">selected</c:if> >${resource.label}</option>
 			 </c:forEach>
 		</select></td>

@@ -21,6 +21,7 @@ public class ProjectPlanData implements Serializable	{
 	private String releaseEndDate;
 
 	private List<ComponentForm> componentName;
+	private List<ReferenceData> projectResourceList;
 
 	public String getProjectName() {
 		return projectName;
@@ -100,6 +101,14 @@ public class ProjectPlanData implements Serializable	{
 
 	public void setComponentName(List<ComponentForm> componentName) {
 		this.componentName = componentName;
+	}
+
+	public List<ReferenceData> getProjectResourceList() {
+		return projectResourceList;
+	}
+
+	public void setProjectResourceList(List<ReferenceData> projectResourceList) {
+		this.projectResourceList = projectResourceList;
 	}
 
 }

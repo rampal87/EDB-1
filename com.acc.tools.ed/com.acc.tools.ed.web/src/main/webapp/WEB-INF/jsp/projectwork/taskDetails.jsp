@@ -1,5 +1,7 @@
 <%@taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c"%>
+<%@taglib uri="http://java.sun.com/jsp/jstl/core" prefix="jstl"%>
 
+<html>
 <head>
 <script type="text/javascript">
 	$(function() {
@@ -56,8 +58,20 @@
 	function showPopup(id){
 		 $("#addTaskPanel").data('param', id.id).dialog('open');
 	}
+	 function action(val){
+		if(val == "approved")
+		 $("#div1").hide();
+		else
+		 $("#div1").show(); 
+	} 
 </script>
+
+
 </head>
+<body>
+<a href="#" id="${components.componentId}" onclick="showPopup(this);"><img class="imgLink"
+				alt="add comnponent" src="./resources/addnews.gif"  width="20px;"></a>
+				
 <table class="ebdtable" style="width: 100%">
 	<tr>
 		<th style="width: 145px;">Component Name</th>
@@ -116,8 +130,54 @@
 						<input type="text" id="taskHrs" name="taskHrs" value="" />&nbsp;&nbsp; Hrs
 					</td>
 				</tr>
+				<tr>
+					<th style="text-align: right;">Task Type</th>
+					<td>
+					<select name="taskType">
+						<option value=""></option>
+						<option value="bo">Business Operator</option>
+						<option value="vc">Value Creator</option>
+						<option value="pd">People Developer</option>
+					</select>
+					</td>
+					<th style="text-align: right;">Task Status</th>
+					<td>
+					<select name="taskStatus">
+						<option value=""></option>
+						<option value="completed">Completed</option>
+						<option value="inProgress">In Progress</option>
+						<option value="onHold">On Hold</option>
+					</select>
+					</td>
+				</tr>
+				<tr>
+					<jstl:choose>
+					<jstl:when	test="${(edbUser.role =='SUPERVISOR') || (edbUser.role =='Lead') || (edbUser.role =='MANAGER')}">
+					<th style="text-align: right;">Task Action</th>
+					<td>
+					<select name="taskAction" onchange="action(this.value)">
+						<option value=""></option>
+						<option value="approved">Approved</option>
+						<option value="rejected">Rejected</option>
+					</select>
+					</td>
+					<td>
+					<div id="div1" style="display: none;">
+					 <textarea name="rejComment">Enter text here</textarea>
+					</div>
+					</td>
+					</jstl:when>
+					<jstl:otherwise>
+					<td>
+					 <textarea name="comment">Enter text here</textarea>
+					</td>
+					</jstl:otherwise>
+					</jstl:choose>
+				</tr>
 			</table>
 		</div>				
 	</fieldset>
 </div>
+</body>
+</html>
 

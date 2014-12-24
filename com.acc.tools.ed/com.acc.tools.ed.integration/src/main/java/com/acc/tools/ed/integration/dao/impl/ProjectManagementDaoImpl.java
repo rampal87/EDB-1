@@ -139,10 +139,11 @@ public class ProjectManagementDaoImpl extends AbstractEdbDao implements ProjectM
 		final ReferenceData refData=new ReferenceData();
 
 		try{
-					
+				log.debug("Project Id:{} | Release Name:{} | Start Date:{} | End Date:{} | Artifacts:{}",new Object[]{release.getProjectId(),release.getReleaseName(),
+						release.getReleaseStartDate(),release.getReleaseEndDate(),release.getReleaseArtifacts().toString()});	
 				final String employeeTable="insert into EDB_MILESTONE(PROJ_ID,MLSTN_NAME,MLSTN_ST_DT,MLSTN_END_DT,MLSTN_ARTIFACTS) values (?,?,?,?,?)";
 				PreparedStatement  preparedStatement = getConnection().prepareStatement(employeeTable);
-				preparedStatement.setString(1, release.getProjName());
+				preparedStatement.setString(1, release.getProjectId());
 				preparedStatement.setString(2, release.getReleaseName());
 				preparedStatement.setString(3, release.getReleaseStartDate());
 				preparedStatement.setString(4, release.getReleaseEndDate());
@@ -265,10 +266,11 @@ public class ProjectManagementDaoImpl extends AbstractEdbDao implements ProjectM
 	public ProjectPlanData getProjectPlanDetails(String releaseId, String projectId) {
         
         ProjectPlanData projectPlanData = new ProjectPlanData();
-        
+        System.out.println("releaseId*****"+releaseId);
+        System.out.println("projectId*****"+projectId);
         final StringBuffer projPlanQuery =new StringBuffer();
         projPlanQuery.append("SELECT P.*, M.*, C.*, E.* FROM ((EDB_PROJECT P INNER JOIN EDB_MILESTONE M on P.PROJ_ID = M.PROJ_ID) ");
-        projPlanQuery.append("LEFT JOIN EDB_PROJ_COMPNT C on M.PROJ_ID = C.PROJ_ID) LEFT JOIN EDB_MSTR_EMP_DTLS  E on C.EMP_EMPLOYEE_ID = E.EMP_EMPLOYEE_ID ");
+        projPlanQuery.append("LEFT JOIN EDB_PROJ_COMPNT C on M.MLSTN_ID = C.MLSTN_ID) LEFT JOIN EDB_MSTR_EMP_DTLS  E on C.EMP_EMPLOYEE_ID = E.EMP_EMPLOYEE_ID ");
         projPlanQuery.append("WHERE M.MLSTN_ID = "+releaseId+" AND P.PROJ_ID = "+projectId+"");
         
         log.debug("RELEASE QUERY :[{}]",projPlanQuery);
@@ -332,7 +334,21 @@ public class ProjectManagementDaoImpl extends AbstractEdbDao implements ProjectM
                             components.add(component);
                             projectPlanData.setComponentName(components);
                             
-                     }                    
+                     }   
+                     
+                     //List of developers tagged to the project
+                     final String projResourceQuery="SELECT E.EMP_ID,E.EMP_RESOURCE_NAME FROM EDB_MSTR_EMP_DTLS E, EDB_PROJ_EMP PE 	WHERE E.EMP_ID=PE.EMP_ID AND PE.PROJ_ID="+projectId;
+                     PreparedStatement  resourcePreStmt = getConnection().prepareStatement(projResourceQuery);
+                     ResultSet resRs = resourcePreStmt.executeQuery();
+                     List<ReferenceData> projectResourceList = new ArrayList<ReferenceData>();                         
+                     while(resRs.next()){ 
+                    	 ReferenceData refData=new ReferenceData();
+                    	 refData.setId(resRs.getString("EMP_ID"));
+                    	 refData.setLabel(resRs.getString("EMP_RESOURCE_NAME"));
+                    	 projectResourceList.add(refData);                    	 
+                     }
+                     projectPlanData.setProjectResourceList(projectResourceList);
+                     
         } catch (Exception e) {
                e.printStackTrace();
         }

@@ -10,7 +10,6 @@
 				<select id="projects" class="textbox">
 					<option value="0">Select Project</option>
 				    <c:forEach items="${projectList}" var="project">
-				    ${project.id} | ${project.label}
 				        <option value="${project.id}" <c:if test="${project.selected==true}">selected</c:if> >${project.label}</option>
 				    </c:forEach>
 				</select>
@@ -18,7 +17,10 @@
 			<th>Release</th>
 			<th>
 				<select id="releases" class="textbox">
-					<option>Select Release</option>
+					<option  value="0">Select Release</option>
+	 					<c:forEach items="${releaseList}" var="release">
+					        <option value="${release.id}" <c:if test="${release.selected==true}">selected</c:if> >${release.label}</option>
+					    </c:forEach>					
 				</select>
 			</th>
 			<th ><a href="#" class="button" id="addProject" style="width: 100px;">Add Project</a></th>

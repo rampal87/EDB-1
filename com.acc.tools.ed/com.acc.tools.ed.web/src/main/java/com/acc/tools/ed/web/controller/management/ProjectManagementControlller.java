@@ -112,10 +112,9 @@ public class ProjectManagementControlller extends AbstractEdbBaseController {
 	public @ResponseBody ReferenceData addRelease(
 			@RequestBody  ReleaseForm addReleaseForm,
 			Model model) {
-		LOG.debug("Project Name:[{--}] Release Name:[{}]",
-				addReleaseForm.getProjName(), addReleaseForm.getReleaseName());
+		LOG.debug("Project Id:{} | Release Id:[{}]",
+				addReleaseForm.getProjectId(), addReleaseForm.getReleaseId());
 		final ReferenceData refData = getProjectManagementService().addRelease(addReleaseForm);
-//		String json="{\"id\":"+refData.getId()+", \"label\":\""+refData.getLabel()+"\"}";
 		return refData;
 	}
 	
@@ -202,6 +201,9 @@ public class ProjectManagementControlller extends AbstractEdbBaseController {
 		projectForm.setComponentList(planData.getComponentName());
 		
 		model.addAttribute("viewProjRelDetails", projectForm);
+		LOG.debug("Project Resource List:{}",planData.getProjectResourceList());
+		model.addAttribute("projectResourceList", planData.getProjectResourceList());
+		
 		return "/projectmanagement/viewProjectRelease";
 	}
 	
