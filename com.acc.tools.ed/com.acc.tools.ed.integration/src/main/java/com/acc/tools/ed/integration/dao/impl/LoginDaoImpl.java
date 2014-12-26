@@ -22,13 +22,14 @@ public class LoginDaoImpl extends AbstractEdbDao implements LoginDao{
 		
 			final Connection connection=getConnection();
 			Statement stmt=connection.createStatement();
-			final String loginQuery="SELECT EMP_EMPLOYEE_ID,EMP_ROLE,EMP_LEVEL FROM EDB_MSTR_EMP_DTLS WHERE EMP_ENTERPRISE_ID='"+name+"'";
+			final String loginQuery="SELECT EMP_ID,EMP_EMPLOYEE_ID,EMP_ROLE,EMP_LEVEL FROM EDB_MSTR_EMP_DTLS WHERE EMP_ENTERPRISE_ID='"+name+"'";
 			log.debug("loginQuery");
 			final ResultSet resultSet = stmt.executeQuery(loginQuery);
 			final EDBUser user=new EDBUser();
 			while (resultSet.next()) {
 				user.setEnterpriseId(name);
-				user.setEmployeeId(resultSet.getString("EMP_EMPLOYEE_ID"));
+				user.setEmployeeId(resultSet.getString("EMP_ID"));
+				user.setSapId(resultSet.getString("EMP_EMPLOYEE_ID"));
 				user.setRole(resultSet.getString("EMP_ROLE"));
 				user.setLevel(resultSet.getString("EMP_LEVEL"));
 				System.out.println("Name of the Project:" + name);
