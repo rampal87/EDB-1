@@ -14,7 +14,9 @@ public class EDBUser implements Serializable {
 	 * 
 	 */
 	private static final long serialVersionUID = 1L;
+	
 	private String employeeId;
+	private String sapId;
 	private String enterpriseId;
 	private String role;
 	private String level;
@@ -42,6 +44,12 @@ public class EDBUser implements Serializable {
 	}
 	public void setLevel(String level) {
 		this.level = level;
+	}
+	public String getSapId() {
+		return sapId;
+	}
+	public void setSapId(String sapId) {
+		this.sapId = sapId;
 	}
 
 
