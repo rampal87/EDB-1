@@ -103,10 +103,11 @@
 							modal : true,
 							buttons : {
 								"Add Release" : function() { 
-									var releaseIdCount=$('#releases option').size(); 
-									var loginForm = $('#addReleaseForm').serializeArray();
+									var releaseIdCount=generateId("releases")+1;
+									var projectId=$("#projectId").val();
+									var releaseForm = $('#addReleaseForm').serializeArray();
 									var jsonString = "{";
-									$.each(loginForm,
+									$.each(releaseForm,
 									    function(i, v) {
 										if(v.name=="releaseStartDate" || v.name=="releaseEndDate"){
 											var dataValue=new Date(v.value);
@@ -115,8 +116,10 @@
 											jsonString=jsonString+" \""+v.name+"\":\""+v.value+"\",";
 										}
 									 });
-									jsonString=jsonString+"\"releaseId\":\""+releaseIdCount+"\"";
-									jsonString=jsonString+"}";									
+									jsonString=jsonString+"\"releaseId\":\""+releaseIdCount+"\",";
+									jsonString=jsonString+"\"projectId\":\""+projectId+"\"";
+									jsonString=jsonString+"}";
+									
 									$.ajax({
 										type : "POST",
 										url : "./addRelease.do",
@@ -127,6 +130,7 @@
 										  },
 										success : function(response) {
 											$('#releases').append('<option selected value="'+response.id+'">'+response.label+'</option>').change();
+											
 											addReleaseDialog.dialog("close");		
 										},
 										error : function(data) {	
@@ -143,7 +147,7 @@
 
 						$("#addRelease").button().unbind("click").on("click", function() {
 							var prjName=$("#projects option:selected").text();
-							var projectId = $("#projects").val();	
+							var projectId = $("#projects").val();
 							if(projectId=="0"){
 								alert("Please select Project!");
 							} else {
