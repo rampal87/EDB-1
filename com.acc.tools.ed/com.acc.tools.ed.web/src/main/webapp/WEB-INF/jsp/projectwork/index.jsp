@@ -8,7 +8,7 @@
 
 <!-- SUB MENU-->
 <%@ include file="/WEB-INF/jsp/projectwork/submenu.jsp"%>
-<div id="mainContainer" 
+<div id="pwMainContainer" 
 	style="width: 1001px; padding-top: 10px; height: 650px; overflow: auto;">
 	<jsp:include page="/WEB-INF/jsp/projectwork/taskDetails.jsp" flush="true"></jsp:include>
 </div>

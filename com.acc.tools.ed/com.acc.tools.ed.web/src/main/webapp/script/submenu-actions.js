@@ -8,8 +8,9 @@ $(document)
 	 */	
 
 	$(".subtabs").unbind("click").on("click",function(){
-		var tabId=$(this).attr('id');
 		
+		var tabId=$(this).attr('id');
+		var mainContainerId="#"+tabId.substring(0, 2)+"MainContainer";
 		$("#"+tabId).parent().css({
 			"background" : "white",
 			"border" : "1px solid black",
@@ -28,19 +29,20 @@ $(document)
 		   }
 		});
 
-		var href=$(this).attr('href');
+		var href=$(this).attr('action');
 		$.ajax({
 			type : "POST",
 			url : href,
-			beforeSend:function(){
-			  },
 			success : function(xhr) {	
-				$("#mainContainer").html(xhr);	
+				$(mainContainerId).html(xhr);
+				//temp fix
+				$(mainContainerId).find("#subtab-container").remove();
 			},
 			error : function(xhr) {	
-				$("#mainContainer").html("Application error! Please call help desk.");
+				$(mainContainerId).html("Application error! Please call help desk.");
 			}
 		});	
 		return false;
 	});
+
 });

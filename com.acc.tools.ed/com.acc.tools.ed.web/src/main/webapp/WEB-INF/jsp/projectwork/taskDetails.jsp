@@ -3,6 +3,7 @@
 
 <html>
 <head>
+<script src="<%=request.getContextPath()%>/script/submenu-actions.js"></script>
 <script type="text/javascript">
 	$(function() {
 		$(".research tr:not(.accordion)").hide();

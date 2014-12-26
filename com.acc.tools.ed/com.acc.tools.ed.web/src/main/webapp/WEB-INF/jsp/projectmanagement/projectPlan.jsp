@@ -1,6 +1,5 @@
 <%@ include file="/WEB-INF/jsp/includes/document-header.jsp"%>
 <%@taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c"%>
-<div id="mainContainer" style="margin-top: 20px;">
 	<jsp:include page="/WEB-INF/jsp/projectmanagement/projects.jsp" flush="true"></jsp:include>
 	<jsp:include page="/WEB-INF/jsp/projectmanagement/release.jsp" flush="true"></jsp:include>	
 	<table class="ebdtableheader">
@@ -39,4 +38,3 @@
 		    <b class="notch"></b>
 		</div>
 	</div>
-</div>

@@ -19,24 +19,29 @@
 				<div id="tabs" style="width: 100%; padding-right: 0px;">
 					<!-- MAIN MENU -->
 					<%@ include file="/WEB-INF/jsp/includes/menu.jsp"%>
-					<div id="projectPlanTab" style="clear: both;">
+
 					   <jstl:choose>
 							<jstl:when test="${edbUser.role !='Dvlp'}">
-								<!-- SUB MENU-->
-								<%@ include file="/WEB-INF/jsp/projectmanagement/submenu.jsp"%>
-								<div style="width: 1001px;padding-top:10px; height: 650px; overflow: auto;">
-									<jsp:include page="/WEB-INF/jsp/projectmanagement/projectPlan.jsp"
-										flush="true"></jsp:include>
+								<div id="projectPlanTab" style="clear: both;">
+									<!-- SUB MENU-->
+									<%@ include file="/WEB-INF/jsp/projectmanagement/submenu.jsp"%>
+									<div id="ppMainContainer" style="margin-top: 20px;">
+										<div style="width: 1001px;padding-top:10px; height: 650px; overflow: auto;">
+											<jsp:include page="/WEB-INF/jsp/projectmanagement/projectPlan.jsp"
+												flush="true"></jsp:include>
+										</div>
+									</div>
 								</div>
 							</jstl:when>
 							<jstl:otherwise><!-- DEVELOPER -->
-								<div style="width: 1001px;padding-top:10px; height: 650px; overflow: auto;">
-									<jsp:include page="/WEB-INF/jsp/projectwork/index.jsp"
-										flush="true"></jsp:include>
+								<div id="projectPlanTab" style="clear: both;">
+									<div style="width: 1001px;padding-top:10px; height: 650px; overflow: auto;">
+										<jsp:include page="/WEB-INF/jsp/projectwork/index.jsp"
+											flush="true"></jsp:include>
+									</div>
 								</div>
 							</jstl:otherwise>
 					   </jstl:choose>
-					</div>
 				</div>
 			</td>
 		</tr>

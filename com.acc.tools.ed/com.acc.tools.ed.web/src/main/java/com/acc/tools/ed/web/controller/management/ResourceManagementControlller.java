@@ -11,10 +11,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.SessionAttributes;
 
 import com.acc.tools.ed.integration.dto.MasterEmployeeDetails;
-import com.acc.tools.ed.integration.dto.ProjectForm;
-import com.acc.tools.ed.integration.dto.ReleaseForm;
 import com.acc.tools.ed.integration.service.ProjectManagementService;
-import com.acc.tools.ed.integration.util.EDBConstants;
 import com.acc.tools.ed.web.controller.common.AbstractEdbBaseController;
 
 @Controller
@@ -34,6 +31,11 @@ public class ResourceManagementControlller extends AbstractEdbBaseController {
 		}
 		model.addAttribute("empList", empList);
 		return "/resourcemanagement/index";
+	}
+	
+	@RequestMapping(value = "/resourceDemand.do")
+	public String resourceDemand(Model model) {
+		return "/resourcemanagement/resourceDemand";
 	}
 
 }

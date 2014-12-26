@@ -43,6 +43,12 @@ public class ProjectWorkController extends AbstractEdbBaseController {
 		return "/projectwork/taskDetails";
 	}
 	
+	@RequestMapping(value = "/teamTasks.do")
+	public String teamTasks(Model model) {
+		LOG.debug("*************************** IN Team Task Sub Tab page ***********************");
+		return "/projectwork/teamTasks";
+	}
+	
 	@RequestMapping(value = "/addTask.do")
 	public List<ComponentForm> addTask(@RequestParam("taskName")String taskName, @RequestParam("taskDesc")String taskDesc,
 			@RequestParam("taskHrs")long taskHrs,@RequestParam("componentId")int componentId,@RequestParam("userId")String userId, Model model) {
