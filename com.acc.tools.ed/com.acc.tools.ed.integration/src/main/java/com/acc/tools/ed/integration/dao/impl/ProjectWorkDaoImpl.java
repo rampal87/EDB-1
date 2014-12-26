@@ -29,7 +29,7 @@ public List<ComponentForm> getComponentList(String userId) {
 		List<ComponentForm> componentList = null;
 		HashMap<Integer,ComponentForm> map = new HashMap<Integer, ComponentForm>();
 		try{
-			final String componentTable= "SELECT a.*,b.* FROM EDB_PROJ_COMPNT a LEFT JOIN EDB_TASK_MASTER b ON a.COMPNT_ID = b.COMPNT_ID where a.EMP_EMPLOYEE_ID='"+userId+"'";
+			final String componentTable= "SELECT a.*,b.* FROM EDB_PROJ_COMPNT a LEFT JOIN EDB_TASK_MASTER b ON a.COMPNT_ID = b.COMPNT_ID where a.EMP_ID="+userId;
 			Statement stmt=getConnection().createStatement();
 			ResultSet rs=stmt.executeQuery(componentTable);
 			while(rs.next()){
@@ -46,7 +46,7 @@ public List<ComponentForm> getComponentList(String userId) {
 					map.get(componentId).setTaskFormList(taskList);
 				}else{
 					ComponentForm compnt = new ComponentForm();
-					compnt.setProjectId(rs.getInt("PROJ_ID"));
+					compnt.setProjectId(rs.getInt("MLSTN_ID"));
 					compnt.setComponentId(componentId);
 					compnt.setComponentName(rs.getString("COMPNT_NAME"));
 					compnt.setFunctionalDesc(rs.getString("COMPNT_FUNC_DESC"));
