@@ -1,6 +1,7 @@
 package com.acc.tools.ed.integration.dto;
 
 import java.io.Serializable;
+import java.util.List;
 
 public class ReleaseForm implements Serializable{
 
@@ -8,29 +9,20 @@ public class ReleaseForm implements Serializable{
 	 * 
 	 */
 	private static final long serialVersionUID = 1L;
-	private String projectId;
-	private String releaseId;
+	private int projectId;
+	private int releaseId;
 	private String projName;
 	private String releaseName;
-	/*
-	 * CR,Defects and release components/tasks
-	 */
 	private String releaseArtifacts;
 	private String releaseStartDate;
 	private String releaseEndDate;
+	private List<ComponentForm> components;
 	
 	public String getProjName() {
 		return projName;
 	}
 	public void setProjName(String projName) {
 		this.projName = projName;
-	}
-	
-	public String getReleaseId() {
-		return releaseId;
-	}
-	public void setReleaseId(String releaseId) {
-		this.releaseId = releaseId;
 	}
 	public String getReleaseName() {
 		return releaseName;
@@ -44,12 +36,6 @@ public class ReleaseForm implements Serializable{
 	public void setReleaseArtifacts(String releaseArtifacts) {
 		this.releaseArtifacts = releaseArtifacts;
 	}
-	public String getProjectId() {
-		return projectId;
-	}
-	public void setProjectId(String projectId) {
-		this.projectId = projectId;
-	}
 	public String getReleaseStartDate() {
 		return releaseStartDate;
 	}
@@ -61,6 +47,24 @@ public class ReleaseForm implements Serializable{
 	}
 	public void setReleaseEndDate(String releaseEndDate) {
 		this.releaseEndDate = releaseEndDate;
+	}
+	public List<ComponentForm> getComponents() {
+		return components;
+	}
+	public void setComponents(List<ComponentForm> components) {
+		this.components = components;
+	}
+	public int getProjectId() {
+		return projectId;
+	}
+	public void setProjectId(int projectId) {
+		this.projectId = projectId;
+	}
+	public int getReleaseId() {
+		return releaseId;
+	}
+	public void setReleaseId(int releaseId) {
+		this.releaseId = releaseId;
 	}
 	
 

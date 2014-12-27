@@ -7,6 +7,7 @@ import org.springframework.stereotype.Service;
 
 import com.acc.tools.ed.integration.dao.ProjectWorkDao;
 import com.acc.tools.ed.integration.dto.ComponentForm;
+import com.acc.tools.ed.integration.dto.ProjectForm;
 import com.acc.tools.ed.integration.service.ProjectWorkService;
 
 @Service("projectWorkService")
@@ -15,8 +16,8 @@ public class ProjectWorkServiceImpl implements ProjectWorkService {
 	@Autowired
 	private ProjectWorkDao projectWorkDao;
 	
-	public List<ComponentForm> getComponentList(String userId){
-		return projectWorkDao.getComponentList(userId);
+	public List<ProjectForm> getMyTasks(String userId){
+		return projectWorkDao.getMyTasks(userId);
 	}
 
 	public List<ComponentForm> addTasks(String taskName, String taskDesc,long taskHrs,int componentId, String userId) {

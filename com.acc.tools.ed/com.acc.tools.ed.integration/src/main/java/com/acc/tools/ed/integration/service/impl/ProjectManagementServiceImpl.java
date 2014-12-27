@@ -13,7 +13,6 @@ import org.springframework.stereotype.Service;
 import com.acc.tools.ed.integration.dao.ProjectManagementDao;
 import com.acc.tools.ed.integration.dto.MasterEmployeeDetails;
 import com.acc.tools.ed.integration.dto.ProjectForm;
-import com.acc.tools.ed.integration.dto.ProjectPlanData;
 import com.acc.tools.ed.integration.dto.ReferenceData;
 import com.acc.tools.ed.integration.dto.ReleaseForm;
 import com.acc.tools.ed.integration.service.ProjectManagementService;
@@ -127,8 +126,7 @@ public class ProjectManagementServiceImpl implements ProjectManagementService{
 		return 0;
 	}
 	
-	public ProjectPlanData getProjectPlanDetails(String releaseId,
-			String projectId) {
+	public ProjectForm getProjectPlanDetails(Integer releaseId,Integer projectId) {
 		try {
 			
 			 return projectManagementDao.getProjectPlanDetails(releaseId, projectId);
@@ -197,8 +195,8 @@ public class ProjectManagementServiceImpl implements ProjectManagementService{
 		}
 	}
 	
-	public ProjectPlanData addComponent(String projectId,String componentName,String functionalDesc,
-			String compStartDate,String compEndDate,String compResource, String relaseId) {
+	public ProjectForm addComponent(Integer projectId,String componentName,String functionalDesc,
+			String compStartDate,String compEndDate,String compResource, Integer relaseId) {
 
 		try {
 			 return projectManagementDao.addComponent(projectId,componentName, functionalDesc, compStartDate, compEndDate, compResource,relaseId);

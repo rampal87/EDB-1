@@ -272,17 +272,20 @@
 	</tr>
 	<tr>
 		<td style="font-weight: bold;">Release Name</td>
-		<td style="background-color: #eaead9;">${viewProjRelDetails.releaseForm.releaseName}</td>
+		<td style="background-color: #eaead9;">${viewProjRelDetails.releases[0].releaseName}</td>
 		<td style="font-weight: bold;">Release<br>Artifacts
 		</td>
-		<td colspan="3"
-			style="background-color: #eaead9; width: 350px; overflow: auto;"><div id="relArti">${viewProjRelDetails.releaseForm.releaseArtifacts}</div></td>
+		<td style="background-color: #eaead9; width: 350px; overflow: auto;">
+			<div id="relArti">${viewProjRelDetails.releases[0].releaseArtifacts}</div>
+		</td>
+		<td style="font-weight: bold;">Planned Hours</td>
+		<td style="background-color: #eaead9;"><div id="plannedHrs"></div></td>		
 		<td style="font-weight: bold;">Start Date</td>
 		<td style="background-color: #eaead9;"><div id="relStartDate">
-				${viewProjRelDetails.releaseForm.releaseStartDate}</div></td>
+				${viewProjRelDetails.releases[0].releaseStartDate}</div></td>
 		<td style="font-weight: bold;">End Date</td>
 		<td style="background-color: #eaead9;">
-				<div id="relEndDate">${viewProjRelDetails.releaseForm.releaseEndDate}</div></td>
+				<div id="relEndDate">${viewProjRelDetails.releases[0].releaseEndDate}</div></td>
 		<td><a href="#" id="editRel"><img alt="edit project" src="./resources/edit.gif"
 			width="20px;"></td>
 		<td><a href="#"  id="delRel"><img alt="delete project" src="./resources/delete.gif"></a></td>
@@ -304,7 +307,7 @@
 		<td><input type="text" id ="compStartDate" name="compStartDate" class="textbox" /></td>
 		<td><input type="text" id="compEndDate" name="compEndDate" class="textbox" /></td>
 		<td><select id = "compResourceList" name="compResourceList" class="textbox">
-			<c:forEach items="${projectResourceList}" var="resource">
+			<c:forEach items="${viewProjRelDetails.resources}" var="resource">
 			        <option value="${resource.id}" <c:if test="${resource.selected==true}">selected</c:if> >${resource.label}</option>
 			 </c:forEach>
 		</select></td>
@@ -315,9 +318,9 @@
 <table class="innertable2" id="componentTable"
 	style="border-width: 1px; border-style: solid; border-color: #999999;">
 	<c:choose>
-        <c:when test="${empty viewProjRelDetails.componentList}">
+        <c:when test="${empty viewProjRelDetails.releases[0].components}">
 			<div id="noComponetMsg" class="boxmsg border-boxmsg" style="width: 780px;color: red;">
-			    <p>No <u>Components/Tasks</u> , <u>Change Requests(CR)</u> or <u>Defects</u> are configured for Project :<u>${viewProjRelDetails.projectName}</u> and Release :<u>${viewProjRelDetails.releaseForm.releaseName}</u> .<br>
+			    <p>No <u>Components/Tasks</u> , <u>Change Requests(CR)</u> or <u>Defects</u> are configured for Project :<u>${viewProjRelDetails.projectName}</u> and Release :<u>${viewProjRelDetails.releases[0].releaseName}</u> .<br>
 			    Please add <u>Component/Task/CR/Defect</u> and assign a resource accordingly using the above form.
 			    </p>
 			    <b class="border-notch notch"></b>
@@ -325,7 +328,7 @@
 			</div>
         </c:when>
         <c:otherwise>
-        	<c:forEach var="component" items="${viewProjRelDetails.componentList}">
+        	<c:forEach var="component" items="${viewProjRelDetails.releases[0].components}">
 				<tr>
 					<td width="165px;" id="compName">${component.componentName}</td>
 					<td width="385px;" id="compFuncDesc"><div style="height:20px;display:table-cell;vertical-align:middle;">${component.functionalDesc}</div></td>
@@ -366,9 +369,9 @@
 						</tr>
 						<tr>
 							<th style="text-align: right;">Start Date</th>
-							<td style="width: 200px;"><input type="text" id="editPrjStartDate" name="editPrjStartDate" value="${viewProjRelDetails.releaseForm.releaseStartDate}" class="textbox" /></td>
+							<td style="width: 200px;"><input type="text" id="editPrjStartDate" name="editPrjStartDate" value="${viewProjRelDetails.releases[0].releaseStartDate}" class="textbox" /></td>
 							<th style="text-align: right;">End Date</th>
-							<td><input type="text" id="editPrjEndDate" name="editPrjEndDate" value="${viewProjRelDetails.releaseForm.releaseEndDate}" class="textbox" /></td>
+							<td><input type="text" id="editPrjEndDate" name="editPrjEndDate" value="${viewProjRelDetails.releases[0].releaseEndDate}" class="textbox" /></td>
 						</tr>
 					</table>
 				</div>				
@@ -382,19 +385,19 @@
 					<table class="ebdtable">
 						<tr>
 							<th style="text-align: right; height: 25px;">Release Name</th>
-							<td>${viewProjRelDetails.releaseForm.releaseName}</td>
+							<td>${viewProjRelDetails.releases[0].releaseName}</td>
 							
 							<th style="text-align: right;">Release Artifacts</th>
 							<td  colspan="3">
 								<textarea style="overflow: auto; resize: none" rows="4" 
-									cols="40" class="textarea" id="editRelArti" name="editRelArti" value="${viewProjRelDetails.releaseForm.releaseArtifacts}"></textarea>  
+									cols="40" class="textarea" id="editRelArti" name="editRelArti" value="${viewProjRelDetails.releases[0].releaseArtifacts}"></textarea>  
 							</td>
 						</tr>						
 						<tr>
 							<th style="text-align: right;">Start Date</th>
-							<td style="width: 200px;"><input type="text" id="editRelStartDate" name="editRelStartDate" value="${viewProjRelDetails.releaseForm.releaseStartDate}" class="textbox" /></td>
+							<td style="width: 200px;"><input type="text" id="editRelStartDate" name="editRelStartDate" value="${viewProjRelDetails.releases[0].releaseStartDate}" class="textbox" /></td>
 							<th style="text-align: right;">End Date</th>
-							<td><input type="text" id="editRelEndDate" name="editRelEndDate" value="${viewProjRelDetails.releaseForm.releaseEndDate}" class="textbox" /></td>
+							<td><input type="text" id="editRelEndDate" name="editRelEndDate" value="${viewProjRelDetails.releases[0].releaseEndDate}" class="textbox" /></td>
 						</tr>
 					</table>
 				</div>				

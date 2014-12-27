@@ -31,7 +31,7 @@
 	</table>
 	<div id="viewProjectAndReleaseDetails"><!-- Project and Release View -->
 		<div class="boxmsg border-boxmsg" style="width: 580px;color: red;">
-		    Please select <u>Project</u> and <u>Release</u> from the drop down above to view the details. <br>
+		    Please select <u>Project</u> and <u>Release</u> from the drop down above to view the project plan. <br>
 		    If no projects and release are configured then please add new Project using <u>"Add Project"</u> button
 		    and new Release using <u>"Add Release"</u> button.
 		    <b class="border-notch notch"></b>

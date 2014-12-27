@@ -15,7 +15,6 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.SessionAttributes;
 
-import com.acc.tools.ed.integration.dto.ComponentForm;
 import com.acc.tools.ed.integration.dto.EDBUser;
 import com.acc.tools.ed.integration.dto.ProjectForm;
 import com.acc.tools.ed.integration.service.ILoginService;
@@ -28,7 +27,7 @@ import com.acc.tools.ed.web.controller.common.AbstractEdbBaseController;
  */
 
 @Controller
-@SessionAttributes({ "edbUser","componentList"})
+@SessionAttributes({ "edbUser"})
 public class LoginController extends AbstractEdbBaseController{
 	
 	private static final Logger LOG=LoggerFactory.getLogger(LoginController.class);
@@ -75,8 +74,8 @@ public class LoginController extends AbstractEdbBaseController{
 			//session attributes
 			model.addAttribute("edbUser", user);
 			model.addAttribute("addProjectForm",new ProjectForm());
-			List<ComponentForm> componentList=projectWorkService.getComponentList(user.getEmployeeId());
-			model.addAttribute("componentList",componentList);
+			List<ProjectForm> projData=projectWorkService.getMyTasks(user.getEmployeeId());
+			model.addAttribute("projData",projData);
 			LOG.debug("Login - Adding user to session - User Id:[{}] Role:[{}]",user.getEmployeeId(),user.getRole());
 			if(user.getRole().equalsIgnoreCase("MANAGER")||user.getRole().equalsIgnoreCase("SUPERVISOR") || user.getRole().equalsIgnoreCase("Lead"))	{
 				return "/projectmanagement/index";
@@ -84,7 +83,7 @@ public class LoginController extends AbstractEdbBaseController{
 				return "/projectmanagement/index";
 			}
 		}else {
-			model.addAttribute("status", "LLOGIN_FAILED");
+			model.addAttribute("status", "LOGIN_FAILED");
 			return "redirect:/start.do";
 		}
 

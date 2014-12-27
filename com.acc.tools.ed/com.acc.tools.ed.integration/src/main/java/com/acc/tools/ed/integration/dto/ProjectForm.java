@@ -21,31 +21,15 @@ public class ProjectForm implements Serializable{
 	private DateTime startDate;
 	private List<String> phases;
 	private String projectDescription;
-	private List<String> resources;
-	private ReleaseForm releaseForm;
-	private List<ComponentForm> componentList;
-
-	private List<String> projectLead;
-	
-	/*
-	 * Edit project attributes
-	 */
-		
-	private String editPrjDesc;
-	private String editPrjStartDate;
-	private String editPrjEndDate;
+	private List<ReferenceData> resources;
+	private List<ReleaseForm> releases;
+	private String projectLead;
 	
 	public String getProjectName() {
 		return projectName;
 	}
 	public void setProjectName(String projectName) {
 		this.projectName = projectName;
-	}
-	public List<String> getProjectLead() {
-		return projectLead;
-	}
-	public void setProjectLead(List<String> projectLead) {
-		this.projectLead = projectLead;
 	}
 	public int getProjectId() {
 		return projectId;
@@ -78,43 +62,6 @@ public class ProjectForm implements Serializable{
 	public void setProjectDescription(String projectDescription) {
 		this.projectDescription = projectDescription;
 	}
-	public List<String> getResources() {
-		return resources;
-	}
-	public void setResources(List<String> resources) {
-		this.resources = resources;
-	}
-	public ReleaseForm getReleaseForm() {
-		return releaseForm;
-	}
-	public void setReleaseForm(ReleaseForm releaseForm) {
-		this.releaseForm = releaseForm;
-	}
-	public List<ComponentForm> getComponentList() {
-		return componentList;
-	}
-	public void setComponentList(List<ComponentForm> componentList) {
-		this.componentList = componentList;
-	}
-	
-	public String getEditPrjDesc() {
-		return editPrjDesc;
-	}
-	public void setEditPrjDesc(String editPrjDesc) {
-		this.editPrjDesc = editPrjDesc;
-	}
-	public String getEditPrjStartDate() {
-		return editPrjStartDate;
-	}
-	public void setEditPrjStartDate(String editPrjStartDate) {
-		this.editPrjStartDate = editPrjStartDate;
-	}
-	public String getEditPrjEndDate() {
-		return editPrjEndDate;
-	}
-	public void setEditPrjEndDate(String editPrjEndDate) {
-		this.editPrjEndDate = editPrjEndDate;
-	}
 	public int getExistingProgram() {
 		return existingProgram;
 	}
@@ -132,5 +79,23 @@ public class ProjectForm implements Serializable{
 	}
 	public void setNewProgramName(String newProgramName) {
 		this.newProgramName = newProgramName;
+	}
+	public List<ReleaseForm> getReleases() {
+		return releases;
+	}
+	public void setReleases(List<ReleaseForm> releases) {
+		this.releases = releases;
+	}
+	public String getProjectLead() {
+		return projectLead;
+	}
+	public void setProjectLead(String projectLead) {
+		this.projectLead = projectLead;
+	}
+	public List<ReferenceData> getResources() {
+		return resources;
+	}
+	public void setResources(List<ReferenceData> resources) {
+		this.resources = resources;
 	}
 }

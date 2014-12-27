@@ -2,13 +2,11 @@ package com.acc.tools.ed.web.controller.management;
 
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
-import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
 import org.joda.time.DateTime;
-import org.joda.time.LocalDate;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Controller;
@@ -23,7 +21,6 @@ import org.springframework.web.bind.annotation.SessionAttributes;
 
 import com.acc.tools.ed.integration.dto.ComponentForm;
 import com.acc.tools.ed.integration.dto.ProjectForm;
-import com.acc.tools.ed.integration.dto.ProjectPlanData;
 import com.acc.tools.ed.integration.dto.ReferenceData;
 import com.acc.tools.ed.integration.dto.ReleaseForm;
 import com.acc.tools.ed.web.controller.common.AbstractEdbBaseController;
@@ -125,7 +122,7 @@ public class ProjectManagementControlller extends AbstractEdbBaseController {
 			@RequestParam("editPrjEndDate") String editPrjEndDate,
 			@RequestParam("projectId") String projectId,
 			Model model) {
-		LOG.debug("Project Name:[{--}] EDIT PROJECT NAME Name:[{}]",editPrjDesc+","+editPrjStartDate+","+editPrjEndDate+","+projectId);
+		LOG.debug("Project Name:[{}] EDIT PROJECT NAME Name:[{}]",editPrjDesc+","+editPrjStartDate+","+editPrjEndDate+","+projectId);
 		
 		return getProjectManagementService().editProject(projectId, editPrjDesc, editPrjStartDate, editPrjEndDate);
 	}
@@ -181,45 +178,31 @@ public class ProjectManagementControlller extends AbstractEdbBaseController {
 		LOG.debug("Select Project Id:[{}] and Selected Release Id:[{}]",
 				addReleaseForm.getProjectId(), addReleaseForm.getReleaseId());
 		
-		ProjectPlanData planData = getProjectManagementService().getProjectPlanDetails(addReleaseForm.getReleaseId(), addReleaseForm.getProjectId());
+		ProjectForm planData = getProjectManagementService().getProjectPlanDetails(addReleaseForm.getReleaseId(), addReleaseForm.getProjectId());
 		
-		ProjectForm projectForm = new ProjectForm();
-		projectForm.setProjectName(planData.getProjectName());
-		projectForm.setProjectDescription(planData.getProjectDescription());
-		projectForm.setPhases(planData.getPhases());
-		projectForm.setStartDate(new DateTime(planData.getProjectStartDate()));
-		projectForm.setEndDate(new DateTime(planData.getProjectEndDate()));
-
-		ReleaseForm release = new ReleaseForm();
-		release.setReleaseName(planData.getReleaseName());
-		release.setReleaseArtifacts(planData.getReleaseArtifacts());
-		release.setReleaseEndDate(planData.getReleaseEndDate());
-		release.setReleaseStartDate(planData.getReleaseStartDate());
+		LOG.debug("Result Data -> Project Id:[{}] Release Id:[{}]",planData.getProjectId(),planData.getReleases().get(0).getReleaseId());
+		for(ComponentForm cf:planData.getReleases().get(0).getComponents()){
+			LOG.debug("Component Name:[{}] Resource:[{}]",cf.getComponentName(),cf.getResourceName());
+		}
 		
-		projectForm.setReleaseForm(release);
-		
-		projectForm.setComponentList(planData.getComponentName());
-		
-		model.addAttribute("viewProjRelDetails", projectForm);
-		LOG.debug("Project Resource List:{}",planData.getProjectResourceList());
-		model.addAttribute("projectResourceList", planData.getProjectResourceList());
+		model.addAttribute("viewProjRelDetails", planData);
 		
 		return "/projectmanagement/viewProjectRelease";
 	}
 	
 	@RequestMapping(value = "/addComponent.do")
 	public @ResponseBody List<ComponentForm> addComponent(
-			@RequestParam("projectId") String projectId,
+			@RequestParam("projectId") Integer projectId,
 			@RequestParam("componentName") String componentName,
 			@RequestParam("functionalDesc") String functionalDesc,
 			@RequestParam("compStartDate") String compStartDate,
 			@RequestParam("compEndDate") String compEndDate,
 			@RequestParam("compResource") String compResource,
-			@RequestParam("releaseId") String releaseId,
+			@RequestParam("releaseId") Integer releaseId,
 			Model model) {
 		LOG.debug("addComponent :[{}]",projectId+","+componentName+","+functionalDesc+","+compStartDate+","+compEndDate+","+compResource+","+releaseId);
-		ProjectPlanData planData = getProjectManagementService().addComponent(projectId,componentName,functionalDesc,compStartDate,compEndDate,compResource,releaseId);
-		return planData.getComponentName();		
+		ProjectForm planData = getProjectManagementService().addComponent(projectId,componentName,functionalDesc,compStartDate,compEndDate,compResource,releaseId);
+		return planData.getReleases().get(0).getComponents();		
 	}
 	
 

@@ -11,6 +11,7 @@ public class ComponentForm implements Serializable {
 	private static final long serialVersionUID = 1L;
 	private int componentId;
 	private int projectId;
+	private String projectName;
 	private String componentName;
 	private String functionalDesc;
 	private String startDate;
@@ -89,6 +90,14 @@ public class ComponentForm implements Serializable {
 
 	public void setTaskFormList(List<TaskForm> taskFormList) {
 		this.taskFormList = taskFormList;
+	}
+
+	public String getProjectName() {
+		return projectName;
+	}
+
+	public void setProjectName(String projectName) {
+		this.projectName = projectName;
 	}
 
 }

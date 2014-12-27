@@ -20,7 +20,6 @@ import com.acc.tools.ed.integration.dao.ProjectManagementDao;
 import com.acc.tools.ed.integration.dto.ComponentForm;
 import com.acc.tools.ed.integration.dto.MasterEmployeeDetails;
 import com.acc.tools.ed.integration.dto.ProjectForm;
-import com.acc.tools.ed.integration.dto.ProjectPlanData;
 import com.acc.tools.ed.integration.dto.ReferenceData;
 import com.acc.tools.ed.integration.dto.ReleaseForm;
 
@@ -102,7 +101,7 @@ public class ProjectManagementDaoImpl extends AbstractEdbDao implements ProjectM
 				preparedStatement.setInt(1, project.getProjectId());
 				preparedStatement.setString(2, project.getProjectName());
 				preparedStatement.setString(3, project.getProjectDescription());
-				preparedStatement.setString(4, project.getProjectLead().get(0));
+				preparedStatement.setString(4, project.getProjectLead());
 				preparedStatement.setString(5, project.getStartDate().toString("yyyy-MM-dd"));
 				preparedStatement.setString(6, project.getEndDate().toString("yyyy-MM-dd"));
 				preparedStatement.setString(7, project.getPhases().toString());
@@ -116,9 +115,9 @@ public class ProjectManagementDaoImpl extends AbstractEdbDao implements ProjectM
 				//Set Project to Employee relationship
 				final String projEmpTable="insert into EDB_PROJ_EMP(PROJ_ID,EMP_ID) values (?,?)";
 				PreparedStatement  projEmpStmt = getConnection().prepareStatement(projEmpTable);
-				for(String employeeId:project.getResources()){
+				for(ReferenceData employeeRefData:project.getResources()){
 					projEmpStmt.setInt(1, project.getProjectId());
-					projEmpStmt.setString(2, employeeId);
+					projEmpStmt.setString(2, employeeRefData.getId());
 					projEmpStmt.addBatch();
 				}
 				projEmpStmt.executeBatch();
@@ -143,7 +142,7 @@ public class ProjectManagementDaoImpl extends AbstractEdbDao implements ProjectM
 						release.getReleaseStartDate(),release.getReleaseEndDate(),release.getReleaseArtifacts().toString()});	
 				final String employeeTable="insert into EDB_MILESTONE(PROJ_ID,MLSTN_NAME,MLSTN_ST_DT,MLSTN_END_DT,MLSTN_ARTIFACTS) values (?,?,?,?,?)";
 				PreparedStatement  preparedStatement = getConnection().prepareStatement(employeeTable);
-				preparedStatement.setString(1, release.getProjectId());
+				preparedStatement.setInt(1, release.getProjectId());
 				preparedStatement.setString(2, release.getReleaseName());
 				preparedStatement.setString(3, release.getReleaseStartDate());
 				preparedStatement.setString(4, release.getReleaseEndDate());
@@ -194,81 +193,11 @@ public class ProjectManagementDaoImpl extends AbstractEdbDao implements ProjectM
 		return status;
 	}
 	
-	/*public ProjectPlanData getProjectPlanDetails(String releaseId, String projectId) {
-		
-		ProjectPlanData projectPlanData = new ProjectPlanData();
-		
-		final StringBuffer projPlanQuery =new StringBuffer();
-        projPlanQuery.append("SELECT P.*, M.*, C.*, E.* FROM ((EDB_PROJECT P INNER JOIN EDB_MILESTONE M on P.PROJ_ID = M.PROJ_ID) ");
-        projPlanQuery.append("LEFT JOIN EDB_PROJ_COMPNT C on M.PROJ_ID = C.PROJ_ID) LEFT JOIN EDB_MSTR_EMP_DTLS  E on C.EMP_ID = E.EMP_ID ");
-        projPlanQuery.append("WHERE M.MLSTN_ID = "+releaseId+" AND P.PROJ_ID = "+projectId+"");
+	public ProjectForm getProjectPlanDetails(Integer releaseId, Integer projectId) {
         
-        log.debug("RELEASE QUERY :[{}]",projPlanQuery);
-        
-        try {
-	             PreparedStatement  preparedStatement = getConnection().prepareStatement(projPlanQuery.toString());
-	             ResultSet rs = preparedStatement.executeQuery();
-
-			
-				List<ComponentForm> components = new ArrayList<ComponentForm>();				
-				
-				while(rs.next()){				 
-					projectPlanData.setProjectName(rs.getString("PROJ_NAME"));
-					projectPlanData.setProjectDescription(rs.getString("PROJ_DESC"));
-					
-					String phases = rs.getString("PROJ_PHSE");
-					projectPlanData.setPhases(Arrays.asList(phases.replace("[", "").replace("]", "").trim().split(",")));
-					
-					projectPlanData.setProjectStartDate(new DateTime(rs.getTimestamp("PROJ_ST_DT").getTime()));
-					projectPlanData.setProjectEndDate(new DateTime(rs.getTimestamp("PROJ_ET_DT").getTime()));
-					
-					projectPlanData.setReleaseName(rs.getString("MLSTN_NAME"));
-					projectPlanData.setReleaseArtifacts(rs.getString("MLSTN_ARTIFACTS"));
-					
-					SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd hh:mm:ss");
-					Date stDate =  sdf.parse(rs.getString("MLSTN_ST_DT"));
-					sdf.applyPattern("MM/dd/yyyy");
-					projectPlanData.setReleaseStartDate(sdf.format(stDate));
-					
-					SimpleDateFormat sdf1 = new SimpleDateFormat("yyyy-MM-dd hh:mm:ss");
-					Date etDate =  sdf1.parse(rs.getString("MLSTN_END_DT"));
-					sdf1.applyPattern("MM/dd/yyyy");			
-					projectPlanData.setReleaseEndDate(sdf1.format(etDate));
-					
-					ComponentForm component = new ComponentForm();
-					component.setComponentName(rs.getString("COMPNT_NAME"));
-					component.setComponentId(rs.getInt("COMPNT_ID"));
-					component.setFunctionalDesc(rs.getString("COMPNT_FUNC_DESC"));
-					component.setResourceId(rs.getInt("EMP_ENTERPRISE_ID"));
-					component.setResourceName(rs.getString("EMP_RESOURCE_NAME"));
-					
-					SimpleDateFormat sdf2 = new SimpleDateFormat("yyyy-MM-dd hh:mm:ss");
-					Date compStDate =  sdf2.parse(rs.getString("COMPNT_ST_DT"));
-					sdf2.applyPattern("MM/dd/yyyy");
-					component.setStartDate(sdf2.format(compStDate));
-					
-					SimpleDateFormat sdf3 = new SimpleDateFormat("yyyy-MM-dd hh:mm:ss");
-					Date compEtDate =  sdf3.parse(rs.getString("COMPNT_END_DT"));
-					sdf3.applyPattern("MM/dd/yyyy");			
-					component.setEndDate(sdf3.format(compEtDate));
-					
-					components.add(component);
-					projectPlanData.setComponentName(components);
-					
-				}			
-		} catch (Exception e) {
-			e.printStackTrace();
-		}
-		
-		return projectPlanData;
-	}*/
-	
-	public ProjectPlanData getProjectPlanDetails(String releaseId, String projectId) {
-        
-        ProjectPlanData projectPlanData = new ProjectPlanData();
-        System.out.println("releaseId*****"+releaseId);
-        System.out.println("projectId*****"+projectId);
+        ProjectForm projectPlanData = new ProjectForm();
         final StringBuffer projPlanQuery =new StringBuffer();
+        final Map<Integer,ReleaseForm> releaseMap=new HashMap<Integer,ReleaseForm>();
         projPlanQuery.append("SELECT P.*, M.*, C.*, E.* FROM ((EDB_PROJECT P INNER JOIN EDB_MILESTONE M on P.PROJ_ID = M.PROJ_ID) ");
         projPlanQuery.append("LEFT JOIN EDB_PROJ_COMPNT C on M.MLSTN_ID = C.MLSTN_ID) LEFT JOIN EDB_MSTR_EMP_DTLS  E on C.EMP_ID = E.EMP_ID ");
         projPlanQuery.append("WHERE M.MLSTN_ID = "+releaseId+" AND P.PROJ_ID = "+projectId+"");
@@ -279,61 +208,51 @@ public class ProjectManagementDaoImpl extends AbstractEdbDao implements ProjectM
                      PreparedStatement  preparedStatement = getConnection().prepareStatement(projPlanQuery.toString());
                      ResultSet rs = preparedStatement.executeQuery();
                      
-                     List<ComponentForm> components = new ArrayList<ComponentForm>();                         
-                     
-                     while(rs.next()){                        
+                     while(rs.next()){
+                    	 final int projId=rs.getInt("PROJ_ID");
+                    	 	projectPlanData.setProjectId(projId);
                             projectPlanData.setProjectName(rs.getString("PROJ_NAME"));
                             projectPlanData.setProjectDescription(rs.getString("PROJ_DESC"));
                             
                             String phases = rs.getString("PROJ_PHSE");
                             projectPlanData.setPhases(Arrays.asList(phases.replace("[", "").replace("]", "").trim().split(",")));
                             
-                            projectPlanData.setProjectStartDate(new DateTime(rs.getTimestamp("PROJ_ST_DT").getTime()));
-                            projectPlanData.setProjectEndDate(new DateTime(rs.getTimestamp("PROJ_ET_DT").getTime()));
+                            projectPlanData.setStartDate(new DateTime(rs.getTimestamp("PROJ_ST_DT").getTime()));
+                            projectPlanData.setEndDate(new DateTime(rs.getTimestamp("PROJ_ET_DT").getTime()));
                             
-                            projectPlanData.setReleaseName(rs.getString("MLSTN_NAME"));
-                            projectPlanData.setReleaseArtifacts(rs.getString("MLSTN_ARTIFACTS"));
+                            final int rReleaseId=rs.getInt("MLSTN_ID");
                             
-                            SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd hh:mm:ss");
-                            Date stDate =  sdf.parse(rs.getString("MLSTN_ST_DT"));
-                            sdf.applyPattern("MM/dd/yyyy");
-                            projectPlanData.setReleaseStartDate(sdf.format(stDate));
-                            
-                            SimpleDateFormat sdf1 = new SimpleDateFormat("yyyy-MM-dd hh:mm:ss");
-                            Date etDate =  sdf1.parse(rs.getString("MLSTN_END_DT"));
-                            sdf1.applyPattern("MM/dd/yyyy");                
-                            projectPlanData.setReleaseEndDate(sdf1.format(etDate));
-                            
-                            ComponentForm component = new ComponentForm();
-                            component.setComponentName(rs.getString("COMPNT_NAME"));
-                            component.setComponentId(rs.getInt("COMPNT_ID"));
-                            component.setFunctionalDesc(rs.getString("COMPNT_FUNC_DESC"));
-                            component.setResourceId(rs.getInt("EMP_ID"));
-                            component.setResourceName(rs.getString("EMP_RESOURCE_NAME"));
-                            
-                            SimpleDateFormat sdf2 = new SimpleDateFormat("yyyy-MM-dd hh:mm:ss");
-                            String cStDt = rs.getString("COMPNT_ST_DT");
-                            if(cStDt != null) {
-                                   Date compStDate =  sdf2.parse(cStDt);
-                                   sdf2.applyPattern("MM/dd/yyyy");
-                                   component.setStartDate(sdf2.format(compStDate));                                   
+                            if(!releaseMap.isEmpty() && releaseMap.containsKey(rReleaseId)){
+                            	final ReleaseForm release=releaseMap.get(rReleaseId);
+                            	final ComponentForm component = new ComponentForm();
+                            	component.setComponentId(rs.getInt("COMPNT_ID"));
+                            	mapComponentData(rs,release,component);
                             } else {
-                                   component.setStartDate(null);
+                            	ReleaseForm release=new ReleaseForm(); 
+                                release.setProjectId(projId);
+                                release.setReleaseId(rReleaseId);
+                                release.setReleaseName(rs.getString("MLSTN_NAME"));
+                                release.setReleaseArtifacts(rs.getString("MLSTN_ARTIFACTS"));
+                                
+                                SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd hh:mm:ss");
+                                Date stDate =  sdf.parse(rs.getString("MLSTN_ST_DT"));
+                                sdf.applyPattern("MM/dd/yyyy");
+                                release.setReleaseStartDate(sdf.format(stDate));
+                                
+                                SimpleDateFormat sdf1 = new SimpleDateFormat("yyyy-MM-dd hh:mm:ss");
+                                Date etDate =  sdf1.parse(rs.getString("MLSTN_END_DT"));
+                                sdf1.applyPattern("MM/dd/yyyy");                
+                                release.setReleaseEndDate(sdf1.format(etDate));
+                                
+                                if(projectPlanData.getReleases()==null){
+                                	projectPlanData.setReleases(new ArrayList<ReleaseForm>());
+                                }
+                                projectPlanData.getReleases().add(release);
+                                final ComponentForm component = new ComponentForm();
+                                mapComponentData(rs,release,component);
+                                releaseMap.put(rReleaseId, release);
+                                
                             }
-                            
-                            SimpleDateFormat sdf3 = new SimpleDateFormat("yyyy-MM-dd hh:mm:ss");
-                            String cEtDt = rs.getString("COMPNT_END_DT");
-                            if(cEtDt != null) {
-                                   Date compEtDate =  sdf3.parse(cEtDt);
-                                   sdf3.applyPattern("MM/dd/yyyy");                
-                                   component.setEndDate(sdf3.format(compEtDate));
-                            } else {
-                                   component.setEndDate(null);
-                            }
-                            
-                            components.add(component);
-                            projectPlanData.setComponentName(components);
-                            
                      }   
                      
                      //List of developers tagged to the project
@@ -347,7 +266,7 @@ public class ProjectManagementDaoImpl extends AbstractEdbDao implements ProjectM
                     	 refData.setLabel(resRs.getString("EMP_RESOURCE_NAME"));
                     	 projectResourceList.add(refData);                    	 
                      }
-                     projectPlanData.setProjectResourceList(projectResourceList);
+                     projectPlanData.setResources(projectResourceList);
                      
         } catch (Exception e) {
                e.printStackTrace();
@@ -355,6 +274,7 @@ public class ProjectManagementDaoImpl extends AbstractEdbDao implements ProjectM
         
         return projectPlanData;
  }
+	
 
 	
 	public List<ReferenceData> editProject(String projectId,String editPrjDesc,String editPrjStartDate,String editPrjEndDate){
@@ -572,10 +492,10 @@ public List<ReferenceData> editRelease(String releaseId,String editRelArti,Strin
 		return projectDates;
 	}
 	
-	public ProjectPlanData addComponent(String projectId,String componentName,String functionalDesc,
-			String compStartDate,String compEndDate,String compResource, String releaseId) {
+	public ProjectForm addComponent(Integer projectId,String componentName,String functionalDesc,
+			String compStartDate,String compEndDate,String compResource, Integer releaseId) {
 		
-		ProjectPlanData projectData = new ProjectPlanData();
+		ProjectForm projectData = new ProjectForm();
 		 
 		try{
 					
@@ -585,7 +505,7 @@ public List<ReferenceData> editRelease(String releaseId,String editRelArti,Strin
 				preparedStatement.setString(2, functionalDesc);
 				preparedStatement.setString(3, compStartDate);
 				preparedStatement.setString(4, compEndDate);
-				preparedStatement.setInt(5, Integer.valueOf(releaseId));
+				preparedStatement.setInt(5, releaseId);
 				preparedStatement.setInt(6, Integer.valueOf(compResource));
 				preparedStatement.executeUpdate();
 				preparedStatement.close();

@@ -3,78 +3,107 @@ package com.acc.tools.ed.integration.dao.impl;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.Statement;
-import java.text.SimpleDateFormat;
 import java.util.ArrayList;
-import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import org.springframework.stereotype.Service;
 
 import com.acc.tools.ed.integration.dao.ProjectWorkDao;
 import com.acc.tools.ed.integration.dto.ComponentForm;
+import com.acc.tools.ed.integration.dto.ProjectForm;
+import com.acc.tools.ed.integration.dto.ReleaseForm;
 import com.acc.tools.ed.integration.dto.TaskForm;
 
-/**
- * 
- * @author dinesh.sridhar
- *
- */
 
 @Service("projectWorkDao")
 public class ProjectWorkDaoImpl extends AbstractEdbDao implements ProjectWorkDao {
 	
-public List<ComponentForm> getComponentList(String userId) {
+public List<ProjectForm> getMyTasks(String userId) {
 		
-		List<ComponentForm> componentList = null;
-		HashMap<Integer,ComponentForm> map = new HashMap<Integer, ComponentForm>();
+		final List<ProjectForm> projectTasks=new ArrayList<ProjectForm>();
+		final Map<Integer,ProjectForm> projMap = new HashMap<Integer, ProjectForm>();
+		final Map<Integer,ReleaseForm> relMap = new HashMap<Integer, ReleaseForm>();
+		final Map<Integer,ComponentForm> compMap = new HashMap<Integer, ComponentForm>();
+
 		try{
-			final String componentTable= "SELECT a.*,b.* FROM EDB_PROJ_COMPNT a LEFT JOIN EDB_TASK_MASTER b ON a.COMPNT_ID = b.COMPNT_ID where a.EMP_ID="+userId;
+			final String componentTable= "SELECT C.*,M.*, T.*, P.PROJ_NAME FROM (EDB_PROJECT AS P LEFT JOIN EDB_MILESTONE AS M ON P.PROJ_ID = M.PROJ_ID) "
+					+ "LEFT JOIN (EDB_PROJ_COMPNT AS C LEFT JOIN EDB_TASK_MASTER AS T ON C.COMPNT_ID = T.COMPNT_ID) ON M.MLSTN_ID = C.MLSTN_ID WHERE C.EMP_ID="+userId;
+			
 			Statement stmt=getConnection().createStatement();
 			ResultSet rs=stmt.executeQuery(componentTable);
 			while(rs.next()){
-				int componentId = rs.getInt(1);
-				if(!map.isEmpty() && map.containsKey(componentId)){
-					TaskForm taskForm = new TaskForm();
-					taskForm.setTaskName(rs.getString("TASK_NAME"));
-					taskForm.setComponentId(componentId);
-					taskForm.setTaskId(rs.getInt("TASK_ID"));
-					taskForm.setTaskDesc(rs.getString("TASK_DESC"));
-					taskForm.setTaskHrs(rs.getInt("TASK_HRS"));
-					List<TaskForm> taskList =  map.get(componentId).getTaskFormList();
-					taskList.add(taskForm);
-					map.get(componentId).setTaskFormList(taskList);
-				}else{
-					ComponentForm compnt = new ComponentForm();
-					compnt.setProjectId(rs.getInt("MLSTN_ID"));
-					compnt.setComponentId(componentId);
-					compnt.setComponentName(rs.getString("COMPNT_NAME"));
-					compnt.setFunctionalDesc(rs.getString("COMPNT_FUNC_DESC"));
-					
-					SimpleDateFormat sdf1 = new SimpleDateFormat("yyyy-MM-dd hh:mm:ss");
-					Date compStDate =  sdf1.parse(rs.getString("COMPNT_ST_DT"));
-					sdf1.applyPattern("MM/dd/yyyy");
-					compnt.setStartDate(sdf1.format(compStDate));
-					
-					SimpleDateFormat sdf2 = new SimpleDateFormat("yyyy-MM-dd hh:mm:ss");
-					Date compEtDate =  sdf2.parse(rs.getString("COMPNT_END_DT"));
-					sdf2.applyPattern("MM/dd/yyyy");			
-					compnt.setEndDate(sdf2.format(compEtDate));
-					
-					List<TaskForm> taskList = new ArrayList<TaskForm>();
-					TaskForm taskForm = new TaskForm();
-					taskForm.setTaskName(rs.getString("TASK_NAME"));
-					taskForm.setComponentId(componentId);
-					taskForm.setTaskId(rs.getInt("TASK_ID"));
-					taskForm.setTaskDesc(rs.getString("TASK_DESC"));
-					taskForm.setTaskHrs(rs.getInt("TASK_HRS"));
-					taskList.add(taskForm);
-					compnt.setTaskFormList(taskList);
-					map.put(compnt.getComponentId(),compnt);
+				final int projectId=rs.getInt("PROJ_ID");
+				final int releaseId = rs.getInt("MLSTN_ID");
+				final int componentId=rs.getInt("COMPNT_ID");
+				final int taskId=rs.getInt("TASK_ID");
+
+				
+				if(!projMap.isEmpty() && projMap.containsKey(projectId)){
+					//second record occurrence
+					ProjectForm project=projMap.get(projectId);
+					if(!relMap.isEmpty() && relMap.containsKey(releaseId)){
+						ReleaseForm release=relMap.get(releaseId);
+						if(!compMap.isEmpty() && compMap.containsKey(componentId)){
+							final ComponentForm component=compMap.get(componentId);
+							final TaskForm taskForm=new TaskForm();
+							taskForm.setTaskId(taskId);
+							mapTaskData(rs, taskForm, componentId);
+							if(component.getTaskFormList()==null){
+								component.setTaskFormList(new ArrayList<TaskForm>());
+							}
+							component.getTaskFormList().add(taskForm);
+						} else {
+							final ComponentForm component=new ComponentForm(); 
+							component.setComponentId(componentId);
+							mapComponentData(rs, release,component);
+							final TaskForm task=new TaskForm();
+							mapTaskData(rs, task,component.getComponentId());
+							if(component.getTaskFormList()==null){
+								component.setTaskFormList(new ArrayList<TaskForm>());
+							}
+							component.getTaskFormList().add(task);
+							compMap.put(componentId, component);
+						}
+					} else {
+						final ReleaseForm release=new ReleaseForm();
+						mapReleaseData(rs, project, release, releaseId);
+						final ComponentForm component=new ComponentForm(); 
+						component.setComponentId(componentId);
+						mapComponentData(rs, release,component);
+						final TaskForm task=new TaskForm();
+						mapTaskData(rs, task,component.getComponentId());
+						if(component.getTaskFormList()==null){
+							component.setTaskFormList(new ArrayList<TaskForm>());
+						}
+						component.getTaskFormList().add(task);
+						relMap.put(releaseId, release);
+						compMap.put(componentId, component);
+					}
+				} else {
+					//First record occurrence
+					ProjectForm project=new ProjectForm();
+					project.setProjectId(projectId);
+					project.setProjectName(rs.getString("PROJ_NAME"));
+					final ReleaseForm release=new ReleaseForm();
+					mapReleaseData(rs, project, release, releaseId);
+					final ComponentForm component=new ComponentForm(); 
+					component.setComponentId(componentId);
+					mapComponentData(rs, release,component);
+					final TaskForm task=new TaskForm();
+					mapTaskData(rs, task,component.getComponentId());
+					if(component.getTaskFormList()==null){
+						component.setTaskFormList(new ArrayList<TaskForm>());
+					}
+					component.getTaskFormList().add(task);
+					projMap.put(projectId, project);
+					relMap.put(releaseId, release);
+					compMap.put(componentId, component);
+					projectTasks.add(project);
 				}
+				
 			}
-			
-			componentList = new ArrayList<ComponentForm>(map.values());
 			
 			
 			stmt.close();
@@ -83,7 +112,7 @@ public List<ComponentForm> getComponentList(String userId) {
 			return null;
 		}
 		
-		return componentList;
+		return projectTasks;
 	}
 
 	public List<ComponentForm> addTasks(String taskName, String taskDesc,long taskHrs,int componentId, String userId) {
@@ -101,7 +130,7 @@ public List<ComponentForm> getComponentList(String userId) {
 			pstm.executeUpdate();
 			pstm.close();
 			
-			componentList = getComponentList(userId);
+			//componentList = getMyTasks(userId).getReleases().get(0).getComponents();
 			
 		} catch (Exception e) {
 			e.printStackTrace();

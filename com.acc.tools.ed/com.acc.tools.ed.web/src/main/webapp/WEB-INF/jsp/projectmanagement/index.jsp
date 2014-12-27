@@ -10,7 +10,7 @@
 <%@ include file="/WEB-INF/jsp/includes/document-header.jsp"%>
 </head>
 <body>
-	<table>
+	<table style="width: 100%;">
 		<!-- header -->
 		<%@ include file="/WEB-INF/jsp/includes/header.jsp"%>
 		<!-- main container -->

@@ -6,7 +6,6 @@ import java.util.Map;
 
 import com.acc.tools.ed.integration.dto.MasterEmployeeDetails;
 import com.acc.tools.ed.integration.dto.ProjectForm;
-import com.acc.tools.ed.integration.dto.ProjectPlanData;
 import com.acc.tools.ed.integration.dto.ReferenceData;
 import com.acc.tools.ed.integration.dto.ReleaseForm;
 
@@ -16,7 +15,7 @@ public interface ProjectManagementService {
 	public int addEmployees(Collection<MasterEmployeeDetails> empDetails);
 	public List<ReferenceData> getAllProjectIds();
 	public List<ReferenceData> getProjectReleaseIds(String projectId);
-	public ProjectPlanData getProjectPlanDetails(String releaseId, String projectId);
+	public ProjectForm getProjectPlanDetails(Integer releaseId, Integer projectId);
 	public List<ReferenceData> editProject(String projectId,String editPrjDesc,String editPrjStartDate,String editPrjEndDate);
 	public List<ReferenceData> editRelease(String releaseId, String editRelArti,String editRelStartDate, String editRelEndDate);
 	public String deleteProject(String projectId);
@@ -25,7 +24,7 @@ public interface ProjectManagementService {
 	public List<ReferenceData> getResourceList();
 	public List<ReferenceData> getPrjLeadList();
 	public Map<String,String> getProjectDate(String projectId);
-	public ProjectPlanData addComponent(String projectId,String componentName,String functionalDesc,String compStartDate,String compEndDate,String compResource,String releaseId);
+	public ProjectForm addComponent(Integer projectId,String componentName,String functionalDesc,String compStartDate,String compEndDate,String compResource,Integer releaseId);
 	public List<MasterEmployeeDetails> getAllEmployees();
 	public Map<String,Map<String,Map<String,String>>> createReleasePlan(String releaseStartDate,String releaseEndDate);
 }
