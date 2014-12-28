@@ -28,11 +28,14 @@ public List<ProjectForm> getMyTasks(String userId) {
 		final Map<Integer,ComponentForm> compMap = new HashMap<Integer, ComponentForm>();
 
 		try{
-			final String componentTable= "SELECT C.*,M.*, T.*, P.PROJ_NAME FROM (EDB_PROJECT AS P LEFT JOIN EDB_MILESTONE AS M ON P.PROJ_ID = M.PROJ_ID) "
-					+ "LEFT JOIN (EDB_PROJ_COMPNT AS C LEFT JOIN EDB_TASK_MASTER AS T ON C.COMPNT_ID = T.COMPNT_ID) ON M.MLSTN_ID = C.MLSTN_ID WHERE C.EMP_ID="+userId;
+	        final StringBuffer componentTable =new StringBuffer();
+	        componentTable.append("SELECT P.*, M.*, C.*, T.* FROM ((EDB_PROJECT P INNER JOIN EDB_MILESTONE M on P.PROJ_ID = M.PROJ_ID) ");
+	        componentTable.append("LEFT JOIN EDB_PROJ_COMPNT C on M.MLSTN_ID = C.MLSTN_ID) LEFT JOIN EDB_TASK_MASTER T ON C.COMPNT_ID = T.COMPNT_ID");
+	        componentTable.append(" WHERE C.EMP_ID = "+userId);
+
 			
 			Statement stmt=getConnection().createStatement();
-			ResultSet rs=stmt.executeQuery(componentTable);
+			ResultSet rs=stmt.executeQuery(componentTable.toString());
 			while(rs.next()){
 				final int projectId=rs.getInt("PROJ_ID");
 				final int releaseId = rs.getInt("MLSTN_ID");

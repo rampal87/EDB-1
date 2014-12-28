@@ -13,12 +13,7 @@ $(document).ready(
 					var tDesc = $("#taskDesc").val();
 					var tHrs = $("#taskHrs").val();
 					var cId = $('#addTaskPanel').data('param');
-					var uId = $
-					{
-						edbUser.employeeId
-					}
-					;
-
+					var uId = $('#addTaskPanel').attr("edbUser");
 					$.ajax({
 						type : "POST",
 						url : "./addTask.do",

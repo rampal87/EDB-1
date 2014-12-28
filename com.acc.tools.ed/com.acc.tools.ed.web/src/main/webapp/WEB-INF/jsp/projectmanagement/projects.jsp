@@ -55,7 +55,7 @@
 						<tr style="height: 93px;">
 							<th style="text-align: right;">Resources</th>
 							<td colspan="3">
-								<form:select path="resources" multiple="true">
+								<form:select path="stringResources" multiple="true">
 								</form:select>
 							</td>
 						</tr>

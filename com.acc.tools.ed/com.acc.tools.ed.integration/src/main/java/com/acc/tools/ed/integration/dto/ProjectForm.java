@@ -1,6 +1,7 @@
 package com.acc.tools.ed.integration.dto;
 
 import java.io.Serializable;
+import java.util.ArrayList;
 import java.util.List;
 
 import org.joda.time.DateTime;
@@ -21,6 +22,7 @@ public class ProjectForm implements Serializable{
 	private DateTime startDate;
 	private List<String> phases;
 	private String projectDescription;
+	private List<String> stringResources;
 	private List<ReferenceData> resources;
 	private List<ReleaseForm> releases;
 	private String projectLead;
@@ -93,9 +95,24 @@ public class ProjectForm implements Serializable{
 		this.projectLead = projectLead;
 	}
 	public List<ReferenceData> getResources() {
+		if(resources==null){
+			resources=new ArrayList<ReferenceData>();
+			for(String id:stringResources){
+				ReferenceData refData=new ReferenceData();
+				refData.setId(id);
+				resources.add(refData);
+			}
+			
+		}
 		return resources;
 	}
 	public void setResources(List<ReferenceData> resources) {
 		this.resources = resources;
+	}
+	public List<String> getStringResources() {
+		return stringResources;
+	}
+	public void setStringResources(List<String> stringResources) {
+		this.stringResources = stringResources;
 	}
 }

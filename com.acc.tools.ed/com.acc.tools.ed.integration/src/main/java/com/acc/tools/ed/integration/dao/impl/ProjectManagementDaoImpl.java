@@ -226,6 +226,7 @@ public class ProjectManagementDaoImpl extends AbstractEdbDao implements ProjectM
                             	final ReleaseForm release=releaseMap.get(rReleaseId);
                             	final ComponentForm component = new ComponentForm();
                             	component.setComponentId(rs.getInt("COMPNT_ID"));
+            			        component.setResourceName(rs.getString("EMP_ENTERPRISE_ID"));
                             	mapComponentData(rs,release,component);
                             } else {
                             	ReleaseForm release=new ReleaseForm(); 

@@ -1,5 +1,6 @@
 <%@taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c"%>
 <%@taglib uri="http://java.sun.com/jsp/jstl/core" prefix="jstl"%>
+<%@taglib uri="http://java.sun.com/jsp/jstl/functions" prefix="fn"%>
 
 <html>
 <head>
@@ -61,7 +62,7 @@
 												<th colspan="2" style="width: 150px;">Actions</th>
 											</tr>
 											<c:forEach var="tasks" items="${component.taskFormList}">
-												<c:if test="${tasks.taskId == 0}">
+												<c:if test="${fn:length(component.taskFormList) le 0}">
 													<tr>
 														<td colspan="9" style="font-weight: bold">No Task Found</td>
 													</tr>
@@ -92,7 +93,7 @@
 	</table>
 
 	<!-- Add Task Popup -->
-	<div id="addTaskPanel" title="Add Tasks">
+	<div id="addTaskPanel" title="Add Tasks" edbUser="${edbUser.employeeId}">
 		<fieldset>
 			<legend>Add Tasks</legend>
 			<div>

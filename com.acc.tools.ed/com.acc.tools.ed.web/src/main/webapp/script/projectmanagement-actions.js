@@ -68,7 +68,7 @@
 									$.each(response, function(outerKey, outerValue){
 									   if(outerKey=='resourceList'){
 										    $.each(outerValue, function(key, value){
-										       $('#resources').append('<option value="'+value.id+'">'+value.label+'</option>');
+										       $('#stringResources').append('<option value="'+value.id+'">'+value.label+'</option>');
 										    });
 									   }
 									   if(outerKey=='programList'){
