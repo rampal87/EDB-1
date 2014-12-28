@@ -4,76 +4,7 @@
 <html>
 <head>
 <script src="<%=request.getContextPath()%>/script/submenu-actions.js"></script>
-<script type="text/javascript">
-	$(function() {
-		$(".research tr:not(.accordion)").hide();
-		$(".research tr:first-child").show();
-		$(".research tr.accordion").click(function() {
-			$(this).nextAll("tr").fadeToggle();
-		});
-
-		$("#addTaskPanel").dialog({
-			autoOpen : false,
-			height : 450,
-			width : 650,
-			modal : true,
-			buttons : {
-				"Add Task" : function() {
-
-					var tName = $("#taskName").val();
-					var tDesc = $("#taskDesc").val();
-					var tHrs = $("#taskHrs").val();
-					var cId = $('#addTaskPanel').data('param');
-					var uId = $
-					{
-						edbUser.employeeId
-					}
-					;
-
-					$.ajax({
-						type : "POST",
-						url : "./addTask.do",
-						data : {
-							taskName : tName,
-							taskDesc : tDesc,
-							taskHrs : tHrs,
-							componentId : cId,
-							userId : uId
-						},
-						dataType : 'json',
-						beforeSend : function() {
-						},
-						success : function(response) {
-
-						},
-						error : function(data) {
-							$("#addTaskPanel").dialog("close");
-							$("#projectWorkMenu").click();
-
-						}
-					});
-				},
-				Cancel : function() {
-					$("#addTaskPanel").dialog("close");
-				},
-			},
-
-		});
-
-	});
-
-	function showPopup(id) {
-		$("#addTaskPanel").data('param', id.id).dialog('open');
-	}
-	function action(val) {
-		if (val == "approved")
-			$("#div1").hide();
-		else
-			$("#div1").show();
-	}
-</script>
-
-
+<script src="<%=request.getContextPath()%>/script/projectwork-actions.js"></script>
 </head>
 <body>
 
@@ -87,36 +18,36 @@
 		<c:forEach items="${projData}" var="project">
 			<c:forEach items="${project.releases}" var="release">		  
 				<tr>
-					<td style="width: 130px;">${release.releaseName}</td>
+					<td style="width: 130px;"><a href="#" class="releaseRow" id="${release.releaseId}">${release.releaseName}<div id="comptree${release.releaseId}" style="float:left; clear: both;width: 20px;margin-left: 5px;">[+]</div></a></td>
 					<td style="width: 130px;">${project.projectName}</td>
 					<td style="width: 130px;">${release.releaseStartDate}</td>
 					<td style="width: 130px;">${release.releaseEndDate}</td>
 				</tr>
-				<tr>
+				<tr id="release${release.releaseId}" class="componentData">
 					<td style="background-image: none; background-color: white;" colspan="4">
 						<table class="innertable2" style="width: 100%;">
 							<tr>
-								<th style="width: 75px;">Component Phase</th>
 								<th style="width: 145px;">Component Name</th>
+								<th style="width: 75px;">Component Phase</th>
 								<th style="width: 560px;">Functional Desc</th>
 								<th style="width: 80px;">Start Date</th>
 								<th style="width: 80px;">End Date</th>
 								<th colspan="2" style="width: 10px;">Actions</th>
 							</tr>
 							<c:forEach items="${release.components}" var="component">
-								<tr class="accordion">
-									<td>Requirements</td>
-									<td>${component.componentName}</td>
+								<tr>
+									<td><a href="#" id="${component.componentId}" class="componentRow"><div id="tasktree${component.componentId}" style="float:left; clear: both;width: 20px;margin-left: 5px;">[+]</div>${component.componentName}</a></td>
+									<td>Requirements</td>									
 									<td>${component.functionalDesc}</td>
 									<td>${component.startDate}</td>
 									<td>${component.endDate}</td>
 									<td>
-										<a href="#" id="${component.componentId}" onclick="showPopup(this);"><img
-											class="imgLink" alt="add comnponent" src="./resources/addnews.gif""></a>
+										<a href="#" class="addTaskPopup" id="${component.componentId}"><img
+											class="imgLink" alt="add comnponent" src="./resources/addnews.gif"></a>
 									</td>
 									<td>De</td>
 								</tr>
-								<tr>
+								<tr id="component${component.componentId}" class="taskData">
 									<td colspan="7" style="background-color: white;">
 										<table class="innertable1" style="width: 100%;">
 											<tr>
