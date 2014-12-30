@@ -12,20 +12,26 @@
 	<table class="ebdtable">
 		<tr>
 			<th style="width: 70px; font-weight: bold;">Release Name</th>
+			<th style="width: 70px; font-weight: bold;">Release Desc</th>
 			<th style="width: 70px; font-weight: bold;">Project Name</th>
 			<th style="width: 70px; font-weight: bold;">Release Start Date</th>
 			<th style="width: 70px; font-weight: bold;">Release End Date</th>
+			<th style="width: 70px; font-weight: bold;">Status</th>
+			<th style="width: 70px; font-weight: bold;">%Completed</th>
 		</tr>
 		<c:forEach items="${projData}" var="project">
 			<c:forEach items="${project.releases}" var="release">		  
 				<tr>
 					<td style="width: 130px;"><a href="#" class="releaseRow" id="${release.releaseId}">${release.releaseName}<div id="comptree${release.releaseId}" style="float:left; clear: both;width: 20px;margin-left: 5px;">[+]</div></a></td>
+					<td style="width: 130px;">${release.releaseDesc}</td>
 					<td style="width: 130px;">${project.projectName}</td>
 					<td style="width: 130px;">${release.releaseStartDate}</td>
 					<td style="width: 130px;">${release.releaseEndDate}</td>
+					<td style="width: 130px;">In Progress</td>
+					<td style="width: 130px;">50</td>
 				</tr>
 				<tr id="release${release.releaseId}" class="componentData">
-					<td style="background-image: none; background-color: white;" colspan="4">
+					<td style="background-image: none; background-color: white;" colspan="7">
 						<table class="innertable2" style="width: 100%;">
 							<tr>
 								<th style="width: 145px;">Component Name</th>
@@ -33,6 +39,8 @@
 								<th style="width: 560px;">Functional Desc</th>
 								<th style="width: 80px;">Start Date</th>
 								<th style="width: 80px;">End Date</th>
+								<th style="width: 80px;">Status</th>
+								<th style="width: 80px;">%Completed</th>
 								<th colspan="2" style="width: 10px;">Actions</th>
 							</tr>
 							<c:forEach items="${release.components}" var="component">
@@ -42,6 +50,8 @@
 									<td>${component.functionalDesc}</td>
 									<td>${component.startDate}</td>
 									<td>${component.endDate}</td>
+									<td>In Progress</td>
+									<td>60</td>
 									<td>
 										<a href="#" class="addTaskPopup" id="${component.componentId}"><img
 											class="imgLink" alt="add comnponent" src="./resources/addnews.gif"></a>
@@ -61,7 +71,7 @@
 												<th style="width: 220px;">Review Comments</th>
 												<th colspan="2" style="width: 150px;">Actions</th>
 											</tr>
-											<c:forEach var="tasks" items="${component.taskFormList}">
+											 <c:forEach var="tasks" items="${component.taskFormList}">
 												<c:if test="${fn:length(component.taskFormList) le 0}">
 													<tr>
 														<td colspan="9" style="font-weight: bold">No Task Found</td>
@@ -84,14 +94,14 @@
 										</table>
 									</td>
 								</tr>
-							</c:forEach>
-						</table>
-					</td>
+						</c:forEach>
+					</table>
+				</td>
 				</tr>
 			</c:forEach>
 		</c:forEach>
 	</table>
-
+	
 	<!-- Add Task Popup -->
 	<div id="addTaskPanel" title="Add Tasks" edbUser="${edbUser.employeeId}">
 		<fieldset>
@@ -130,7 +140,7 @@
 							<jstl:when
 								test="${(edbUser.role =='SUPERVISOR') || (edbUser.role =='Lead') || (edbUser.role =='MANAGER')}">
 								<th style="text-align: right;">Task Action</th>
-								<td><select name="taskAction" onchange="action(this.value)">
+								<td><select name="taskAction"  onchange="action(this.value)">
 										<option value=""></option>
 										<option value="approved">Approved</option>
 										<option value="rejected">Rejected</option>
@@ -147,9 +157,9 @@
 						</jstl:choose>
 					</tr>
 				</table>
-			</div>
+			</div>	
 		</fieldset>
-	</div>
+	</div>					
 </body>
 </html>
 
