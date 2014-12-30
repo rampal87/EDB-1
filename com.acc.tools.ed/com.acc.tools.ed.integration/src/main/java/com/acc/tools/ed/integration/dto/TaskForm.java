@@ -11,6 +11,9 @@ public class TaskForm implements Serializable {
 	private String taskName;
 	private String taskDesc;
 	private int taskHrs;
+	private String newTaskName;
+	private int existingTask;
+	private int newTaskId;
 
 	public int getTaskId() {
 		return taskId;
@@ -52,4 +55,28 @@ public class TaskForm implements Serializable {
 		this.taskHrs = taskHrs;
 	}
 
+	public String getNewTaskName() {
+		return newTaskName;
+	}
+
+	public void setNewTaskName(String newTaskName) {
+		this.newTaskName = newTaskName;
+	}
+
+	public int getExistingTask() {
+		return existingTask;
+	}
+
+	public void setExistingTask(int existingTask) {
+		this.existingTask = existingTask;
+	}
+
+	public int getNewTaskId() {
+		return newTaskId;
+	}
+
+	public void setNewTaskId(int newTaskId) {
+		this.newTaskId = newTaskId;
+	}
+	
 }
