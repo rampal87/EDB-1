@@ -80,6 +80,9 @@ public class AbstractEdbDao {
 		}
 		release.setReleaseId(releaseId);
 		release.setReleaseName(rs.getString("MLSTN_NAME"));
+		release.setReleaseDesc(rs.getString("MLSTN_DESC"));
+		release.setReleaseStartDate(rs.getString("MLSTN_ST_DT"));
+		release.setReleaseEndDate(rs.getString("MLSTN_END_DT"));
 		project.getReleases().add(release);
 	}
 
