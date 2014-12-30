@@ -16,6 +16,7 @@ public class ReleaseForm implements Serializable{
 	private String releaseArtifacts;
 	private String releaseStartDate;
 	private String releaseEndDate;
+	private String releaseDesc;
 	private List<ComponentForm> components;
 	
 	public String getProjName() {
@@ -48,6 +49,7 @@ public class ReleaseForm implements Serializable{
 	public void setReleaseEndDate(String releaseEndDate) {
 		this.releaseEndDate = releaseEndDate;
 	}
+	
 	public List<ComponentForm> getComponents() {
 		return components;
 	}
@@ -65,6 +67,12 @@ public class ReleaseForm implements Serializable{
 	}
 	public void setReleaseId(int releaseId) {
 		this.releaseId = releaseId;
+	}
+	public String getReleaseDesc() {
+		return releaseDesc;
+	}
+	public void setReleaseDesc(String releaseDesc) {
+		this.releaseDesc = releaseDesc;
 	}
 	
 
