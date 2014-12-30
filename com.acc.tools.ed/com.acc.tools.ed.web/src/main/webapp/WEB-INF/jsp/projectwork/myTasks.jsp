@@ -72,12 +72,8 @@
 												<th colspan="2" style="width: 150px;">Actions</th>
 											</tr>
 											 <c:forEach var="tasks" items="${component.taskFormList}">
-												<c:if test="${fn:length(component.taskFormList) le 0}">
-													<tr>
-														<td colspan="9" style="font-weight: bold">No Task Found</td>
-													</tr>
-												</c:if>
-												<c:if test="${tasks.taskId > 0}">
+											 <c:choose>
+        										<c:when test="${fn:length(component.taskFormList) gt 0}">
 													<tr>
 														<td>${tasks.taskName}</td>
 														<td>${tasks.taskDesc}</td>
@@ -89,7 +85,13 @@
 														<td></td>
 														<td></td>
 													</tr>
-												</c:if>
+													</c:when>
+													<c:otherwise>
+													<tr>
+														<td colspan="9" style="font-weight: bold;text-align: center;">No Task Found</td>
+													</tr>
+													</c:otherwise>
+													</c:choose>
 											</c:forEach>
 										</table>
 									</td>
