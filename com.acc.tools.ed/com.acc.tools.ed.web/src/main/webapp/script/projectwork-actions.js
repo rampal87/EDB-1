@@ -73,10 +73,17 @@ $(document).ready(
 		});
 });
 
+$("#taskNameSelect").unbind("change").on("change",function(){
+	if($("#taskNameSelect").val()=='-1'){
+		$("#newTask").show();
+	} else {
+		$("#newTask").hide();
+	}
+}); 
 
 function action(val) {
-	if (val == "approved")
-		$("#div1").hide();
+	if (val == "rejected")
+		$("#div1").show(); 
 	else
-		$("#div1").show();
+		$("#div1").hide();
 }
