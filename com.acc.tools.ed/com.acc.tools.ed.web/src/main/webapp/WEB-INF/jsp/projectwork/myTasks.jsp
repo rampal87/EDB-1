@@ -72,8 +72,12 @@
 												<th colspan="2" style="width: 150px;">Actions</th>
 											</tr>
 											 <c:forEach var="tasks" items="${component.taskFormList}">
-											 <c:choose>
-        										<c:when test="${fn:length(component.taskFormList) gt 0}">
+												<c:if test="${fn:length(component.taskFormList) le 0}">
+													<tr>
+														<td colspan="9" style="font-weight: bold">No Task Found</td>
+													</tr>
+												</c:if>
+												<c:if test="${tasks.taskId > 0}">
 													<tr>
 														<td>${tasks.taskName}</td>
 														<td>${tasks.taskDesc}</td>
@@ -85,13 +89,7 @@
 														<td></td>
 														<td></td>
 													</tr>
-													</c:when>
-													<c:otherwise>
-													<tr>
-														<td colspan="9" style="font-weight: bold;text-align: center;">No Task Found</td>
-													</tr>
-													</c:otherwise>
-													</c:choose>
+												</c:if>
 											</c:forEach>
 										</table>
 									</td>
@@ -111,38 +109,24 @@
 			<div>
 				<table class="addTask">
 					<tr>
-						<th style="text-align: right;">Task Type</th> 
-						<td><select name="taskType"> 
-								<option value=""></option>
-								<option value="as">Assigned</option>
-								<option value="ad">Adhoc</option>
-								<option value="va">Value Added</option>
-						</select></td>
-					</tr>
-					<tr>
-					<th style="text-align: right;">Task Name</th>
-						<td>
-						<select id="taskNameSelect" >
-								<option value=""></option>
-								<option value="0">-- Select --</option>
-								<option value="-1">Create New Task</option>
-						</select>
-						</td>
-								<td>
-								<div id="newTask" style="display: none;width:135px;">
-									<input type="text" id="taskName" name="taskName" value=""/>
-									<input type="hidden" value="">							
-								</div>
-								</td>
-					</tr>
-					<tr>
+						<th style="text-align: right; height: 25px;">Task Name</th>
+						<td><input type="text" id="taskName" name="taskName" value="" /></td>
 						<th style="text-align: right;">Description</th>
 						<td><input type="text" id="taskDesc" name="taskDesc" value="" /></td>
-						<th style="text-align: right;width:100px">Task Hours</th>
-						<td><input type="text" id="taskHrs"
+					</tr>
+					<tr>
+						<th style="text-align: right;">Task Hours</th>
+						<td colspan="2"><input type="text" id="taskHrs"
 							name="taskHrs" value="" />&nbsp;&nbsp; Hrs</td>
 					</tr>
-					<tr>						
+					<tr>
+						<th style="text-align: right;">Task Type</th>
+						<td><select name="taskType">
+								<option value=""></option>
+								<option value="bo">Business Operator</option>
+								<option value="vc">Value Creator</option>
+								<option value="pd">People Developer</option>
+						</select></td>
 						<th style="text-align: right;">Task Status</th>
 						<td><select name="taskStatus">
 								<option value=""></option>
