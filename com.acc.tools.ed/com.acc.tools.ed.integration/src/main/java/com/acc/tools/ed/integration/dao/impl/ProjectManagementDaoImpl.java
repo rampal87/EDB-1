@@ -198,8 +198,8 @@ public class ProjectManagementDaoImpl extends AbstractEdbDao implements ProjectM
         ProjectForm projectPlanData = new ProjectForm();
         final StringBuffer projPlanQuery =new StringBuffer();
         final Map<Integer,ReleaseForm> releaseMap=new HashMap<Integer,ReleaseForm>();
-        projPlanQuery.append("SELECT P.*, M.*, C.*, E.* FROM ((EDB_PROJECT P INNER JOIN EDB_MILESTONE M on P.PROJ_ID = M.PROJ_ID) ");
-        projPlanQuery.append("LEFT JOIN EDB_PROJ_COMPNT C on M.MLSTN_ID = C.MLSTN_ID) LEFT JOIN EDB_MSTR_EMP_DTLS  E on C.EMP_ID = E.EMP_ID ");
+        projPlanQuery.append("SELECT P.*, M.*, C.* FROM ((EDB_PROJECT P INNER JOIN EDB_MILESTONE M on P.PROJ_ID = M.PROJ_ID) ");
+        projPlanQuery.append("LEFT JOIN EDB_PROJ_COMPNT C on M.MLSTN_ID = C.MLSTN_ID)");
         projPlanQuery.append("WHERE M.MLSTN_ID = "+releaseId+" AND P.PROJ_ID = "+projectId+"");
         
         log.debug("RELEASE QUERY :[{}]",projPlanQuery);
@@ -226,7 +226,7 @@ public class ProjectManagementDaoImpl extends AbstractEdbDao implements ProjectM
                             	final ReleaseForm release=releaseMap.get(rReleaseId);
                             	final ComponentForm component = new ComponentForm();
                             	component.setComponentId(rs.getInt("COMPNT_ID"));
-            			        component.setResourceName(rs.getString("EMP_ENTERPRISE_ID"));
+            			       // component.setResourceName(rs.getString("EMP_ENTERPRISE_ID"));
                             	mapComponentData(rs,release,component);
                             } else {
                             	ReleaseForm release=new ReleaseForm(); 
@@ -500,14 +500,13 @@ public List<ReferenceData> editRelease(String releaseId,String editRelArti,Strin
 		 
 		try{
 					
-				final String employeeTable="insert into EDB_PROJ_COMPNT(COMPNT_NAME,COMPNT_FUNC_DESC,COMPNT_ST_DT,COMPNT_END_DT,MLSTN_ID,EMP_ID) values (?,?,?,?,?,?)";
+				final String employeeTable="insert into EDB_PROJ_COMPNT(COMPNT_NAME,COMPNT_FUNC_DESC,COMPNT_ST_DT,COMPNT_END_DT,MLSTN_ID) values (?,?,?,?,?)";
 				PreparedStatement  preparedStatement = getConnection().prepareStatement(employeeTable);
 				preparedStatement.setString(1, componentName);
 				preparedStatement.setString(2, functionalDesc);
 				preparedStatement.setString(3, compStartDate);
 				preparedStatement.setString(4, compEndDate);
 				preparedStatement.setInt(5, releaseId);
-				preparedStatement.setInt(6, Integer.valueOf(compResource));
 				preparedStatement.executeUpdate();
 				preparedStatement.close();
 				
