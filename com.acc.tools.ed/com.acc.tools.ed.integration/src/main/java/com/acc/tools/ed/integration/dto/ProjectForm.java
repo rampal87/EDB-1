@@ -51,13 +51,6 @@ public class ProjectForm implements Serializable{
 	public void setStartDate(DateTime startDate) {
 		this.startDate = startDate;
 	}
-	
-	public List<String> getPhases() {
-		return phases;
-	}
-	public void setPhases(List<String> phases) {
-		this.phases = phases;
-	}
 	public String getProjectDescription() {
 		return projectDescription;
 	}
@@ -114,5 +107,11 @@ public class ProjectForm implements Serializable{
 	}
 	public void setStringResources(List<String> stringResources) {
 		this.stringResources = stringResources;
+	}
+	public List<String> getPhases() {
+		return phases;
+	}
+	public void setPhases(List<String> phases) {
+		this.phases = phases;
 	}
 }

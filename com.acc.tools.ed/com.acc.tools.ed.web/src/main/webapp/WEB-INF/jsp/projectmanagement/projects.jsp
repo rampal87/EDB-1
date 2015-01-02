@@ -44,7 +44,7 @@
 						<tr>
 							<th style="text-align: right;">Phase</th>
 							<td  colspan="3">
-								<form:checkboxes items="${phaseList}" path="phases" />
+								<form:checkboxes items="${phaseList}" path="phases" itemLabel="label" itemValue="id" />
 							</td>
 						</tr>
 						<tr>

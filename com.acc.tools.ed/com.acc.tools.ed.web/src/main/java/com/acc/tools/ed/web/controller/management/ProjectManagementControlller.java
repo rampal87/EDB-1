@@ -199,9 +199,10 @@ public class ProjectManagementControlller extends AbstractEdbBaseController {
 			@RequestParam("compEndDate") String compEndDate,
 			@RequestParam("compResource") String compResource,
 			@RequestParam("releaseId") Integer releaseId,
+			@RequestParam("phaseId") Integer phaseId,
 			Model model) {
-		LOG.debug("addComponent :[{}]",projectId+","+componentName+","+functionalDesc+","+compStartDate+","+compEndDate+","+compResource+","+releaseId);
-		ProjectForm planData = getProjectManagementService().addComponent(projectId,componentName,functionalDesc,compStartDate,compEndDate,compResource,releaseId);
+		LOG.debug("addComponent :[{},{},{},{},{},{},{},{}]",new Object[]{projectId,componentName,functionalDesc,compStartDate,compEndDate,compResource,releaseId,phaseId});
+		ProjectForm planData = getProjectManagementService().addComponent(projectId,phaseId,componentName,functionalDesc,compStartDate,compEndDate,compResource,releaseId);
 		return planData.getReleases().get(0).getComponents();		
 	}
 	

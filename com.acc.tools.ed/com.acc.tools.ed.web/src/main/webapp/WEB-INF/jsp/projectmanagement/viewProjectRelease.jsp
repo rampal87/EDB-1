@@ -200,20 +200,32 @@
 		
 		
 		
-		$("#addCompnt").click(function() {
+		$("#addNewCompnt").unbind("click").on("click", function() {
 			
-			var lComponentName = $("#componentName").val();
-			var lFunctionalDesc= $("#functionalDesc").val();
+  			var lComponentName = $("#componentName").val();
+ 			if($("#newComponent").is(":visible") && lComponentName == "0") {
+				lComponentName = $("#newComponent").val();
+			} 
+ 			var lFunctionalDesc= $("#functionalDesc").val();
 			var lCompStartDate = $("#compStartDate").val();
 			var lCompEndDate = $("#compEndDate").val();
 			var lCompResource = $("#compResourceList option:selected").val();
+			alert(lCompResource);
 			var lProjectId = $("#projects").val();
 			var lselectedRelease=$("#releases").val();
-			
+			var lphaseId=$("#componentPhase").val();
+			alert(lphaseId);
 			$.ajax({
 				type : "POST",
 				url : "./addComponent.do",
-				data : {componentName:lComponentName, functionalDesc:lFunctionalDesc, compStartDate:lCompStartDate, compEndDate:lCompEndDate, compResource:lCompResource, projectId:lProjectId, releaseId:lselectedRelease},												
+				data : {componentName:lComponentName,
+						functionalDesc:lFunctionalDesc,
+						compStartDate:lCompStartDate,
+						compEndDate:lCompEndDate,
+						compResource:lCompResource,
+						projectId:lProjectId,
+						releaseId:lselectedRelease,
+						phaseId:lphaseId},												
 				dataType : 'json',
 				success : function(response) {
 					var tableResp = '';
@@ -241,7 +253,16 @@
 					$("#mainContainer").html("Application error! Please call help desk. Error:"+data.status);
 				}
 			});	  
+		 });
+		
+		$("#componentName").unbind("change").on("change",function(){
+			if($("#componentName").val()=='0'){
+				$("#newComp").css("display", "inline");
+			} else {
+				$("#newComp").css("display", "none");
+			}
 		});
+
 	 });
 	 
 	 function setCharAt(str,index,chr) {
@@ -260,7 +281,27 @@
 		<td style="font-weight: bold;">Description</td>
 		<td style="background-color: #eaead9;width: 220px; overflow: auto;"><div id="prjDesc">${viewProjRelDetails.projectDescription}</div></td>
 		<td style="font-weight: bold;">Phase</td>
-		<td style="background-color: #eaead9;width: 75px; overflow: auto;">${viewProjRelDetails.phases}</td>
+		<td style="background-color: #eaead9;width: 75px; overflow: auto;">
+			<c:forEach var = "phase" items="${viewProjRelDetails.phases}">
+						<c:choose>
+							<c:when test="${phase =='1'}">
+								Analysis<br>
+							</c:when>
+							<c:when test="${phase =='2'}">
+								Design<br>
+							</c:when>
+							<c:when test="${phase =='3'}">
+								Build<br>
+							</c:when>
+							<c:when test="${phase =='4'}">
+								Test<br>
+							</c:when>
+							<c:otherwise>
+								Support
+							</c:otherwise>
+						</c:choose>
+			</c:forEach>
+		</td>
 		<td style="font-weight: bold;">Start Date</td>
 		<td style="background-color: #eaead9;"><div id="prjStartDate"><joda:format
 				value="${viewProjRelDetails.startDate}" pattern="MM/dd/yyyy" /></div></td>
@@ -305,17 +346,42 @@
 		<th colspan="2" style="width: 25px;"></th>
 	</tr>
 	<tr style="width:100%">
-		<td><select name="componentName">
-		<c:forEach var="component" items="${viewProjRelDetails.releases[0].components}">
-		<option value="" id="compName">${component.componentName}</option>
-		</c:forEach>
-		<option value="1">Create New Component</option>
-		</select></td>
-		<td><select name="componentPhase">
-		<c:forEach var = "phase" items="${viewProjRelDetails.phases}">
-		<option value="${phase}">${phase}</option>
-		</c:forEach>
-		</select></td>
+		<td>
+			<select name="componentName" id = "componentName">
+				<option value="-1">---Select Component---</option>
+				<c:forEach var="component" items="${viewProjRelDetails.releases[0].components}">
+				    <c:if test="${not empty component.componentName}">
+						<option value="${component.componentName}" id="compName">${component.componentName}</option>
+					</c:if>
+				</c:forEach>
+				<option value="0">Create New Component</option>
+			</select>
+			<div id="newComp" class="textbox" style="display:none"><input name="newComponent" id="newComponent" type="text"></div>
+		</td>
+		<td>
+			<select name="componentPhase" id="componentPhase">
+				<option value="0">Select Phase</option>
+				<c:forEach var = "phase" items="${viewProjRelDetails.phases}">
+					<c:choose>
+						<c:when test="${phase =='1'}">
+							<option value="1">Analysis</option>
+						</c:when>
+						<c:when test="${phase =='2'}">
+							<option value="2">Design</option>
+						</c:when>
+						<c:when test="${phase =='3'}">
+							<option value="3">Build</option>
+						</c:when>
+						<c:when test="${phase =='4'}">
+							<option value="4">Test</option>
+						</c:when>
+						<c:otherwise>
+							<option value="5">Support</option>
+						</c:otherwise>
+					</c:choose>
+				</c:forEach>
+			</select>
+		</td>
 		<td><textarea id="functionalDesc" style="overflow: auto; resize: none" rows="6"
 				cols="32" class="textarea"></textarea></td>
 		<td><input type="text" id ="compStartDate" name="compStartDate" class="textbox" /></td>
@@ -323,11 +389,12 @@
 		<td><input type="text" id="componentStatus" name="componentStatus" class="textbox" /></td>
 		<td><input type="text" id="percent" name="percent" class="textbox" /></td>
 		<td><select id = "compResourceList" name="compResourceList" class="textbox">
+			<option value="0">Select Resource</option>		
 			<c:forEach items="${viewProjRelDetails.resources}" var="resource">
 			        <option value="${resource.id}" <c:if test="${resource.selected==true}">selected</c:if> >${resource.label}</option>
 			 </c:forEach>
 		</select></td>
-		<td colspan="2"><a href="#" id="addCompnt"><img class="imgLink"
+		<td colspan="2"><a href="#" id="addNewCompnt"><img class="imgLink"
 				alt="add comnponent" src="./resources/addnews.gif" width="20px;"></a></td>		
 	</tr>
 </table>

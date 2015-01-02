@@ -29,9 +29,9 @@ public List<ProjectForm> getMyTasks(String userId) {
 
 		try{
 	        final StringBuffer componentTable =new StringBuffer();
-	        componentTable.append("SELECT P.*, M.*, C.*, T.* FROM ((EDB_PROJECT P INNER JOIN EDB_MILESTONE M on P.PROJ_ID = M.PROJ_ID) ");
-	        componentTable.append("LEFT JOIN EDB_PROJ_COMPNT C on M.MLSTN_ID = C.MLSTN_ID) LEFT JOIN EDB_TASK_MASTER T ON C.COMPNT_ID = T.COMPNT_ID");
-	        componentTable.append(" WHERE C.EMP_ID = "+userId);
+	        componentTable.append("SELECT C.*, M.*, T.*, P.PROJ_NAME, CE.EMP_ID FROM ((EDB_PROJECT AS P LEFT JOIN EDB_MILESTONE AS M ON P.PROJ_ID = M.PROJ_ID) ");
+	        componentTable.append("LEFT JOIN (EDB_PROJ_COMPNT AS C LEFT JOIN EDB_TASK_MASTER AS T ON C.COMPNT_ID = T.COMPNT_ID) ON M.MLSTN_ID = C.MLSTN_ID) ");
+	        componentTable.append("LEFT JOIN EDB_COMPNT_EMP AS CE ON CE.COMPNT_ID=C.COMPNT_ID WHERE CE.EMP_ID="+userId);
 
 			
 			Statement stmt=getConnection().createStatement();

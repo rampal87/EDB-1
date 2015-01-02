@@ -40,8 +40,6 @@ public class AbstractEdbDao {
 	public void mapComponentData(ResultSet rs,ReleaseForm release,ComponentForm component) throws SQLException, ParseException{
         component.setComponentName(rs.getString("COMPNT_NAME"));
         component.setFunctionalDesc(rs.getString("COMPNT_FUNC_DESC"));
-        component.setResourceId(rs.getInt("EMP_ID"));
-                
         SimpleDateFormat sdf2 = new SimpleDateFormat("yyyy-MM-dd hh:mm:ss");
         String cStDt = rs.getString("COMPNT_ST_DT");
         if(cStDt != null) {
