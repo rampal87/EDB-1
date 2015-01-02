@@ -16,7 +16,7 @@
 		<!-- main container -->
 		<tr>
 			<td>
-				<div id="tabs" style="width: 100%; padding-right: 0px;">
+				<div id="tabs" style="width:100%; padding-right: 0px;">
 					<!-- MAIN MENU -->
 					<%@ include file="/WEB-INF/jsp/includes/menu.jsp"%>
 
