@@ -124,16 +124,32 @@ public abstract class AbstractEdbBaseController {
 	 * @return
 	 */
 
-	@ModelAttribute("phaseList")
-	public List<String> getPhaseList()
-	{
-		List<String> phaseList=new ArrayList<String>();
 
-		phaseList.add("Analysis");
-		phaseList.add("Design");
-		phaseList.add("Build");
-		phaseList.add("Test");
-		phaseList.add("Support");
+	@ModelAttribute("phaseList")
+	public List<ReferenceData> getPhaseList()
+	{
+		List<ReferenceData> phaseList=new ArrayList<ReferenceData>();
+		
+		ReferenceData analysis=new ReferenceData();
+		analysis.setId("1");
+		analysis.setLabel("Analysis");
+		phaseList.add(analysis);
+		ReferenceData design=new ReferenceData();
+		design.setId("2");
+		design.setLabel("Design");
+		phaseList.add(design);
+		ReferenceData build=new ReferenceData();
+		build.setId("3");
+		build.setLabel("Build");
+		phaseList.add(build);
+		ReferenceData test=new ReferenceData();
+		test.setId("4");
+		test.setLabel("Test");
+		phaseList.add(test);
+		ReferenceData support=new ReferenceData();
+		support.setId("5");
+		support.setLabel("Support");
+		phaseList.add(support);
 		
 		return phaseList;
 	}
