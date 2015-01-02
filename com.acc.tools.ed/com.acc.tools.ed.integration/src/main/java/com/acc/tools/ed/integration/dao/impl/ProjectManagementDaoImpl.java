@@ -512,16 +512,47 @@ public List<ReferenceData> editRelease(String releaseId,String editRelArti,Strin
 				preparedStatement.executeUpdate();
 				preparedStatement.close();
 				
+				insertCompEmp(phaseId, componentName,compResource);
+				
 				projectData = getProjectPlanDetails(releaseId, projectId);
 				
 				
 			}catch(Exception e)	{
-				log.error("Error inserting release table :",e);
+				log.error("Error inserting EDB_PROJ_COMPNT table :",e);
 				return null;
 			}
 		return projectData;
 	}
 	
+	private void insertCompEmp(Integer phaseId, String componentName, String compResource) {
+		
+		try{
+			//Employee table
+			final StringBuffer compEmpTable=new StringBuffer();
+			Integer compId=0;
+			compEmpTable.append("SELECT COMPNT_ID FROM EDB_PROJ_COMPNT WHERE COMPNT_NAME='");
+			compEmpTable.append(componentName);
+			compEmpTable.append("' AND COMPNT_PHASE=");
+			compEmpTable.append(phaseId);
+			PreparedStatement  preparedStatement = getConnection().prepareStatement(compEmpTable.toString());
+			log.debug(compEmpTable.toString());
+			ResultSet r1 = preparedStatement.executeQuery();
+			while(r1.next()){
+				compId=r1.getInt("COMPNT_ID");
+			}
+			preparedStatement.close();
+			final String insertCompEmp="insert into EDB_COMPNT_EMP(COMPNT_ID,EMP_ID) values (?,?)";
+			PreparedStatement  preparedStatement1 = getConnection().prepareStatement(insertCompEmp);
+			preparedStatement1.setInt(1, compId);
+			preparedStatement1.setInt(2, Integer.parseInt(compResource));
+			preparedStatement1.executeUpdate();
+			preparedStatement1.close();
+			
+		}catch(Exception e)	{
+			log.error("Error Inserting  EDB_COMPNT_EMP:",e);
+		}
+	}
+
 	public List<MasterEmployeeDetails> getAllEmployees(){
 		List<MasterEmployeeDetails> empList = new ArrayList<MasterEmployeeDetails>();
 		try{
