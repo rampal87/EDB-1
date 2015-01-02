@@ -4,14 +4,15 @@
 	<script>
 	 $(document).ready(function () {
 		 
-		 $( "#compEndDate" ).datepicker();
-		 $( "#compStartDate" ).datepicker();
+		 $( "#compEndDate" ).datepicker(); 
+		 $( "#compStartDate" ).datepicker(); 
 			
 	 
 		 $( "#editRelStartDate" ).datepicker({
 			 
 			 beforeShow: function (input, inst) {
-				 var dt2 = $('#editRelStartDate').datepicker('getDate');				 
+				 var dt2 = $('#editRelStartDate').datepicker('getDate');
+				 alert(dt2);
 	             $('#editRelStartDate').datepicker('option', 'minDate', dt2);
 	         }
 		 });
@@ -291,21 +292,36 @@
 		<td><a href="#"  id="delRel"><img alt="delete project" src="./resources/delete.gif"></a></td>
 	</tr>
 </table>
-<table class="ebdtable" style="margin-top: 25px;">
-	<tr>
+<table class="ebdtable" style="width:100%;margin-top: 25px;">
+	<tr style="width:100%">
 		<th style="width: 160px;">Component Name</th>
+		<th style="width: 160px;">Component Phase</th>
 		<th style="width: 295px;">Functional Desc</th>
 		<th style="width: 80px;">Start Date</th>
 		<th style="width: 80px;">End Date</th>
+		<th style="width: 80px;">Status</th>
+		<th style="width: 80px;">% Completed</th>
 		<th style="width: 150px;">Resource</th>
 		<th colspan="2" style="width: 25px;"></th>
 	</tr>
-	<tr>
-		<td><input type="text" id="componentName" name="componentName" class="textbox" /></td>
+	<tr style="width:100%">
+		<td><select name="componentName">
+		<c:forEach var="component" items="${viewProjRelDetails.releases[0].components}">
+		<option value="" id="compName">${component.componentName}</option>
+		</c:forEach>
+		<option value="1">Create New Component</option>
+		</select></td>
+		<td><select name="componentPhase">
+		<c:forEach var = "phase" items="${viewProjRelDetails.phases}">
+		<option value="${phase}">${phase}</option>
+		</c:forEach>
+		</select></td>
 		<td><textarea id="functionalDesc" style="overflow: auto; resize: none" rows="6"
 				cols="32" class="textarea"></textarea></td>
 		<td><input type="text" id ="compStartDate" name="compStartDate" class="textbox" /></td>
 		<td><input type="text" id="compEndDate" name="compEndDate" class="textbox" /></td>
+		<td><input type="text" id="componentStatus" name="componentStatus" class="textbox" /></td>
+		<td><input type="text" id="percent" name="percent" class="textbox" /></td>
 		<td><select id = "compResourceList" name="compResourceList" class="textbox">
 			<c:forEach items="${viewProjRelDetails.resources}" var="resource">
 			        <option value="${resource.id}" <c:if test="${resource.selected==true}">selected</c:if> >${resource.label}</option>
