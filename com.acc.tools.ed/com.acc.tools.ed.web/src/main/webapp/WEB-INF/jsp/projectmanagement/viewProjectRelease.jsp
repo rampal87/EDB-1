@@ -343,6 +343,7 @@
 		<th style="width: 80px;">Status</th>
 		<th style="width: 80px;">% Completed</th>
 		<th style="width: 150px;">Resource</th>
+		<th style="width: 295px;">Work Description</th>
 		<th colspan="2" style="width: 25px;"></th>
 	</tr>
 	<tr style="width:100%">
@@ -394,13 +395,15 @@
 			        <option value="${resource.id}" <c:if test="${resource.selected==true}">selected</c:if> >${resource.label}</option>
 			 </c:forEach>
 		</select></td>
+		<td><textarea id="workDesc" style="overflow: auto; resize: none" rows="6"
+				cols="32" class="textarea"></textarea></td>
 		<td colspan="2"><a href="#" id="addNewCompnt"><img class="imgLink"
 				alt="add comnponent" src="./resources/addnews.gif" width="20px;"></a></td>		
 	</tr>
 </table>
 <table class="innertable2" id="componentTable"
 	style="border-width: 1px; border-style: solid; border-color: #999999;">
-	<c:choose>
+	<c:choose>	
         <c:when test="${empty viewProjRelDetails.releases[0].components}">
 			<div id="noComponetMsg" class="boxmsg border-boxmsg" style="width: 780px;color: red;">
 			    <p>No <u>Components/Tasks</u> , <u>Change Requests(CR)</u> or <u>Defects</u> are configured for Project :<u>${viewProjRelDetails.projectName}</u> and Release :<u>${viewProjRelDetails.releases[0].releaseName}</u> .<br>
