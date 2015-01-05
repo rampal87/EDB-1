@@ -124,7 +124,6 @@ public abstract class AbstractEdbBaseController {
 	 * @return
 	 */
 
-
 	@ModelAttribute("phaseList")
 	public List<ReferenceData> getPhaseList()
 	{
