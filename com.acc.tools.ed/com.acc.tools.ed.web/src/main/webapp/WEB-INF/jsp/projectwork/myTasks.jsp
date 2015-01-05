@@ -1,6 +1,7 @@
 <%@taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c"%>
 <%@taglib uri="http://java.sun.com/jsp/jstl/core" prefix="jstl"%>
 <%@taglib uri="http://java.sun.com/jsp/jstl/functions" prefix="fn"%>
+<%@taglib uri="http://www.springframework.org/tags/form" prefix="form"%>
 
 <html>
 <head>
@@ -106,13 +107,35 @@
 	
 	<!-- Add Task Popup -->
 	<div id="addTaskPanel" title="Add Tasks" edbUser="${edbUser.employeeId}">
+	<form:form commandName="addTaskForm" action="addTask.do">
 		<fieldset>
 			<legend>Add Tasks</legend>
 			<div>
 				<table class="addTask">
 					<tr>
-						<th style="text-align: right; height: 25px;">Task Name</th>
-						<td><input type="text" id="taskName" name="taskName" value="" /></td>
+						<th style="text-align: right;">Task Type</th>
+						<td><select name="taskType">
+								<option value=""></option>
+								<option value="AG">Assigned</option>
+								<option value="AD">Adhoc</option>
+								<option value="VA">Value Added</option>
+						</select></td>
+					</tr>
+					<tr>
+					<th style="text-align: right;">Task Name</th>
+					<td id="taskTD" colspan="3">
+					<form:select path="existingTask"  style="width:135px;" multiple="false">
+									<form:option value="0" label="--- Select ---" />
+    								<form:option value="-1" label="Create New Task" />
+								</form:select>
+					
+					<div id="newTask" style="display: none;">
+							<form:input type="text" path="newTaskName" class="textbox" />
+							<form:hidden path="newTaskId"/>								
+					</div>	
+					</td>							
+					</tr>
+					<tr>
 						<th style="text-align: right;">Description</th>
 						<td><input type="text" id="taskDesc" name="taskDesc" value="" /></td>
 					</tr>
@@ -122,13 +145,6 @@
 							name="taskHrs" value="" />&nbsp;&nbsp; Hrs</td>
 					</tr>
 					<tr>
-						<th style="text-align: right;">Task Type</th>
-						<td><select name="taskType">
-								<option value=""></option>
-								<option value="bo">Business Operator</option>
-								<option value="vc">Value Creator</option>
-								<option value="pd">People Developer</option>
-						</select></td>
 						<th style="text-align: right;">Task Status</th>
 						<td><select name="taskStatus">
 								<option value=""></option>
@@ -161,6 +177,7 @@
 				</table>
 			</div>	
 		</fieldset>
+		</form:form>
 	</div>					
 </body>
 </html>

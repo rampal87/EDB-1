@@ -7,6 +7,7 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
+import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.SessionAttributes;
@@ -43,6 +44,7 @@ public class ProjectWorkController extends AbstractEdbBaseController {
 				}
 			}
 		}
+		model.addAttribute("addTaskForm", new TaskForm());
 		model.addAttribute("projData", projData);
 	
 		return "/projectwork/index";
@@ -63,6 +65,7 @@ public class ProjectWorkController extends AbstractEdbBaseController {
 				}
 			}
 		}
+		model.addAttribute("addTaskForm", new TaskForm());
 		model.addAttribute("projData", projData);
 		return "/projectwork/myTasks";
 	}
@@ -73,14 +76,13 @@ public class ProjectWorkController extends AbstractEdbBaseController {
 	}
 	
 	@RequestMapping(value = "/addTask.do")
-	public List<ComponentForm> addTask(@RequestParam("taskName")String taskName, @RequestParam("taskDesc")String taskDesc,
+	public List<ComponentForm> addTask(@ModelAttribute("addTaskForm") TaskForm addTaskForm,@RequestParam("taskName")String taskName, @RequestParam("taskDesc")String taskDesc,
 			@RequestParam("taskHrs")long taskHrs,@RequestParam("componentId")int componentId,@RequestParam("userId")String userId, Model model) {
 		
 		LOG.debug("Project Name:[{--}] addTask:[{}]",taskName+","+taskDesc+","+taskHrs+","+componentId+","+userId);
 		
 		List<ComponentForm> list = projectWorkService.addTasks(taskName, taskDesc, taskHrs,componentId,userId);
 		model.addAttribute("componentList", list);
-		
 		return list;
 	}
 

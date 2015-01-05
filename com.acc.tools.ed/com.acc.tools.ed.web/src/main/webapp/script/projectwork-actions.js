@@ -73,6 +73,13 @@ $(document).ready(
 		});
 });
 
+$("#existingTask").unbind("change").on("change",function(){
+	if($("#existingTask").val()=='-1'){
+		$("#newTask").css("display", "inline");
+	} else {
+		$("#newTask").css("display", "none");
+	}
+});
 
 function action(val) {
 	if (val == "approved")
