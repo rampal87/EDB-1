@@ -198,9 +198,10 @@ public class ProjectManagementDaoImpl extends AbstractEdbDao implements ProjectM
         ProjectForm projectPlanData = new ProjectForm();
         final StringBuffer projPlanQuery =new StringBuffer();
         final Map<Integer,ReleaseForm> releaseMap=new HashMap<Integer,ReleaseForm>();
-        projPlanQuery.append("SELECT P.*, M.*, C.*, E.* FROM ((EDB_PROJECT P INNER JOIN EDB_MILESTONE M on P.PROJ_ID = M.PROJ_ID) ");
-        projPlanQuery.append("LEFT JOIN EDB_PROJ_COMPNT C on M.MLSTN_ID = C.MLSTN_ID) LEFT JOIN EDB_MSTR_EMP_DTLS  E on C.EMP_ID = E.EMP_ID ");
-        projPlanQuery.append("WHERE M.MLSTN_ID = "+releaseId+" AND P.PROJ_ID = "+projectId+"");
+        projPlanQuery.append("SELECT P.*, M.*, C.*,CE.*, E.EMP_ENTERPRISE_ID FROM (((EDB_PROJECT AS P LEFT JOIN EDB_MILESTONE AS M ON P.PROJ_ID = M.PROJ_ID) ");
+        projPlanQuery.append("LEFT JOIN EDB_PROJ_COMPNT AS C ON M.MLSTN_ID = C.MLSTN_ID) "); 
+        projPlanQuery.append("LEFT JOIN EDB_COMPNT_EMP AS CE ON CE.COMPNT_ID=C.COMPNT_ID ) ");
+        projPlanQuery.append("LEFT JOIN EDB_MSTR_EMP_DTLS E ON E.EMP_ID=CE.EMP_ID WHERE M.MLSTN_ID="+releaseId+" AND P.PROJ_ID="+projectId);
         
         log.debug("RELEASE QUERY :[{}]",projPlanQuery);
         
@@ -493,34 +494,65 @@ public List<ReferenceData> editRelease(String releaseId,String editRelArti,Strin
 		return projectDates;
 	}
 	
-	public ProjectForm addComponent(Integer projectId,String componentName,String functionalDesc,
+	public ProjectForm addComponent(Integer projectId,Integer phaseId,String componentName,String functionalDesc,
 			String compStartDate,String compEndDate,String compResource, Integer releaseId) {
 		
 		ProjectForm projectData = new ProjectForm();
 		 
 		try{
 					
-				final String employeeTable="insert into EDB_PROJ_COMPNT(COMPNT_NAME,COMPNT_FUNC_DESC,COMPNT_ST_DT,COMPNT_END_DT,MLSTN_ID,EMP_ID) values (?,?,?,?,?,?)";
+				final String employeeTable="insert into EDB_PROJ_COMPNT(COMPNT_PHASE,COMPNT_NAME,COMPNT_FUNC_DESC,COMPNT_ST_DT,COMPNT_END_DT,MLSTN_ID) values (?,?,?,?,?,?)";
 				PreparedStatement  preparedStatement = getConnection().prepareStatement(employeeTable);
-				preparedStatement.setString(1, componentName);
-				preparedStatement.setString(2, functionalDesc);
-				preparedStatement.setString(3, compStartDate);
-				preparedStatement.setString(4, compEndDate);
-				preparedStatement.setInt(5, releaseId);
-				preparedStatement.setInt(6, Integer.valueOf(compResource));
+				preparedStatement.setInt(1, phaseId);
+				preparedStatement.setString(2, componentName);
+				preparedStatement.setString(3, functionalDesc);
+				preparedStatement.setString(4, compStartDate);
+				preparedStatement.setString(5, compEndDate);
+				preparedStatement.setInt(6, releaseId);
 				preparedStatement.executeUpdate();
 				preparedStatement.close();
+				
+				insertCompEmp(phaseId, componentName,compResource);
 				
 				projectData = getProjectPlanDetails(releaseId, projectId);
 				
 				
 			}catch(Exception e)	{
-				log.error("Error inserting release table :",e);
+				log.error("Error inserting EDB_PROJ_COMPNT table :",e);
 				return null;
 			}
 		return projectData;
 	}
 	
+	private void insertCompEmp(Integer phaseId, String componentName, String compResource) {
+		
+		try{
+			//Employee table
+			final StringBuffer compEmpTable=new StringBuffer();
+			Integer compId=0;
+			compEmpTable.append("SELECT COMPNT_ID FROM EDB_PROJ_COMPNT WHERE COMPNT_NAME='");
+			compEmpTable.append(componentName);
+			compEmpTable.append("' AND COMPNT_PHASE=");
+			compEmpTable.append(phaseId);
+			PreparedStatement  preparedStatement = getConnection().prepareStatement(compEmpTable.toString());
+			log.debug(compEmpTable.toString());
+			ResultSet r1 = preparedStatement.executeQuery();
+			while(r1.next()){
+				compId=r1.getInt("COMPNT_ID");
+			}
+			preparedStatement.close();
+			final String insertCompEmp="insert into EDB_COMPNT_EMP(COMPNT_ID,EMP_ID) values (?,?)";
+			PreparedStatement  preparedStatement1 = getConnection().prepareStatement(insertCompEmp);
+			preparedStatement1.setInt(1, compId);
+			preparedStatement1.setInt(2, Integer.parseInt(compResource));
+			preparedStatement1.executeUpdate();
+			preparedStatement1.close();
+			
+		}catch(Exception e)	{
+			log.error("Error Inserting  EDB_COMPNT_EMP:",e);
+		}
+	}
+
 	public List<MasterEmployeeDetails> getAllEmployees(){
 		List<MasterEmployeeDetails> empList = new ArrayList<MasterEmployeeDetails>();
 		try{

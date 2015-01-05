@@ -4,15 +4,15 @@
 	<script>
 	 $(document).ready(function () {
 		 
-		 $( "#compEndDate" ).datepicker();
-		 $( "#compStartDate" ).datepicker();
+		 $( "#compEndDate" ).datepicker(); 
+		 $( "#compStartDate" ).datepicker(); 
 			
 	 
 		 $( "#editRelStartDate" ).datepicker({
 			 
 			 beforeShow: function (input, inst) {
-				 var dt2 = $('#editRelStartDate').datepicker('getDate');				 
-	             $('#editRelStartDate').datepicker('option', 'minDate', dt2);
+				 var dt2 = $('#editRelStartDate').datepicker('getDate');
+				 $('#editRelStartDate').datepicker('option', 'minDate', dt2);
 	         }
 		 });
 		 
@@ -199,20 +199,32 @@
 		
 		
 		
-		$("#addCompnt").click(function() {
+		$("#addNewCompnt").unbind("click").on("click", function() {
 			
-			var lComponentName = $("#componentName").val();
-			var lFunctionalDesc= $("#functionalDesc").val();
+  			var lComponentName = $("#componentName").val();
+ 			if($("#newComponent").is(":visible") && lComponentName == "0") {
+				lComponentName = $("#newComponent").val();
+			} 
+ 			var lFunctionalDesc= $("#functionalDesc").val();
 			var lCompStartDate = $("#compStartDate").val();
 			var lCompEndDate = $("#compEndDate").val();
 			var lCompResource = $("#compResourceList option:selected").val();
+			alert(lCompResource);
 			var lProjectId = $("#projects").val();
 			var lselectedRelease=$("#releases").val();
-			
+			var lphaseId=$("#componentPhase").val();
+			alert(lphaseId);
 			$.ajax({
 				type : "POST",
 				url : "./addComponent.do",
-				data : {componentName:lComponentName, functionalDesc:lFunctionalDesc, compStartDate:lCompStartDate, compEndDate:lCompEndDate, compResource:lCompResource, projectId:lProjectId, releaseId:lselectedRelease},												
+				data : {componentName:lComponentName,
+						functionalDesc:lFunctionalDesc,
+						compStartDate:lCompStartDate,
+						compEndDate:lCompEndDate,
+						compResource:lCompResource,
+						projectId:lProjectId,
+						releaseId:lselectedRelease,
+						phaseId:lphaseId},												
 				dataType : 'json',
 				success : function(response) {
 					var tableResp = '';
@@ -240,7 +252,16 @@
 					$("#mainContainer").html("Application error! Please call help desk. Error:"+data.status);
 				}
 			});	  
+		 });
+		
+		$("#componentName").unbind("change").on("change",function(){
+			if($("#componentName").val()=='0'){
+				$("#newComp").css("display", "inline");
+			} else {
+				$("#newComp").css("display", "none");
+			}
 		});
+
 	 });
 	 
 	 function setCharAt(str,index,chr) {
@@ -259,7 +280,27 @@
 		<td style="font-weight: bold;">Description</td>
 		<td style="background-color: #eaead9;width: 220px; overflow: auto;"><div id="prjDesc">${viewProjRelDetails.projectDescription}</div></td>
 		<td style="font-weight: bold;">Phase</td>
-		<td style="background-color: #eaead9;width: 75px; overflow: auto;">${viewProjRelDetails.phases}</td>
+		<td style="background-color: #eaead9;width: 75px; overflow: auto;">
+			<c:forEach var = "phase" items="${viewProjRelDetails.phases}">
+						<c:choose>
+							<c:when test="${phase =='1'}">
+								Analysis<br>
+							</c:when>
+							<c:when test="${phase =='2'}">
+								Design<br>
+							</c:when>
+							<c:when test="${phase =='3'}">
+								Build<br>
+							</c:when>
+							<c:when test="${phase =='4'}">
+								Test<br>
+							</c:when>
+							<c:otherwise>
+								Support
+							</c:otherwise>
+						</c:choose>
+			</c:forEach>
+		</td>
 		<td style="font-weight: bold;">Start Date</td>
 		<td style="background-color: #eaead9;"><div id="prjStartDate"><joda:format
 				value="${viewProjRelDetails.startDate}" pattern="MM/dd/yyyy" /></div></td>
@@ -291,33 +332,77 @@
 		<td><a href="#"  id="delRel"><img alt="delete project" src="./resources/delete.gif"></a></td>
 	</tr>
 </table>
-<table class="ebdtable" style="margin-top: 25px;">
-	<tr>
+<table class="ebdtable" style="width:100%;margin-top: 25px;">
+	<tr style="width:100%">
 		<th style="width: 160px;">Component Name</th>
+		<th style="width: 160px;">Component Phase</th>
 		<th style="width: 295px;">Functional Desc</th>
 		<th style="width: 80px;">Start Date</th>
 		<th style="width: 80px;">End Date</th>
+		<th style="width: 80px;">Status</th>
+		<th style="width: 80px;">% Completed</th>
 		<th style="width: 150px;">Resource</th>
+		<th style="width: 295px;">Work Description</th>
 		<th colspan="2" style="width: 25px;"></th>
 	</tr>
-	<tr>
-		<td><input type="text" id="componentName" name="componentName" class="textbox" /></td>
+	<tr style="width:100%">
+		<td>
+			<select name="componentName" id = "componentName">
+				<option value="-1">---Select Component---</option>
+				<c:forEach var="component" items="${viewProjRelDetails.releases[0].components}">
+				    <c:if test="${not empty component.componentName}">
+						<option value="${component.componentName}" id="compName">${component.componentName}</option>
+					</c:if>
+				</c:forEach>
+				<option value="0">Create New Component</option>
+			</select>
+			<div id="newComp" class="textbox" style="display:none"><input name="newComponent" id="newComponent" type="text"></div>
+		</td>
+		<td>
+			<select name="componentPhase" id="componentPhase">
+				<option value="0">Select Phase</option>
+				<c:forEach var = "phase" items="${viewProjRelDetails.phases}">
+					<c:choose>
+						<c:when test="${phase =='1'}">
+							<option value="1">Analysis</option>
+						</c:when>
+						<c:when test="${phase =='2'}">
+							<option value="2">Design</option>
+						</c:when>
+						<c:when test="${phase =='3'}">
+							<option value="3">Build</option>
+						</c:when>
+						<c:when test="${phase =='4'}">
+							<option value="4">Test</option>
+						</c:when>
+						<c:otherwise>
+							<option value="5">Support</option>
+						</c:otherwise>
+					</c:choose>
+				</c:forEach>
+			</select>
+		</td>
 		<td><textarea id="functionalDesc" style="overflow: auto; resize: none" rows="6"
 				cols="32" class="textarea"></textarea></td>
 		<td><input type="text" id ="compStartDate" name="compStartDate" class="textbox" /></td>
 		<td><input type="text" id="compEndDate" name="compEndDate" class="textbox" /></td>
+		<td><input type="text" id="componentStatus" name="componentStatus" class="textbox" /></td>
+		<td><input type="text" id="percent" name="percent" class="textbox" /></td>
 		<td><select id = "compResourceList" name="compResourceList" class="textbox">
+			<option value="0">Select Resource</option>		
 			<c:forEach items="${viewProjRelDetails.resources}" var="resource">
 			        <option value="${resource.id}" <c:if test="${resource.selected==true}">selected</c:if> >${resource.label}</option>
 			 </c:forEach>
 		</select></td>
-		<td colspan="2"><a href="#" id="addCompnt"><img class="imgLink"
+		<td><textarea id="workDesc" style="overflow: auto; resize: none" rows="6"
+				cols="32" class="textarea"></textarea></td>
+		<td colspan="2"><a href="#" id="addNewCompnt"><img class="imgLink"
 				alt="add comnponent" src="./resources/addnews.gif" width="20px;"></a></td>		
 	</tr>
 </table>
 <table class="innertable2" id="componentTable"
 	style="border-width: 1px; border-style: solid; border-color: #999999;">
-	<c:choose>
+	<c:choose>	
         <c:when test="${empty viewProjRelDetails.releases[0].components}">
 			<div id="noComponetMsg" class="boxmsg border-boxmsg" style="width: 780px;color: red;">
 			    <p>No <u>Components/Tasks</u> , <u>Change Requests(CR)</u> or <u>Defects</u> are configured for Project :<u>${viewProjRelDetails.projectName}</u> and Release :<u>${viewProjRelDetails.releases[0].releaseName}</u> .<br>

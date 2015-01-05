@@ -26,7 +26,7 @@
 									<!-- SUB MENU-->
 									<%@ include file="/WEB-INF/jsp/projectmanagement/submenu.jsp"%>
 									<div id="ppMainContainer" style="margin-top: 20px;">
-										<div style="width: 1001px;padding-top:10px; height: 650px; overflow: auto;">
+										<div style="width: 100%;padding-top:10px; height: 650px; overflow: auto;">
 											<jsp:include page="/WEB-INF/jsp/projectmanagement/projectPlan.jsp"
 												flush="true"></jsp:include>
 										</div>

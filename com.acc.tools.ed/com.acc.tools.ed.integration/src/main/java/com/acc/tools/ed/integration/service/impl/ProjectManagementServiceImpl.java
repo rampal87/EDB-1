@@ -195,17 +195,16 @@ public class ProjectManagementServiceImpl implements ProjectManagementService{
 		}
 	}
 	
-	public ProjectForm addComponent(Integer projectId,String componentName,String functionalDesc,
+	public ProjectForm addComponent(Integer projectId,Integer phaseId,String componentName,String functionalDesc,
 			String compStartDate,String compEndDate,String compResource, Integer relaseId) {
-
-		try {
-			 return projectManagementDao.addComponent(projectId,componentName, functionalDesc, compStartDate, compEndDate, compResource,relaseId);
-		} catch (Exception e) {
+			try {
+			return projectManagementDao.addComponent(projectId,phaseId,componentName, functionalDesc, compStartDate, compEndDate, compResource,relaseId);
+			} catch (Exception e) {
 			e.printStackTrace();
 			return null;
-		}
-	}
-	
+			}
+			}
+
 	public List<MasterEmployeeDetails> getAllEmployees(){
 		return projectManagementDao.getAllEmployees();
 	}
