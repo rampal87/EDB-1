@@ -2,6 +2,8 @@ package com.acc.tools.ed.integration.dto;
 
 import java.io.Serializable;
 
+import org.joda.time.DateTime;
+
 public class TaskForm implements Serializable {
 
 	private static final long serialVersionUID = 9197621972979099410L;
@@ -11,6 +13,15 @@ public class TaskForm implements Serializable {
 	private String taskName;
 	private String taskDesc;
 	private int taskHrs;
+	private String taskType;
+	private String taskStatus;
+	private String taskAction;
+	private String rejComment;
+	private String taskReviewUser;
+	private DateTime taskCreateDate;
+	private DateTime taskStartDate;
+	private DateTime taskEndDate;
+
 
 	public int getTaskId() {
 		return taskId;
@@ -51,5 +62,70 @@ public class TaskForm implements Serializable {
 	public void setTaskHrs(int taskHrs) {
 		this.taskHrs = taskHrs;
 	}
+
+	public String getTaskType() {
+		return taskType;
+	}
+
+	public void setTaskType(String taskType) {
+		this.taskType = taskType;
+	}
+
+	public String getTaskStatus() {
+		return taskStatus;
+	}
+
+	public void setTaskStatus(String taskStatus) {
+		this.taskStatus = taskStatus;
+	}
+
+	public String getTaskAction() {
+		return taskAction;
+	}
+
+	public void setTaskAction(String taskAction) {
+		this.taskAction = taskAction;
+	}
+
+	public String getRejComment() {
+		return rejComment;
+	}
+
+	public void setRejComment(String rejComment) {
+		this.rejComment = rejComment;
+	}
+
+	public String getTaskReviewUser() {
+		return taskReviewUser;
+	}
+
+	public void setTaskReviewUser(String taskReviewUser) {
+		this.taskReviewUser = taskReviewUser;
+	}
+
+	public DateTime getTaskCreateDate() {
+		return taskCreateDate;
+	}
+
+	public void setTaskCreateDate(DateTime taskCreateDate) {
+		this.taskCreateDate = taskCreateDate;
+	}
+
+	public DateTime getTaskStartDate() {
+		return taskStartDate;
+	}
+
+	public void setTaskStartDate(DateTime taskStartDate) {
+		this.taskStartDate = taskStartDate;
+	}
+
+	public DateTime getTaskEndDate() {
+		return taskEndDate;
+	}
+
+	public void setTaskEndDate(DateTime taskEndDate) {
+		this.taskEndDate = taskEndDate;
+	}
+	
 
 }

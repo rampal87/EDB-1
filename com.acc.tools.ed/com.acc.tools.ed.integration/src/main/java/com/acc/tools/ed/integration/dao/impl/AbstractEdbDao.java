@@ -70,6 +70,13 @@ public class AbstractEdbDao {
 		taskForm.setComponentId(componentId);
 		taskForm.setTaskDesc(rs.getString("TASK_DESC"));
 		taskForm.setTaskHrs(rs.getInt("TASK_HRS"));
+		taskForm.setTaskStatus(rs.getString("TASK_STATUS"));
+		taskForm.setTaskType(rs.getString("TASK_TYPE"));
+		//taskForm.setTaskAction(rs.getString("TASK_ACTIONS"));
+		//taskForm.setRejComment(rs.getString("TASK_REVIEW_COMMENTS"));
+		//taskForm.setTaskCreateDate(new DateTime(rs.getString("TASK_CT_DT")));
+		//taskForm.setTaskReviewUser(rs.getString("TASK_REVIEW_USER"));
+	    //TO DO:Set create date,start date and end date time if displaying
 	}
 	
 	public void mapReleaseData(ResultSet rs,ProjectForm project,ReleaseForm release,Integer releaseId) throws SQLException{

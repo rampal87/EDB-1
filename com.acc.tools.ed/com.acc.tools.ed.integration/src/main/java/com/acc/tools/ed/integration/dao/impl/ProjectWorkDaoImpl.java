@@ -118,28 +118,41 @@ public List<ProjectForm> getMyTasks(String userId) {
 		return projectTasks;
 	}
 
-	public List<ComponentForm> addTasks(String taskName, String taskDesc,long taskHrs,int componentId, String userId) {
+public List<ComponentForm> addTasks(TaskForm taskForm) {
+	
+	List<ComponentForm> componentList = new ArrayList<ComponentForm>();
+	
+	try {
 		
-		List<ComponentForm> componentList = new ArrayList<ComponentForm>();
+		String addTaskQuery = "insert into EDB_TASK_MASTER(COMPNT_ID,TASK_NAME,TASK_DESC,TASK_HRS,TASK_STATUS,TASK_TYPE,TASK_CT_DT,TASK_ST_DT,TASK_ET_DT) values (?,?,?,?,?,?,?,?,?)";
+		PreparedStatement pstm = getConnection().prepareStatement(addTaskQuery);
+		pstm.setInt(1, taskForm.getComponentId());
+		pstm.setString(2, taskForm.getTaskName());
+		pstm.setString(3, taskForm.getTaskDesc());
+		pstm.setInt(4, Integer.parseInt(String.valueOf(taskForm.getTaskHrs())));
+		pstm.setString(5, taskForm.getTaskStatus());
+		pstm.setString(6, taskForm.getTaskType());
+		pstm.setString(7, taskForm.getTaskCreateDate().toString("yyyy-MM-dd hh:mm:ss"));
+		pstm.setString(8, taskForm.getTaskStartDate().toString("yyyy-MM-dd hh:mm:ss"));
+		pstm.setString(9, taskForm.getTaskEndDate().toString("yyyy-MM-dd hh:mm:ss"));
+		pstm.executeUpdate();
+		pstm.close();
 		
-		try {
-			
-			String addTaskQuery = "insert into EDB_TASK_MASTER(COMPNT_ID,TASK_NAME,TASK_DESC,TASK_HRS) values (?,?,?,?)";
-			PreparedStatement pstm = getConnection().prepareStatement(addTaskQuery);
-			pstm.setInt(1, componentId);
-			pstm.setString(2, taskName);
-			pstm.setString(3, taskDesc);
-			pstm.setInt(4, Integer.parseInt(String.valueOf(taskHrs)));
-			pstm.executeUpdate();
-			pstm.close();
-			
-			//componentList = getMyTasks(userId).getReleases().get(0).getComponents();
-			
-		} catch (Exception e) {
-			e.printStackTrace();
-		}
 		
-		return componentList;
+		String addTaskHistoryQuery = "insert into EDB_TASK_REVW_HISTORY(TASK_ACTIONS,TASK_REVIEW_USER,TASK_REVIEW_COMMENTS) values (?,?,?)";
+		PreparedStatement pstmHistory = getConnection().prepareStatement(addTaskHistoryQuery);
+		pstmHistory.setString(1, taskForm.getTaskAction());
+		pstmHistory.setString(2, taskForm.getTaskReviewUser());
+		pstmHistory.setString(3, taskForm.getRejComment());
+		pstmHistory.executeUpdate();
+		pstmHistory.close();
+		
+		//componentList = getMyTasks(userId).getReleases().get(0).getComponents();
+		
+	} catch (Exception e) {
+		e.printStackTrace();
 	}
-
+	
+	return componentList;
+}
 }
