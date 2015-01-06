@@ -32,10 +32,5 @@ public class ResourceManagementControlller extends AbstractEdbBaseController {
 		model.addAttribute("empList", empList);
 		return "/resourcemanagement/index";
 	}
-	
-	@RequestMapping(value = "/resourceDemand.do")
-	public String resourceDemand(Model model) {
-		return "/resourcemanagement/resourceDemand";
-	}
 
 }

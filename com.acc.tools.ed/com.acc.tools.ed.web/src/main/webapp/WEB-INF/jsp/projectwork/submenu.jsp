@@ -5,5 +5,14 @@
 	</div>
 	<div style="text-align:center; height:18px; width: 100px;border-right: 1px solid black;margin-top: 7px;">
 		<a href="#" action="./teamTasks.do" id="pwsubtab2" class="subtabs">Team Tasks</a>
+	</div>
+	<div style="text-align:center; height:18px; width: 100px;border-right: 1px solid black;margin-top: 7px;">
+		<a href="#" action="./calendar.do" id="pwsubtab3" class="subtabs">Calendar</a>
 	</div>	
+	<div style="text-align:center; height:18px; width: 120px;border-right: 1px solid black;margin-top: 7px;">
+		<a href="#" action="./announcements.do" id="pwsubtab4" class="subtabs">Announcement</a>
+	</div>
+	<div style="text-align:center; height:18px; width: 100px;border-right: 1px solid black;margin-top: 7px;">
+		<a href="#" action="./settings.do" id="pwsubtab5" class="subtabs">Settings</a>
+	</div>		
 </div>

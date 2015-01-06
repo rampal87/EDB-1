@@ -8,6 +8,7 @@
 <link rel="stylesheet" href="<%=request.getContextPath()%>/css/style-message-box.css">
 <link rel="stylesheet" href="<%=request.getContextPath()%>/css/style-popup.css">
 <link rel="stylesheet" href="<%=request.getContextPath()%>/css/jquery.dataTables.css">
+<link rel="stylesheet" href="<%=request.getContextPath()%>/css/default.min.css"/>
 
 <!-- javascripts -->
 <script src="<%=request.getContextPath()%>/script/libs/jquery-1.10.2.js"></script>
