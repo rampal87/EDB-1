@@ -40,14 +40,34 @@
 			success: function() {
 			 },
 		 	complete: function(xhr) {
+		 		var questionDescription=$("#questionDescription").val();
+		 		var questionType=$("#questionType").val();
+
+		 		var questionForm=($('#questionnaireForm').serializeArray());
+		 		var optionsRow="<tr>";
+		 		var columnCount=1;
+				$.each(questionForm,
+					    function(i, v) {
+						var fieldName=v.name;
+			 			if(fieldName.indexOf("questionOptions")>=0){
+			 				optionsRow=optionsRow+'<td style="background-image: none;background: #ebe2d7;">'+v.value+'</td>';
+			 				if(columnCount%2==0){
+			 					optionsRow=optionsRow+'</tr>'
+			 				}
+			 				columnCount++;
+						} 
+				});
+				alert(optionsRow); 
 		 		addquestionDialog.dialog("close");
 			     $('#announcementTable > tbody:last').append('<tr>'+
 							'<th>Question</th>'+
-							'<td style="width: 550px;">Question</td>'+
+							'<td style="width: 550px;">'+questionDescription+'</td>'+
 							'<th style="width: 75px;">Question Type</th>'+
-							'<td style="width: 30px;">Radio</td>'+
+							'<td style="width: 30px;">'+questionType+'</td>'+
 							'<td style="width: 75px;">Edit | Delete</td>'+
-							'</tr><tr><td colspan="5" style="background-image: none;background: #ebe2d7;">options</td></tr>');
+							'</tr><tr><td colspan="5" style="background-image: none;background: #ebe2d7;">'+
+							'<table><tr><td>Option Value</td><td>Option Label</td></tr>'+optionsRow+
+							'</table></td></tr>');
 		    }
 		});
 
@@ -86,7 +106,7 @@
 			</tr>
 			<tr>
 				<th>Question Type</th>
-				<td>
+				<td colspan="2">
 					<form:select path="questionType"  style="width:135px;" class="textbox" >
 						<form:option value="0" label="--- Select Type---" />
 						<form:option value="1" label="Radio" />
@@ -97,16 +117,20 @@
 			</tr>
 			<tr>
 				<th style="width: 50px;">Value</th>
-				<th style="text-align: left;">Label</th>
+				<th style="text-align: left;width: 150px;">Label</th>
+				<th style="text-align: left;">Answer</th>
 			</tr>
 			<c:forEach items="${questionnaireForm.questionOptions}" var="questionOption" varStatus="status">
 				<tr>
-					<td>${questionOption.optionId}</td>
+					<td>${questionOption.optionId}
+						<form:hidden path="questionOptions[${status.index}].optionId"/>
+					</td>
 					<td><form:input type="text" path="questionOptions[${status.index}].optionDescription" class="textbox" /></td>
+					<td><form:radiobutton path="answers" value="${questionOption.optionId}"/></td>
 				</tr>
 			</c:forEach>
 			<tr>
-				<td colspan="2">
+				<td colspan="3">
 						<div style="margin-left: 470px;">
 							<input type="submit" value="Submit" class="button ui-button ui-widget ui-state-default ui-corner-all ui-button-text-only">
 							<input id="addquestion-popupClose" type="button" value="Close" class="button ui-button ui-widget ui-state-default ui-corner-all ui-button-text-only">
