@@ -59,7 +59,7 @@
 
 						});
 
-						$("#addProject").button().unbind("click").on("click", function() {
+						$("#addProject,#editProject,#deleteProject").button().unbind("click").on("click", function() {
 							$.ajax({
 								type : "GET",
 								url : "./fetchInitialProjectSetupDetails.do",
@@ -174,7 +174,7 @@
 
 						});
 
-						$("#addRelease").button().unbind("click").on("click", function() {
+						$("#addRelease,#editRelease,#deleteRelease").button().unbind("click").on("click", function() {
 							var prjName=$("#projects option:selected").text();
 							var projectId = $("#projects").val();
 							if(projectId=="0"){
