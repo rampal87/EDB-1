@@ -8,6 +8,7 @@ import com.acc.tools.ed.integration.dto.MasterEmployeeDetails;
 import com.acc.tools.ed.integration.dto.ProjectForm;
 import com.acc.tools.ed.integration.dto.ReferenceData;
 import com.acc.tools.ed.integration.dto.ReleaseForm;
+import com.acc.tools.ed.integration.dto.ReleasePlan;
 
 public interface ProjectManagementService {
 	public ReferenceData addProject(ProjectForm project);
@@ -26,5 +27,5 @@ public interface ProjectManagementService {
 	public Map<String,String> getProjectDate(String projectId);
 	public ProjectForm addComponent(Integer projectId,Integer phaseId,String componentName,String functionalDesc,String compStartDate,String compEndDate,String compResource,Integer releaseId);
 	public List<MasterEmployeeDetails> getAllEmployees();
-	public Map<String,Map<String,Map<String,String>>> createReleasePlan(String releaseStartDate,String releaseEndDate);
+	public ReleasePlan createReleasePlan(String releaseStartDate,String releaseEndDate);
 }

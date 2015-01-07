@@ -2,6 +2,7 @@ package com.acc.tools.ed.integration.dto;
 
 import java.io.Serializable;
 import java.util.List;
+import java.util.Map;
 
 public class ReleaseForm implements Serializable{
 
@@ -18,7 +19,14 @@ public class ReleaseForm implements Serializable{
 	private String releaseEndDate;
 	private String releaseDesc;
 	private List<ComponentForm> components;
+	private Map<String,List<Long>> resourcesAndHours;
 	
+	public Map<String, List<Long>> getResourcesAndHours() {
+		return resourcesAndHours;
+	}
+	public void setResourcesAndHours(Map<String, List<Long>> resourcesAndHours) {
+		this.resourcesAndHours = resourcesAndHours;
+	}
 	public String getProjName() {
 		return projName;
 	}

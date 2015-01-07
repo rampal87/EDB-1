@@ -106,6 +106,8 @@
 									var releaseIdCount=generateId("releases")+1;
 									var projectId=$("#projectId").val();
 									var releaseForm = $('#addReleaseForm').serializeArray();
+									var resources = $("td[id^='resource']").length;
+									var days = $("input[id^='resDayHour']").length/resources;
 									var jsonString = "{";
 									$.each(releaseForm,
 									    function(i, v) {
@@ -116,6 +118,33 @@
 											jsonString=jsonString+" \""+v.name+"\":\""+v.value+"\",";
 										}
 									 });
+									jsonString=jsonString+"\"resourcesAndHours\" : {";
+									
+									for(var i=0; i<resources;i++){
+										jsonString=jsonString+"\""+$("#resource"+i).text()+"\": [";
+										for(var j=0;j<days;j++){
+											if(i==(resources-1) && j==(days-1)){
+												jsonString=jsonString+"\""+$("#resDayHour"+i+j).val()+"\" ] }," ;
+											}
+										    else if(j==(days-1)){
+											 jsonString=jsonString+"\""+$("#resDayHour"+i+j).val()+"\" ]," ;
+											}
+											else{
+												jsonString=jsonString+"\""+$("#resDayHour"+i+j).val()+"\"," ;
+											}											
+										}
+										
+									}
+									
+									
+								/*	$("id^='resource'").each(function(i){
+										jsonString=jsonString+":{ \""+$("#resource"+i).text()+"\": [";
+										$("name^='resDayHour'").each(function(j){
+											jsonString=jsonString+"\""+$("#resDayHour"+i+""+j ).text()+"\";
+											
+											
+										})
+									});*/
 									jsonString=jsonString+"\"releaseId\":\""+releaseIdCount+"\",";
 									jsonString=jsonString+"\"projectId\":\""+projectId+"\"";
 									jsonString=jsonString+"}";

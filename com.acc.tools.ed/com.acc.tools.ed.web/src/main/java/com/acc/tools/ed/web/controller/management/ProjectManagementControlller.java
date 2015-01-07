@@ -23,6 +23,7 @@ import com.acc.tools.ed.integration.dto.ComponentForm;
 import com.acc.tools.ed.integration.dto.ProjectForm;
 import com.acc.tools.ed.integration.dto.ReferenceData;
 import com.acc.tools.ed.integration.dto.ReleaseForm;
+import com.acc.tools.ed.integration.dto.ReleasePlan;
 import com.acc.tools.ed.web.controller.common.AbstractEdbBaseController;
 
 @Controller
@@ -92,15 +93,15 @@ public class ProjectManagementControlller extends AbstractEdbBaseController {
 		SimpleDateFormat sdf = new SimpleDateFormat("dd/MM/yyyy");
 		DateTime stDate =  new DateTime(sdf.parse(releaseStartDate));
 		DateTime etDate =  new DateTime(sdf.parse(releaseEndDate));
-		Map<String,Map<String,Map<String,String>>> releasePlan=getProjectManagementService().createReleasePlan(stDate.toString("yyyy-MM-dd"),etDate.toString("yyyy-MM-dd"));
+		ReleasePlan releasePlan=getProjectManagementService().createReleasePlan(stDate.toString("yyyy-MM-dd"),etDate.toString("yyyy-MM-dd"));
 		LOG.debug("------------------Release Plan ------------------------------");
-		for(Map.Entry<String,Map<String,Map<String,String>>> resourceWeek:releasePlan.entrySet()){
+		/*for(Map.Entry<String,Map<String,Map<String,String>>> resourceWeek:releasePlan.entrySet()){
 			System.out.print(resourceWeek.getKey()+" --> ");
 			for(Map.Entry<String,Map<String,String>> weekDay:resourceWeek.getValue().entrySet()){
 				System.out.print(weekDay.getKey() +"["+weekDay.getValue()+"] |");
 			}
 			System.out.println("");
-		}
+		}	*/
 		model.addAttribute("releasePlan",releasePlan);
 		return "/projectmanagement/releasePlan";
 	}	
@@ -203,7 +204,7 @@ public class ProjectManagementControlller extends AbstractEdbBaseController {
 			Model model) {
 		LOG.debug("addComponent :[{},{},{},{},{},{},{},{}]",new Object[]{projectId,componentName,functionalDesc,compStartDate,compEndDate,compResource,releaseId,phaseId});
 		ProjectForm planData = getProjectManagementService().addComponent(projectId,phaseId,componentName,functionalDesc,compStartDate,compEndDate,compResource,releaseId);
-		return planData.getReleases().get(0).getComponents();		
+		return planData.getReleases().get(0).getComponents();
 	}
 	
 
