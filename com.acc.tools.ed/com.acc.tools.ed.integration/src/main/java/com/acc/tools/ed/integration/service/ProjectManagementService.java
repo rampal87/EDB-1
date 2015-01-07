@@ -26,6 +26,7 @@ public interface ProjectManagementService {
 	public List<ReferenceData> getPrjLeadList();
 	public Map<String,String> getProjectDate(String projectId);
 	public ProjectForm addComponent(Integer projectId,Integer phaseId,String componentName,String functionalDesc,String compStartDate,String compEndDate,String compResource,Integer releaseId);
-	public List<MasterEmployeeDetails> getAllEmployees();
+	public List<MasterEmployeeDetails> getAllEmployees(); 
 	public ReleasePlan createReleasePlan(String releaseStartDate,String releaseEndDate);
+	public List<Object> getComponentDetails(String componentName,Integer phaseId,Integer releaseId);
 }

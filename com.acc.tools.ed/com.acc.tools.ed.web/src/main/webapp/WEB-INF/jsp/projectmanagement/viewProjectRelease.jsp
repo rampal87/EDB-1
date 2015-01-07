@@ -3,7 +3,7 @@
 <head>
 	<script>
 	 $(document).ready(function () {
-		 
+		  
 		 $( "#compEndDate" ).datepicker(); 
 		 $( "#compStartDate" ).datepicker(); 
 			
@@ -12,7 +12,6 @@
 			 
 			 beforeShow: function (input, inst) {
 				 var dt2 = $('#editRelStartDate').datepicker('getDate');
-				 alert(dt2);
 	             $('#editRelStartDate').datepicker('option', 'minDate', dt2);
 	         }
 		 });
@@ -210,11 +209,9 @@
 			var lCompStartDate = $("#compStartDate").val();
 			var lCompEndDate = $("#compEndDate").val();
 			var lCompResource = $("#compResourceList option:selected").val();
-			alert(lCompResource);
 			var lProjectId = $("#projects").val();
 			var lselectedRelease=$("#releases").val();
 			var lphaseId=$("#componentPhase").val();
-			alert(lphaseId);
 			$.ajax({
 				type : "POST",
 				url : "./addComponent.do",
@@ -262,8 +259,33 @@
 				$("#newComp").css("display", "none");
 			}
 		});
-
-	 });
+		
+		$("#componentPhase").unbind("change").on("change",function(){
+			var compName = $("#componentName").val();
+			var compPhase = $("#componentPhase").val();
+			var compRelease=$("#releases").val();
+			$.ajax({
+				type : "POST",
+				url : "./getCompStEnDate.do",
+				data : {cmpName:compName,
+						cmpPhase:compPhase,
+						cmpRelease:compRelease,
+						},												
+				dataType : 'json',
+				success : function(response) {
+						if (response[0] != 0) {
+						$('#compStartDate').val(response[1]);
+						$("#compStartDate").attr('disabled','disabled');
+						$('#compEndDate').val(response[2]);
+						$("#compEndDate").attr('disabled','disabled');
+					} else {
+						$("#compStartDate").removeAttr('disabled');
+						$("#compEndDate").removeAttr('disabled');
+					}
+				}
+		});
+	});
+});
 	 
 	 function setCharAt(str,index,chr) {
 			if(index > str.length-1) return str;

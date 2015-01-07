@@ -27,7 +27,7 @@ import com.acc.tools.ed.integration.dto.ReleasePlan;
 import com.acc.tools.ed.web.controller.common.AbstractEdbBaseController;
 
 @Controller
-@SessionAttributes({ "edbUser" })
+@SessionAttributes({ "edbUser" }) 
 public class ProjectManagementControlller extends AbstractEdbBaseController {
 
 	private static final Logger LOG = LoggerFactory
@@ -204,7 +204,17 @@ public class ProjectManagementControlller extends AbstractEdbBaseController {
 			Model model) {
 		LOG.debug("addComponent :[{},{},{},{},{},{},{},{}]",new Object[]{projectId,componentName,functionalDesc,compStartDate,compEndDate,compResource,releaseId,phaseId});
 		ProjectForm planData = getProjectManagementService().addComponent(projectId,phaseId,componentName,functionalDesc,compStartDate,compEndDate,compResource,releaseId);
-		return planData.getReleases().get(0).getComponents();
+		return planData.getReleases().get(0).getComponents();		
+	}
+	
+	@RequestMapping(value = "/getCompStEnDate.do")
+	public @ResponseBody List<Object> getComponentDates(
+			@RequestParam("cmpName") String componentName,
+			@RequestParam("cmpPhase") Integer phaseId,
+			@RequestParam("cmpRelease") Integer releaseId,
+			Model model) {
+		return  getProjectManagementService().getComponentDetails(componentName, phaseId, releaseId);
+		
 	}
 	
 

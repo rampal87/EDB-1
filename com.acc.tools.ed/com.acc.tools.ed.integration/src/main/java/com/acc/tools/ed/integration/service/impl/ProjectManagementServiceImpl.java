@@ -20,7 +20,7 @@ import com.acc.tools.ed.integration.dto.ReleasePlan;
 import com.acc.tools.ed.integration.service.ProjectManagementService;
 import com.acc.tools.ed.integration.util.CalendarEnum;
 
-@Service("projectManagementService")
+@Service("projectManagementService") 
 public class ProjectManagementServiceImpl implements ProjectManagementService{
 	
 	@Autowired
@@ -389,6 +389,15 @@ public class ProjectManagementServiceImpl implements ProjectManagementService{
 	
 	public List<MasterEmployeeDetails> getAllEmployees(){
 		return projectManagementDao.getAllEmployees();
+	}
+	public List<Object> getComponentDetails(String componentName,
+			Integer phaseId, Integer releaseId) {
+		try {
+			 return projectManagementDao.getComponentDetails(phaseId, componentName, releaseId);
+		} catch (Exception e) {
+			e.printStackTrace();
+			return null;
+		}
 	}
 	
 	

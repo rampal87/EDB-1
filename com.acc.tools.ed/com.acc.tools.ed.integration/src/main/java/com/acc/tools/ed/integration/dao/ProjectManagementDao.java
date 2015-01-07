@@ -10,7 +10,7 @@ import com.acc.tools.ed.integration.dto.ReleaseForm;
 
 public interface ProjectManagementDao {
 	
-	public ReferenceData addProject(ProjectForm project);
+	public ReferenceData addProject(ProjectForm project); 
 	public ReferenceData addRelease(ReleaseForm release);
 	public int addEmployee(MasterEmployeeDetails empDetail);
 	public List<ReferenceData> getAllProjectIds();
@@ -25,5 +25,6 @@ public interface ProjectManagementDao {
 	public List<ReferenceData> getPrjLeadList();
 	public Map<String,String> getProjectDate(String projectId);
 	public ProjectForm addComponent(Integer projectId,Integer phaseId,String componentName,String functionalDesc,String compStartDate,String compEndDate,String compResource,Integer relaseId);
+	public List<Object>getComponentDetails(Integer phaseId, String componentName,Integer releaseId);
 	public List<MasterEmployeeDetails> getAllEmployees();
 }

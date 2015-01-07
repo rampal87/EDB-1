@@ -498,8 +498,15 @@ public List<ReferenceData> editRelease(String releaseId,String editRelArti,Strin
 			String compStartDate,String compEndDate,String compResource, Integer releaseId) {
 		
 		ProjectForm projectData = new ProjectForm();
+		
+		List<Object> compDet = new ArrayList<Object>();
 		 
 		try{
+
+				Integer compId = 0;
+				compDet = getComponentDetails(phaseId, componentName,releaseId);
+				
+				if(compDet.size()==1){
 					
 				final String employeeTable="insert into EDB_PROJ_COMPNT(COMPNT_PHASE,COMPNT_NAME,COMPNT_FUNC_DESC,COMPNT_ST_DT,COMPNT_END_DT,MLSTN_ID) values (?,?,?,?,?,?)";
 				PreparedStatement  preparedStatement = getConnection().prepareStatement(employeeTable);
@@ -512,7 +519,11 @@ public List<ReferenceData> editRelease(String releaseId,String editRelArti,Strin
 				preparedStatement.executeUpdate();
 				preparedStatement.close();
 				
-				insertCompEmp(phaseId, componentName,compResource);
+				compDet = getComponentDetails(phaseId, componentName,releaseId);
+				
+				}
+				compId= (Integer)compDet.get(0);
+				insertCompEmp(compId, phaseId, componentName,compResource,releaseId);
 				
 				projectData = getProjectPlanDetails(releaseId, projectId);
 				
@@ -524,26 +535,47 @@ public List<ReferenceData> editRelease(String releaseId,String editRelArti,Strin
 		return projectData;
 	}
 	
-	private void insertCompEmp(Integer phaseId, String componentName, String compResource) {
+	public List<Object> getComponentDetails(Integer phaseId, String componentName,
+			Integer releaseId) {
 		
+		List<Object> componentDet = new ArrayList<Object>();
 		try{
 			//Employee table
 			final StringBuffer compEmpTable=new StringBuffer();
-			Integer compId=0;
-			compEmpTable.append("SELECT COMPNT_ID FROM EDB_PROJ_COMPNT WHERE COMPNT_NAME='");
+			compEmpTable.append("SELECT COMPNT_ID,COMPNT_ST_DT,COMPNT_END_DT FROM EDB_PROJ_COMPNT WHERE COMPNT_NAME='");
 			compEmpTable.append(componentName);
 			compEmpTable.append("' AND COMPNT_PHASE=");
 			compEmpTable.append(phaseId);
+			compEmpTable.append(" AND MLSTN_ID=");
+			System.out.println();
+			compEmpTable.append(releaseId);
 			PreparedStatement  preparedStatement = getConnection().prepareStatement(compEmpTable.toString());
 			log.debug(compEmpTable.toString());
 			ResultSet r1 = preparedStatement.executeQuery();
-			while(r1.next()){
-				compId=r1.getInt("COMPNT_ID");
+			if (r1.next()){
+				componentDet.add(r1.getInt("COMPNT_ID"));
+				componentDet.add(r1.getDate("COMPNT_ST_DT"));
+				componentDet.add(r1.getDate("COMPNT_END_DT"));
+			}
+			else {
+				componentDet.add(0);
 			}
 			preparedStatement.close();
+		}catch(Exception e)	{
+			log.error("Error while retrieving data from  EDB_PROJ_COMPNT:",e);
+		}
+		return componentDet;
+		
+		
+	}
+
+	private void insertCompEmp(Integer componentId, Integer phaseId, String componentName, String compResource, Integer releaseId) {
+		
+		try{
+
 			final String insertCompEmp="insert into EDB_COMPNT_EMP(COMPNT_ID,EMP_ID) values (?,?)";
 			PreparedStatement  preparedStatement1 = getConnection().prepareStatement(insertCompEmp);
-			preparedStatement1.setInt(1, compId);
+			preparedStatement1.setInt(1, componentId);
 			preparedStatement1.setInt(2, Integer.parseInt(compResource));
 			preparedStatement1.executeUpdate();
 			preparedStatement1.close();
@@ -552,6 +584,7 @@ public List<ReferenceData> editRelease(String releaseId,String editRelArti,Strin
 			log.error("Error Inserting  EDB_COMPNT_EMP:",e);
 		}
 	}
+
 
 	public List<MasterEmployeeDetails> getAllEmployees(){
 		List<MasterEmployeeDetails> empList = new ArrayList<MasterEmployeeDetails>();
