@@ -44,7 +44,7 @@
 				    <td colspan="4"><form:hidden path="questionnaire[${status.index}].questionDescription" />${question.questionDescription}</td>
 				</tr>
 				<c:choose>
-					<c:when test="${question.questionType =='radio'}">
+					<c:when test="${question.questionType =='1'}">
 						<c:forEach items="${question.questionOptions}" var="questionOptions">
 								<tr>
 						    		<td colspan="4" style="background-image: none;background: #ebe2d7;">
@@ -53,7 +53,7 @@
 								</tr>
 						</c:forEach>
 					</c:when>
-					<c:when test="${question.questionType =='check'}">
+					<c:when test="${question.questionType =='2'}">
 						<c:forEach items="${question.questionOptions}" var="questionOptions">
 								<tr>
 						    		<td colspan="4" style="background-image: none;background: #ebe2d7;">
@@ -62,7 +62,7 @@
 								</tr>
 						</c:forEach>
 					</c:when>	
-					<c:when test="${question.questionType =='match'}">
+					<c:when test="${question.questionType =='3'}">
 						<tr>
 							<c:forEach items="${question.matchOptions}" var="questionOptions">
 							 	<c:choose>

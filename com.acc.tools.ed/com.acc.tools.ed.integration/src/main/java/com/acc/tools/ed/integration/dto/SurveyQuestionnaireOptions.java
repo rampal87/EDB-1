@@ -10,6 +10,7 @@ public class SurveyQuestionnaireOptions implements Serializable{
 	private static final long serialVersionUID = 1L;
 	
 	private int optionId;
+	private int optionValue;
 	private String optionDescription;
 	public int getOptionId() {
 		return optionId;
@@ -22,6 +23,12 @@ public class SurveyQuestionnaireOptions implements Serializable{
 	}
 	public void setOptionDescription(String optionDescription) {
 		this.optionDescription = optionDescription;
+	}
+	public int getOptionValue() {
+		return optionValue;
+	}
+	public void setOptionValue(int optionValue) {
+		this.optionValue = optionValue;
 	}
 
 }

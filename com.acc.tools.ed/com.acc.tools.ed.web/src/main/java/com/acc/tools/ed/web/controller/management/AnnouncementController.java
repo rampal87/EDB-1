@@ -18,6 +18,7 @@ import com.acc.tools.ed.integration.dto.SurveySystem;
 
 @Controller
 public class AnnouncementController {
+	
   private static final Logger LOG = LoggerFactory.getLogger(AnnouncementController.class);
 
   @Autowired
@@ -25,22 +26,16 @@ public class AnnouncementController {
 
   @RequestMapping(value="/announcements.do")
   public String announcements(Model model) {
-    model.addAttribute("surveySystemForm", new SurveySystem());
-    model.addAttribute("questionnaireForm", new SurveyQuestionnaire());
+	  final SurveySystem surveySystem=announcementDao.getAnnouncement();
+	  if(surveySystem!=null){
+		  surveySystem.setQuestionnaire(announcementDao.getQuestionnaire());
+	  } else {
+		  LOG.error("No Questions Configured");
+	  }
+	  
+	  model.addAttribute("surveySystemForm", surveySystem);
+	  model.addAttribute("questionnaireForm", new SurveyQuestionnaire());
     return "/projectwork/announcements";
-  }
-
-  @RequestMapping(value="/surveySystem.do")
-  public String surveySystem(@ModelAttribute("surveySystemForm") SurveySystem surveySystemForm, Model model)
-  {
-    LOG.debug("Survey Response");
-    for (SurveyQuestionnaire sq : surveySystemForm.getQuestionnaire()) {
-      LOG.debug("\tQuestion :{}", sq.getQuestionDescription());
-      LOG.debug("\tAnswer :{}", sq.getAnswers());
-      LOG.debug("-----------------------------------------------");
-    }
-
-    return "/projectwork/success";
   }
 
   @RequestMapping({"/calendar.do"})
@@ -68,6 +63,7 @@ public class AnnouncementController {
     options.add(option4);
     sq.setQuestionOptions(options);
     model.addAttribute("questionnaireForm", sq);
+    model.addAttribute("surveySystemForm", new SurveySystem());
 
     return "/projectwork/settings";
   }
@@ -85,4 +81,15 @@ public class AnnouncementController {
 
     return "success";
   }
+  
+  @RequestMapping(value="/addannouncement.do")
+  public String addAnnouncement(@ModelAttribute("surveySystemForm") SurveySystem surveySystemForm, Model model)
+  {
+    LOG.debug("Announcement Content:{}", surveySystemForm.getAnnouncementHTMLData());
+    this.announcementDao.addAnnouncement(surveySystemForm);
+
+    return "success";
+  }
+  
+  
 }

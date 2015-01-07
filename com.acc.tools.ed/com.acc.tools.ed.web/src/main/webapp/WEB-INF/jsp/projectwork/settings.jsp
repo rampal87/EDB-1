@@ -7,7 +7,7 @@
 <script>
 	$(document).ready(function() {
 		var initEditor = function() {
-			$("#announcementEditor").sceditor({
+			$("#announcementHTMLData").sceditor({
 				plugins: 'xhtml',
 				style: "<%=request.getContextPath()%>/css/jquery.sceditor.default.min.css",
 				toolbar: "bold,italic,underline|strike,subscript,superscript,left,center,right,justify|font,size,color,removeformat|cut,copy,paste,pastetext|bulletlist,orderedlist|table,code,quote,horizontalrule|image,link,unlink,emoticon"
@@ -30,10 +30,12 @@
 			addquestionDialog.dialog("open");
 		});
 
-		$("#announcementSettings").on("click",function(){
-			
-			alert($("#announcementEditor").data("sceditor").getWysiwygEditorValue());
-
+		$('#surveySystemForm').ajaxForm( {
+			success: function() {
+			 },
+		 	complete: function(xhr) {
+		 		
+		 	}
 		});
 		
 		$('#questionnaireForm').ajaxForm( {
@@ -70,20 +72,24 @@
 							'</table></td></tr>');
 		    }
 		});
+		
+		$("#questionnaireSubmtBtn").unbind("submit").on("submit",function(){ return false;});
+		
+		
 
 
 	});
 </script>
-<form action="" method="post">
+<form:form commandName="surveySystemForm" action="addannouncement.do">
 	<table id="announcementTable" class="ebdtable" style="width: 50%;">
 		<tbody>
 			<tr>
 				<th colspan="3" style="width:850px;">Announcement Description</th>
 				<th style="width:100px;">Preview</th>
-				<th><input id="announcementSettings" type="button" value="Submit"></th>
+				<th><input type="submit" value="Submit"></th>
 			</tr>
 			<tr>
-				<td colspan="5"><textarea id="announcementEditor" style="height:300px;width:900px;"></textarea></td>
+				<td colspan="5"><form:textarea path="announcementHTMLData" cssStyle="height:300px;width:900px;" /></td>
 			</tr>
 			<tr>
 				<td colspan="5">
@@ -94,7 +100,7 @@
 			</tr>
 		</tbody>
 	</table>
-</form>
+</form:form>
 <div id="addquestion-popup" title="Add New Question">
 	<form:form commandName="questionnaireForm" action="addquestion.do">
 		<table class="ebdtable">
@@ -112,6 +118,7 @@
 						<form:option value="1" label="Radio" />
 						<form:option value="2" label="Check" />
 						<form:option value="3" label="Match" />
+						<form:option value="4" label="Text" />						
 					</form:select>
 				</td>
 			</tr>
@@ -132,7 +139,7 @@
 			<tr>
 				<td colspan="3">
 						<div style="margin-left: 470px;">
-							<input type="submit" value="Submit" class="button ui-button ui-widget ui-state-default ui-corner-all ui-button-text-only">
+							<input id="questionnaireSubmtBtn" type="submit" value="Submit" class="button ui-button ui-widget ui-state-default ui-corner-all ui-button-text-only" onsubmit="return false;">
 							<input id="addquestion-popupClose" type="button" value="Close" class="button ui-button ui-widget ui-state-default ui-corner-all ui-button-text-only">
 						</div>
 				</td>

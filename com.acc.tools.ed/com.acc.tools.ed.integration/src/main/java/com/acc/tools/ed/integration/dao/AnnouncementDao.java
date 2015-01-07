@@ -1,8 +1,13 @@
 package com.acc.tools.ed.integration.dao;
 
-import com.acc.tools.ed.integration.dto.SurveyQuestionnaire;
+import java.util.List;
 
-public abstract interface AnnouncementDao
-{
-  public abstract void addQuestion(SurveyQuestionnaire paramSurveyQuestionnaire);
+import com.acc.tools.ed.integration.dto.SurveyQuestionnaire;
+import com.acc.tools.ed.integration.dto.SurveySystem;
+
+public abstract interface AnnouncementDao{
+	public abstract void addAnnouncement(SurveySystem surveySystem);
+	public abstract void addQuestion(SurveyQuestionnaire surveyQuestionnaire);
+	public abstract SurveySystem getAnnouncement();
+	public abstract List<SurveyQuestionnaire> getQuestionnaire();
 }

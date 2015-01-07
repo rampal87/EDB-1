@@ -10,6 +10,7 @@ public class SurveySystem implements Serializable{
 	 */
 	private static final long serialVersionUID = 1L;
 	private int employeeId;
+	private String announcementHTMLData;
 	private List<SurveyQuestionnaire> questionnaire;
 	private int timeTaken;
 	public int getEmployeeId() {
@@ -29,5 +30,11 @@ public class SurveySystem implements Serializable{
 	}
 	public void setTimeTaken(int timeTaken) {
 		this.timeTaken = timeTaken;
+	}
+	public String getAnnouncementHTMLData() {
+		return announcementHTMLData;
+	}
+	public void setAnnouncementHTMLData(String announcementHTMLData) {
+		this.announcementHTMLData = announcementHTMLData;
 	}
 }
