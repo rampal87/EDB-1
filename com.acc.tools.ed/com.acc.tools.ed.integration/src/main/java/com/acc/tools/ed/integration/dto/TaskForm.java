@@ -21,6 +21,9 @@ public class TaskForm implements Serializable {
 	private DateTime taskCreateDate;
 	private DateTime taskStartDate;
 	private DateTime taskEndDate;
+	private String existingTask;
+	private String newTaskName;
+	private String newTaskId;
 
 
 	public int getTaskId() {
@@ -125,6 +128,30 @@ public class TaskForm implements Serializable {
 
 	public void setTaskEndDate(DateTime taskEndDate) {
 		this.taskEndDate = taskEndDate;
+	}
+
+	public String getExistingTask() {
+		return existingTask;
+	}
+
+	public void setExistingTask(String existingTask) {
+		this.existingTask = existingTask;
+	}
+
+	public String getNewTaskName() {
+		return newTaskName;
+	}
+
+	public void setNewTaskName(String newTaskName) {
+		this.newTaskName = newTaskName;
+	}
+
+	public String getNewTaskId() {
+		return newTaskId;
+	}
+
+	public void setNewTaskId(String newTaskId) {
+		this.newTaskId = newTaskId;
 	}
 	
 

@@ -51,6 +51,7 @@ $(document).ready(
 										
 		
 		$(".componentData").hide();	
+		$(".compData").hide();	
 		$(".taskData").hide();
 		$(".releaseRow").on("click",function(){
 			var releaseId=$(this).attr("id");
@@ -59,6 +60,15 @@ $(document).ready(
 					$("#comptree"+releaseId).html("[-]");
 				} else
 					$("#comptree"+releaseId).html("[+]");
+			});
+		});
+		$(".devRow").on("click",function(){
+			var devId=$(this).attr("id");
+			$("#devdev"+devId).toggle(function(){
+				if($("#devdev"+devId).is(":visible")){
+					$("#devtree"+devId).html("[-]");
+				} else
+					$("#devtree"+devId).html("[+]");
 			});
 		});
 		$(".componentRow").on("click",function(){

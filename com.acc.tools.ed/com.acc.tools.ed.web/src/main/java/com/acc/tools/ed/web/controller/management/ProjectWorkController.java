@@ -68,7 +68,7 @@ public class ProjectWorkController extends AbstractEdbBaseController {
 					for(TaskForm tf:cf.getTaskFormList()){
 						LOG.debug("\t\t\tTaskName Name:[{}]",tf.getTaskName());
 					}
-				}
+				} 
 			}
 		}
 		model.addAttribute("projData", projData);
@@ -78,6 +78,21 @@ public class ProjectWorkController extends AbstractEdbBaseController {
 	
 	@RequestMapping(value = "/teamTasks.do")
 	public String teamTasks(Model model) {
+		List<ProjectForm> projData =projectWorkService.getMyTeamTasks("75");
+		for(ProjectForm pf:projData){
+			LOG.debug("Project Name:[{}]",pf.getProjectName());
+			for(ReleaseForm rf:pf.getReleases()){
+				LOG.debug("\tRelease Name:[{}]",rf.getReleaseName());
+				for(ComponentForm cf:rf.getComponents()){
+					LOG.debug("\t\tComponent Name:[{}]",cf.getComponentName());
+					for(TaskForm tf:cf.getTaskFormList()){
+						LOG.debug("\t\t\tTaskName Name:[{}]",tf.getTaskName());
+					}
+				}
+			}
+		}
+		model.addAttribute("addTaskForm", new TaskForm());
+		model.addAttribute("projData", projData);
 		return "/projectwork/teamTasks";
 	}
 	

@@ -10,4 +10,5 @@ public interface ProjectWorkDao {
 
 	public List<ProjectForm> getMyTasks(String userId);
 	public List<ComponentForm> addTasks(TaskForm taskForm);
+	public List<ProjectForm> getMyTeamTasks(String supervisorId);
 }

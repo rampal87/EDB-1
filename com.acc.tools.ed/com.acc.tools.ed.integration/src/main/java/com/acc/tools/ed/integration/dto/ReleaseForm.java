@@ -20,6 +20,8 @@ public class ReleaseForm implements Serializable{
 	private String releaseDesc;
 	private List<ComponentForm> components;
 	private Map<String,List<Long>> resourcesAndHours;
+	private List<ReferenceData> userData;
+	private Map<String,List<ComponentForm>> teamTasks;
 	
 	public Map<String, List<Long>> getResourcesAndHours() {
 		return resourcesAndHours;
@@ -82,6 +84,17 @@ public class ReleaseForm implements Serializable{
 	public void setReleaseDesc(String releaseDesc) {
 		this.releaseDesc = releaseDesc;
 	}
-	
+	public List<ReferenceData> getUserData() {
+		return userData;
+	}
+	public void setUserData(List<ReferenceData> userData) {
+		this.userData = userData;
+	}
+	public Map<String, List<ComponentForm>> getTeamTasks() {
+		return teamTasks;
+	}
+	public void setTeamTasks(Map<String, List<ComponentForm>> teamTasks) {
+		this.teamTasks = teamTasks;
+	}
 
 }

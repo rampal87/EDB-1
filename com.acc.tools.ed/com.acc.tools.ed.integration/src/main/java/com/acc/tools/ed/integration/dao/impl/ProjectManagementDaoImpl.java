@@ -198,7 +198,7 @@ public class ProjectManagementDaoImpl extends AbstractEdbDao implements ProjectM
         ProjectForm projectPlanData = new ProjectForm();
         final StringBuffer projPlanQuery =new StringBuffer();
         final Map<Integer,ReleaseForm> releaseMap=new HashMap<Integer,ReleaseForm>();
-        projPlanQuery.append("SELECT P.*, M.*, C.*,CE.*, E.EMP_ENTERPRISE_ID FROM (((EDB_PROJECT AS P LEFT JOIN EDB_MILESTONE AS M ON P.PROJ_ID = M.PROJ_ID) ");
+        projPlanQuery.append("SELECT P.*, M.*, C.*,CE.*, E.EMP_ENTERPRISE_ID,E.EMP_RESOURCE_NAME FROM (((EDB_PROJECT AS P LEFT JOIN EDB_MILESTONE AS M ON P.PROJ_ID = M.PROJ_ID) ");
         projPlanQuery.append("LEFT JOIN EDB_PROJ_COMPNT AS C ON M.MLSTN_ID = C.MLSTN_ID) "); 
         projPlanQuery.append("LEFT JOIN EDB_COMPNT_EMP AS CE ON CE.COMPNT_ID=C.COMPNT_ID ) ");
         projPlanQuery.append("LEFT JOIN EDB_MSTR_EMP_DTLS E ON E.EMP_ID=CE.EMP_ID WHERE M.MLSTN_ID="+releaseId+" AND P.PROJ_ID="+projectId);

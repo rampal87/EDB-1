@@ -25,5 +25,7 @@ public class ProjectWorkServiceImpl implements ProjectWorkService {
 		
 		return projectWorkDao.addTasks(taskForm);
 	}
-	
+	public List<ProjectForm> getMyTeamTasks(String supervisorId){
+		return projectWorkDao.getMyTeamTasks(supervisorId);
+	}
 }

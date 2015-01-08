@@ -8,6 +8,8 @@ import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
+import java.util.HashMap;
+import java.util.List;
 
 import javax.annotation.Resource;
 
@@ -17,6 +19,7 @@ import org.slf4j.LoggerFactory;
 import com.acc.tools.ed.database.MicroSoftAccessDatabase;
 import com.acc.tools.ed.integration.dto.ComponentForm;
 import com.acc.tools.ed.integration.dto.ProjectForm;
+import com.acc.tools.ed.integration.dto.ReferenceData;
 import com.acc.tools.ed.integration.dto.ReleaseForm;
 import com.acc.tools.ed.integration.dto.TaskForm;
 
@@ -40,6 +43,8 @@ public class AbstractEdbDao {
 	public void mapComponentData(ResultSet rs,ReleaseForm release,ComponentForm component) throws SQLException, ParseException{
         component.setComponentName(rs.getString("COMPNT_NAME"));
         component.setFunctionalDesc(rs.getString("COMPNT_FUNC_DESC"));
+        component.setResourceId(rs.getInt("EMP_ID"));
+        component.setResourceName(rs.getString("EMP_RESOURCE_NAME"));
         SimpleDateFormat sdf2 = new SimpleDateFormat("yyyy-MM-dd hh:mm:ss");
         String cStDt = rs.getString("COMPNT_ST_DT");
         if(cStDt != null) {
@@ -63,6 +68,16 @@ public class AbstractEdbDao {
         	release.setComponents(new ArrayList<ComponentForm>());
         }
         release.getComponents().add(component);
+        if(release.getTeamTasks()==null){
+        	release.setTeamTasks(new HashMap<String, List<ComponentForm>>());
+        }
+        if(release.getTeamTasks().containsKey(component.getResourceId())){
+        	release.getTeamTasks().get(component.getResourceId()).add(component);
+        } else {
+        	List<ComponentForm> empComponents=new ArrayList<ComponentForm>();
+        	empComponents.add(component);
+        	release.getTeamTasks().put(component.getResourceName(), empComponents);	
+        }
 	}
 	
 	public void mapTaskData(ResultSet rs,TaskForm taskForm,Integer componentId) throws SQLException{
@@ -90,5 +105,12 @@ public class AbstractEdbDao {
 		release.setReleaseEndDate(rs.getString("MLSTN_END_DT"));
 		project.getReleases().add(release);
 	}
-
+	public void mapUserData(ResultSet rs,ReleaseForm release,ReferenceData userData) throws SQLException{
+		userData.setId(userData.getId());
+		userData.setLabel(userData.getLabel());
+		if(release.getUserData()==null){
+        	release.setUserData(new ArrayList<ReferenceData>());
+        }
+        release.getUserData().add(userData);
+	}
 }
