@@ -221,6 +221,15 @@ public class ProjectManagementDaoImpl extends AbstractEdbDao implements ProjectM
                             projectPlanData.setStartDate(new DateTime(rs.getTimestamp("PROJ_ST_DT").getTime()));
                             projectPlanData.setEndDate(new DateTime(rs.getTimestamp("PROJ_ET_DT").getTime()));
                             
+                            String leadId=rs.getString("PROJ_LEAD");
+                            //Get Lead name
+                            final String projLeadQuery="SELECT EMP_RESOURCE_NAME FROM EDB_MSTR_EMP_DTLS WHERE EMP_ID="+leadId;
+                            PreparedStatement  leadPreStmt = getConnection().prepareStatement(projLeadQuery);
+                            ResultSet leadRs = leadPreStmt.executeQuery();
+                            while(leadRs.next()){ 
+                           	 projectPlanData.setProjectLead(leadRs.getString("EMP_RESOURCE_NAME")); 
+                            }
+                            
                             final int rReleaseId=rs.getInt("MLSTN_ID");
                             
                             if(!releaseMap.isEmpty() && releaseMap.containsKey(rReleaseId)){
@@ -269,6 +278,8 @@ public class ProjectManagementDaoImpl extends AbstractEdbDao implements ProjectM
                     	 projectResourceList.add(refData);                    	 
                      }
                      projectPlanData.setResources(projectResourceList);
+                     
+                     
                      
         } catch (Exception e) {
                e.printStackTrace();
@@ -495,7 +506,7 @@ public List<ReferenceData> editRelease(String releaseId,String editRelArti,Strin
 	}
 	
 	public ProjectForm addComponent(Integer projectId,Integer phaseId,String componentName,String functionalDesc,
-			String compStartDate,String compEndDate,String compResource, Integer releaseId) {
+			String compStartDate,String compEndDate,String compResource, Integer releaseId, String workDesc) {
 		
 		ProjectForm projectData = new ProjectForm();
 		
@@ -523,7 +534,7 @@ public List<ReferenceData> editRelease(String releaseId,String editRelArti,Strin
 				
 				}
 				compId= (Integer)compDet.get(0);
-				insertCompEmp(compId, phaseId, componentName,compResource,releaseId);
+				insertCompEmp(compId, phaseId, componentName,compResource,releaseId,workDesc);
 				
 				projectData = getProjectPlanDetails(releaseId, projectId);
 				
@@ -569,14 +580,16 @@ public List<ReferenceData> editRelease(String releaseId,String editRelArti,Strin
 		
 	}
 
-	private void insertCompEmp(Integer componentId, Integer phaseId, String componentName, String compResource, Integer releaseId) {
+	private void insertCompEmp(Integer componentId, Integer phaseId, String componentName, String compResource, Integer releaseId, String workDesc) {
 		
 		try{
 
-			final String insertCompEmp="insert into EDB_COMPNT_EMP(COMPNT_ID,EMP_ID) values (?,?)";
+			final String insertCompEmp="insert into EDB_COMPNT_EMP(COMPNT_ID,COMPNT_PHASE,EMP_ID,WORK_DESC) values (?,?,?,?)";
 			PreparedStatement  preparedStatement1 = getConnection().prepareStatement(insertCompEmp);
 			preparedStatement1.setInt(1, componentId);
-			preparedStatement1.setInt(2, Integer.parseInt(compResource));
+			preparedStatement1.setInt(2, phaseId);
+			preparedStatement1.setInt(3, Integer.parseInt(compResource));
+			preparedStatement1.setString(4, workDesc);
 			preparedStatement1.executeUpdate();
 			preparedStatement1.close();
 			

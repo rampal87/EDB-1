@@ -212,6 +212,7 @@
 			var lProjectId = $("#projects").val();
 			var lselectedRelease=$("#releases").val();
 			var lphaseId=$("#componentPhase").val();
+			var lworkDesc=$("#workDesc").val();
 			$.ajax({
 				type : "POST",
 				url : "./addComponent.do",
@@ -222,16 +223,21 @@
 						compResource:lCompResource,
 						projectId:lProjectId,
 						releaseId:lselectedRelease,
-						phaseId:lphaseId},												
+						phaseId:lphaseId,
+						workDesc:lworkDesc},
 				dataType : 'json',
 				success : function(response) {
 					var tableResp = '';
 					for(var obj in response) {
 						tableResp = '<tr><td width="165px;" id="compName">'+response[obj].componentName+'</td>'+
+						'<td width="160px"></td>'+
 						'<td width="385px;" id="compFuncDesc"><div style="height:20px;display:table-cell;vertical-align:middle;">'+response[obj].functionalDesc+'</div></td>'+
 						'<td width="100px;" id="comStDate">'+response[obj].startDate+'</td>'+
 						'<td width="100px;" id="compEtDate">'+response[obj].endDate+'</td>'+
+						'<td width="80px"></td>'+
+						'<td width="80px">% </td>'+
 						'<td width="180px;" id="compResName">'+response[obj].resourceName+'</td>'+
+						'<td width="295px"></td>'+
 						'<td><img alt="edit project" src="./resources/edit.gif"	width="20px;"></td>'+
 						'<td><img alt="delete project" src="./resources/delete.gif"	width="20px;"></td></tr>';
 					}
@@ -255,9 +261,14 @@
 		$("#componentName").unbind("change").on("change",function(){
 			if($("#componentName").val()=='0'){
 				$("#newComp").css("display", "inline");
+				$("#compStartDate").removeAttr('disabled');
+				$("#compEndDate").removeAttr('disabled');
+				$('#compStartDate').val('');
+				$('#compEndDate').val('');
 			} else {
 				$("#newComp").css("display", "none");
 			}
+			$('#componentPhase').val(0);
 		});
 		
 		$("#componentPhase").unbind("change").on("change",function(){
@@ -295,6 +306,7 @@
 	</script>
 </head>
 <form id="projectForm">
+
 <table>
 	<tr>
 		<td style="width: 555px;">
@@ -312,16 +324,16 @@
 					<td style="background-color: #eaead9;width: 75px; overflow: auto;">
 						<c:forEach var = "phase" items="${viewProjRelDetails.phases}">
 									<c:choose>
-										<c:when test="${phase =='1'}">
+										<c:when test="${phase.trim() =='1'}">
 											Analysis,
 										</c:when>
-										<c:when test="${phase =='2'}">
+										<c:when test="${phase.trim() =='2'}">
 											Design,
 										</c:when>
-										<c:when test="${phase =='3'}">
+										<c:when test="${phase.trim() =='3'}">
 											Build,
 										</c:when>
-										<c:when test="${phase =='4'}">
+										<c:when test="${phase.trim() =='4'}">
 											Test
 										</c:when>
 										<c:otherwise>
@@ -405,16 +417,16 @@
 					<option value="0">Select Phase</option>
 					<c:forEach var = "phase" items="${viewProjRelDetails.phases}">
 						<c:choose>
-							<c:when test="${phase =='1'}">
+							<c:when test="${phase.trim() =='1'}">
 								<option value="1">Analysis</option>
 							</c:when>
-							<c:when test="${phase =='2'}">
+							<c:when test="${phase.trim() =='2'}">
 								<option value="2">Design</option>
 							</c:when>
-							<c:when test="${phase =='3'}">
+							<c:when test="${phase.trim() =='3'}">
 								<option value="3">Build</option>
 							</c:when>
-							<c:when test="${phase =='4'}">
+							<c:when test="${phase.trim() =='4'}">
 								<option value="4">Test</option>
 							</c:when>
 							<c:otherwise>
@@ -457,11 +469,15 @@
 	        <c:otherwise>
 	        	<c:forEach var="component" items="${viewProjRelDetails.releases[0].components}">
 					<tr>
-						<td width="165px;" id="compName">${component.componentName}</td>
-						<td width="385px;" id="compFuncDesc"><div style="height:20px;display:table-cell;vertical-align:middle;">${component.functionalDesc}</div></td>
-						<td width="100px;" id="comStDate">${component.startDate}</td>
-						<td width="100px;" id="compEtDate">${component.endDate}</td>
-						<td width="180px;" id="compResName">${component.resourceName}</td>
+						<td width="160px;" id="compName">${component.componentName}</td>
+						<td width="160px">${component.phaseId}</td>
+						<td width="295px;" id="compFuncDesc"><div style="height:20px;display:table-cell;vertical-align:middle;">${component.functionalDesc}</div></td>
+						<td awidth="80px;" id="comStDate">${component.startDate}</td>
+						<td width="80px;" id="compEtDate">${component.endDate}</td>
+						<td width="80px">Not Started</td>
+						<td width="80px" align="center">0 % </td>
+						<td width="150px;" id="compResName">${component.resourceName}</td>
+						<td width="295px">${component.workDesc}</td>
 						<td><img alt="edit project" src="./resources/edit.gif"
 							width="20px;"></td>
 						<td><img alt="delete project" src="./resources/delete.gif"

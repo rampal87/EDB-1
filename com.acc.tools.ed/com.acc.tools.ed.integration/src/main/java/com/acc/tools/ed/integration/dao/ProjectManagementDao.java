@@ -24,7 +24,7 @@ public interface ProjectManagementDao {
 	public List<ReferenceData> getResourceList();
 	public List<ReferenceData> getPrjLeadList();
 	public Map<String,String> getProjectDate(String projectId);
-	public ProjectForm addComponent(Integer projectId,Integer phaseId,String componentName,String functionalDesc,String compStartDate,String compEndDate,String compResource,Integer relaseId);
+	public ProjectForm addComponent(Integer projectId,Integer phaseId,String componentName,String functionalDesc,String compStartDate,String compEndDate,String compResource,Integer relaseId,String workDesc);
 	public List<Object>getComponentDetails(Integer phaseId, String componentName,Integer releaseId);
 	public List<MasterEmployeeDetails> getAllEmployees();
 }

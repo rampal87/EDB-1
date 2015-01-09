@@ -45,6 +45,8 @@ public class AbstractEdbDao {
         component.setFunctionalDesc(rs.getString("COMPNT_FUNC_DESC"));
         component.setResourceId(rs.getInt("EMP_ID"));
         component.setResourceName(rs.getString("EMP_RESOURCE_NAME"));
+        component.setWorkDesc(rs.getString("WORK_DESC"));
+        component.setPhaseId(rs.getString("COMPNT_PHASE"));
         SimpleDateFormat sdf2 = new SimpleDateFormat("yyyy-MM-dd hh:mm:ss");
         String cStDt = rs.getString("COMPNT_ST_DT");
         if(cStDt != null) {

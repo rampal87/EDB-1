@@ -18,6 +18,8 @@ public class ComponentForm implements Serializable {
 	private String endDate;
 	private int resourceId;
 	private String resourceName;
+	private String workDesc;
+	private String phaseId;
 	private List<TaskForm> taskFormList;
 
 	public int getComponentId() {
@@ -98,6 +100,22 @@ public class ComponentForm implements Serializable {
 
 	public void setProjectName(String projectName) {
 		this.projectName = projectName;
+	}
+
+	public String getWorkDesc() {
+		return workDesc;
+	}
+
+	public void setWorkDesc(String workDesc) {
+		this.workDesc = workDesc;
+	}
+
+	public String getPhaseId() {
+		return phaseId;
+	}
+
+	public void setPhaseId(String phaseId) {
+		this.phaseId = phaseId;
 	}
 
 }

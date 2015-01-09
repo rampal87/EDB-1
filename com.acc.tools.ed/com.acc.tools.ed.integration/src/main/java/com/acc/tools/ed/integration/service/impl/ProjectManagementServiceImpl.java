@@ -377,10 +377,10 @@ public class ProjectManagementServiceImpl implements ProjectManagementService{
 	}
 	
 	public ProjectForm addComponent(Integer projectId,Integer phaseId,String componentName,String functionalDesc,
-			String compStartDate,String compEndDate,String compResource, Integer relaseId) {
+			String compStartDate,String compEndDate,String compResource, Integer relaseId, String workDesc) {
 
 		try {
-			 return projectManagementDao.addComponent(projectId,phaseId,componentName, functionalDesc, compStartDate, compEndDate, compResource,relaseId);
+			 return projectManagementDao.addComponent(projectId,phaseId,componentName, functionalDesc, compStartDate, compEndDate, compResource,relaseId,workDesc);
 		} catch (Exception e) {
 			e.printStackTrace();
 			return null;
