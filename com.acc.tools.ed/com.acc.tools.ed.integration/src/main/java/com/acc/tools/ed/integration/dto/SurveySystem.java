@@ -10,9 +10,16 @@ public class SurveySystem implements Serializable{
 	 */
 	private static final long serialVersionUID = 1L;
 	private int employeeId;
+	private Integer announcementSubjectId;
+	private String announcementSubject;
+	private String announcementCreateDate;
 	private String announcementHTMLData;
 	private List<SurveyQuestionnaire> questionnaire;
 	private int timeTaken;
+	private boolean setTime=false;
+	private boolean announcementPublished=false;
+	private String quizStartDateTime;
+	
 	public int getEmployeeId() {
 		return employeeId;
 	}
@@ -36,5 +43,41 @@ public class SurveySystem implements Serializable{
 	}
 	public void setAnnouncementHTMLData(String announcementHTMLData) {
 		this.announcementHTMLData = announcementHTMLData;
+	}
+	public boolean isSetTime() {
+		return setTime;
+	}
+	public void setSetTime(boolean setTime) {
+		this.setTime = setTime;
+	}
+	public String getQuizStartDateTime() {
+		return quizStartDateTime;
+	}
+	public void setQuizStartDateTime(String quizStartDateTime) {
+		this.quizStartDateTime = quizStartDateTime;
+	}
+	public boolean isAnnouncementPublished() {
+		return announcementPublished;
+	}
+	public void setAnnouncementPublished(boolean announcementPublished) {
+		this.announcementPublished = announcementPublished;
+	}
+	public String getAnnouncementSubject() {
+		return announcementSubject;
+	}
+	public void setAnnouncementSubject(String announcementSubject) {
+		this.announcementSubject = announcementSubject;
+	}
+	public String getAnnouncementCreateDate() {
+		return announcementCreateDate;
+	}
+	public void setAnnouncementCreateDate(String announcementCreateDate) {
+		this.announcementCreateDate = announcementCreateDate;
+	}
+	public Integer getAnnouncementSubjectId() {
+		return announcementSubjectId;
+	}
+	public void setAnnouncementSubjectId(Integer announcementSubjectId) {
+		this.announcementSubjectId = announcementSubjectId;
 	}
 }

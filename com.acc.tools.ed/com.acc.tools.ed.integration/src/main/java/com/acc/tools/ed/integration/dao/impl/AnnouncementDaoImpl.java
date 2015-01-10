@@ -15,6 +15,7 @@ import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
 
 import com.acc.tools.ed.integration.dao.AnnouncementDao;
+import com.acc.tools.ed.integration.dto.ReferenceData;
 import com.acc.tools.ed.integration.dto.SurveyQuestionnaire;
 import com.acc.tools.ed.integration.dto.SurveyQuestionnaireOptions;
 import com.acc.tools.ed.integration.dto.SurveySystem;
@@ -27,12 +28,13 @@ public class AnnouncementDaoImpl extends AbstractEdbDao implements AnnouncementD
   public void addQuestion(SurveyQuestionnaire questionnaire){
     try {
     	
-	      final String questionnaireTable = "insert into EDB_QSTNER(QSTNER_QUEST,QSTNER_TYP,QSTNER_ANS,QSTNER_CRT_DT) values (?,?,?,?)";
+	      final String questionnaireTable = "insert into EDB_QSTNER(ANCMNT_ID,QSTNER_QUEST,QSTNER_TYP,QSTNER_ANS,QSTNER_CRT_DT) values (?,?,?,?,?)";
 	      PreparedStatement preparedStatement = getConnection().prepareStatement(questionnaireTable);
-	      preparedStatement.setString(1, questionnaire.getQuestionDescription());
-	      preparedStatement.setString(2, questionnaire.getQuestionType());
-	      preparedStatement.setString(3, questionnaire.getAnswers());
-	      preparedStatement.setString(4, new LocalDateTime().toString("yyyy-MM-dd"));
+	      preparedStatement.setInt(1, questionnaire.getAnnouncementId());
+	      preparedStatement.setString(2, questionnaire.getQuestionDescription());
+	      preparedStatement.setString(3, questionnaire.getQuestionType());
+	      preparedStatement.setString(4, questionnaire.getAnswers());
+	      preparedStatement.setString(5, new LocalDateTime().toString("yyyy-MM-dd"));
 	      preparedStatement.executeUpdate();
 	      preparedStatement.close();
 	
@@ -63,10 +65,14 @@ public class AnnouncementDaoImpl extends AbstractEdbDao implements AnnouncementD
 
 	public void addAnnouncement(SurveySystem surveySystem) {
 	    try {
-			final String announcementTable = "insert into EDB_ANCMNTS(ANCMNT_DESC,ANCMNT_CRT_DT) values (?,?)";
+			final String announcementTable = "insert into EDB_ANCMNTS(ANCMNT_SUB,ANCMNT_DESC,ANCMNT_CRT_DT,ANCMNT_PUB,ANCMNT_STTM,QUIZ_ST_DTM) values (?,?,?,?,?,?)";
 			PreparedStatement preparedStatement = getConnection().prepareStatement(announcementTable);
-			preparedStatement.setString(1, surveySystem.getAnnouncementHTMLData());
-			preparedStatement.setString(2, new LocalDateTime().toString("yyyy-MM-dd"));
+			preparedStatement.setString(1, surveySystem.getAnnouncementSubject());
+			preparedStatement.setString(2, surveySystem.getAnnouncementHTMLData());
+			preparedStatement.setString(3, new LocalDateTime().toString("yyyy-MM-dd"));
+			preparedStatement.setBoolean(4, surveySystem.isAnnouncementPublished());
+			preparedStatement.setBoolean(5, surveySystem.isSetTime());
+			preparedStatement.setString(6, surveySystem.getQuizStartDateTime());			
 			preparedStatement.executeUpdate();
 			preparedStatement.close();
 	    }
@@ -75,17 +81,66 @@ public class AnnouncementDaoImpl extends AbstractEdbDao implements AnnouncementD
 	    }
 
 	}
+	
+	public void editAnnouncement(SurveySystem surveySystem) {
+	    try {
+			final String announcementTable = "UPDATE EDB_ANCMNTS SET ANCMNT_DESC =?,ANCMNT_CRT_DT=?,ANCMNT_PUB=?,ANCMNT_STTM=?,QUIZ_ST_DTM=? WHERE ANCMNT_ID=?";
+			PreparedStatement preparedStatement = getConnection().prepareStatement(announcementTable);
+			preparedStatement.setString(1, surveySystem.getAnnouncementHTMLData());
+			preparedStatement.setString(2, new LocalDateTime().toString("yyyy-MM-dd"));
+			preparedStatement.setBoolean(3, surveySystem.isAnnouncementPublished());
+			preparedStatement.setBoolean(4, surveySystem.isSetTime());
+			preparedStatement.setString(5, surveySystem.getQuizStartDateTime());
+			preparedStatement.setInt(6, surveySystem.getAnnouncementSubjectId());
+			preparedStatement.executeUpdate();
+			preparedStatement.close();
+	    }
+	    catch(Exception e){
+	    	log.error("Error Updating into EDB_ANCMNTS table -", e);
+	    }
 
-	public SurveySystem getAnnouncement() {
+	}
+	
+	public List<ReferenceData> getAllAnnouncementSubjects(){
+		
+		final List<ReferenceData> subjects=new ArrayList<ReferenceData>();
+		final String query="select * from EDB_ANCMNTS ";
+		
+		try {
+			Statement stmt=getConnection().createStatement();
+			ResultSet rs=stmt.executeQuery(query);
+			while(rs.next()){
+				ReferenceData refData=new ReferenceData();
+				refData.setId(""+rs.getInt("ANCMNT_ID"));
+				refData.setLabel(rs.getString("ANCMNT_SUB"));
+				subjects.add(refData);
+			}
+			log.debug("No. of available subjects:{}", subjects.size());
+			
+		} catch (Exception e) {
+			log.error("Error fetching rows from EDB_ANCMNTS table -", e);
+		}
+		
+		return subjects;
+		
+	}
+
+	public SurveySystem getAnnouncement(Integer announcementId) {
 		final SurveySystem surveySystem=new SurveySystem();
-		final String query="select ANCMNT_DESC from EDB_ANCMNTS";
+		String query="select * from EDB_ANCMNTS WHERE ANCMNT_ID="+announcementId;
+		log.debug("Announcements by Id query :{}",query);
 		
 		try {
 			Statement stmt=getConnection().createStatement();
 			ResultSet rs=stmt.executeQuery(query);
 			while(rs.next()){
 				surveySystem.setAnnouncementHTMLData(rs.getString("ANCMNT_DESC"));
+				surveySystem.setAnnouncementCreateDate(rs.getString("ANCMNT_CRT_DT"));
+				surveySystem.setAnnouncementPublished(rs.getBoolean("ANCMNT_PUB"));
+				surveySystem.setSetTime(rs.getBoolean("ANCMNT_STTM"));
+				surveySystem.setQuizStartDateTime(rs.getString("QUIZ_ST_DTM"));
 			}
+			log.debug("Announcement details:{}|{}|{}|{}|{}|{}",new Object[]{announcementId,surveySystem.getAnnouncementHTMLData(),surveySystem.getAnnouncementCreateDate(),surveySystem.isAnnouncementPublished(),surveySystem.isSetTime(),surveySystem.getQuizStartDateTime()});
 			
 		} catch (Exception e) {
 			log.error("Error fetching rows from EDB_ANCMNTS table -", e);
@@ -93,10 +148,37 @@ public class AnnouncementDaoImpl extends AbstractEdbDao implements AnnouncementD
 		return surveySystem;
 		
 	}
-
-	public List<SurveyQuestionnaire> getQuestionnaire() {
+	
+	public SurveySystem getPublishedAnnouncement() {
+		final SurveySystem surveySystem=new SurveySystem();
+		String query="select * from EDB_ANCMNTS WHERE ANCMNT_PUB=true";
+		log.debug("Announcements query :{}",query);
 		
-		final String query="SELECT EDB_QSTNER.*, EDB_QSTNER_OPTN.* FROM EDB_QSTNER INNER JOIN EDB_QSTNER_OPTN ON EDB_QSTNER.QSTNER_ID = EDB_QSTNER_OPTN.QSTNER_ID";
+		try {
+			Statement stmt=getConnection().createStatement();
+			ResultSet rs=stmt.executeQuery(query);
+			while(rs.next()){
+				surveySystem.setAnnouncementSubjectId(rs.getInt("ANCMNT_ID"));
+				surveySystem.setAnnouncementHTMLData(rs.getString("ANCMNT_DESC"));
+				surveySystem.setAnnouncementCreateDate(rs.getString("ANCMNT_CRT_DT"));
+				surveySystem.setAnnouncementPublished(rs.getBoolean("ANCMNT_PUB"));
+				surveySystem.setSetTime(rs.getBoolean("ANCMNT_STTM"));
+				surveySystem.setQuizStartDateTime(rs.getString("QUIZ_ST_DTM"));
+			}
+			log.debug("Announcement details:{}|{}|{}|{}|{}",new Object[]{surveySystem.getAnnouncementHTMLData(),surveySystem.getAnnouncementCreateDate(),surveySystem.isAnnouncementPublished(),surveySystem.isSetTime(),surveySystem.getQuizStartDateTime()});
+			
+		} catch (Exception e) {
+			log.error("Error fetching rows from EDB_ANCMNTS table -", e);
+		}
+		return surveySystem;
+		
+	}
+	
+
+
+	public List<SurveyQuestionnaire> getQuestionnaire(Integer announcementId) {
+		
+		final String query="SELECT Q.*, O.* FROM EDB_QSTNER Q INNER JOIN EDB_QSTNER_OPTN O ON Q.QSTNER_ID = O.QSTNER_ID WHERE Q.ANCMNT_ID="+announcementId;
 		
 		Map<Integer,SurveyQuestionnaire> questionMap=new HashMap<Integer, SurveyQuestionnaire>();
 		try {

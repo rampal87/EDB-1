@@ -9,6 +9,7 @@
 <link rel="stylesheet" href="<%=request.getContextPath()%>/css/style-popup.css">
 <link rel="stylesheet" href="<%=request.getContextPath()%>/css/jquery.dataTables.css">
 <link rel="stylesheet" href="<%=request.getContextPath()%>/css/default.min.css"/>
+<link rel="stylesheet" href="<%=request.getContextPath()%>/css/jquery.sceditor.default.min.css"/>
 
 <!-- javascripts -->
 <script src="<%=request.getContextPath()%>/script/libs/jquery-1.10.2.js"></script>
@@ -19,29 +20,3 @@
 <script src="<%=request.getContextPath()%>/script/submenu-actions.js"></script>
 <script src="<%=request.getContextPath()%>/script/projectmanagement-actions.js"></script>
 
-
-<!-- datepicker for all pages -->
- <script>  
- $(function() {
-	 $( "#startDate" ).datepicker({
-		 onSelect: function (date) {
-             var date2 = $('#startDate').datepicker('getDate');
-             date2.setDate(date2.getDate() + 1);
-             $('#endDate').datepicker('setDate', date2);
-             //sets minDate to dt1 date + 1
-             $('#endDate').datepicker('option', 'minDate', date2);
-         }
-	 });
-	 $( "#endDate" ).datepicker({
-		 onClose: function () {
-             var dt1 = $('#startDate').datepicker('getDate');
-             var dt2 = $('#endDate').datepicker('getDate');
-             if (dt2 <= dt1) {
-                 var minDate = $('#endDate').datepicker('option', 'minDate');
-                 $('#endDate').datepicker('setDate', minDate);
-             }
-         }
-	 });
-	 	 
-	});  
- </script>

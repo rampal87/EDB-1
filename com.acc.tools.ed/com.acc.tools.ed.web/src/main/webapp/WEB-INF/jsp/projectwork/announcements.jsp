@@ -24,17 +24,25 @@
 	 });
 
 	$("#takeQize").button().unbind("click").on("click", function() {
+		alert("${surveySystemForm.announcementCreateDate}");
+		var quizdatetime="${surveySystemForm.announcementCreateDate}".split(" ");
+		var quizdate=quizdatetime[0].split("-");
+		var quiztime=quizdatetime[1].split(":");
+		alert(new Date(quizdate[0],quizdate[1],quizdate[2],quiztime[0],quiztime[1],quiztime[2],00));
+		alert("comapare announcementCreateDate with current time and then open the quiz popup!")
 		 takeQizeDialog.dialog("open");	 
 	});
 	 
 });
 </script>
-<div style="border-color: blue;border-width: 1px;border-style: solid;">Announcement Details</div>
+<div style="border-color: #999999;border-width: 1px;border-style: solid;height: 250px;overflow: auto;">${surveySystemForm.announcementHTMLData}</div></div>
 
-<a href="#" class="button" id="takeQize" style="width: 100px;">Take Quize</a>
+<div style="background: #b5cfd2 url('../resources/cell-blue.jpg');background-repeat: repeat-x;border-style: solid;border-color: #999999;border-width: 1px;">
+	<a href="#" class="button" id="takeQize" style="width: 100px;margin-left: 450px;">Take Quiz</a>
+</div>
 
 <div id="takeQize-popup" title="Take Quize">
-	<form:form commandName="surveySystemForm" action="surveySystem.do">
+	<form:form commandName="surveySystemForm" action="surveyResponse.do">
 		<table class="ebdtable" style="width: 100%">
 			<tr>
 			    <th colspan="4">Questions</th>

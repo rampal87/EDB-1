@@ -11,6 +11,7 @@ public class SurveyQuestionnaire implements Serializable {
 	 */
 	private static final long serialVersionUID = 1L;
 	
+	private int announcementId;
 	private int questionId;
 	private String questionDescription;
 	private List<SurveyQuestionnaireOptions> questionOptions;
@@ -53,5 +54,11 @@ public class SurveyQuestionnaire implements Serializable {
 	}
 	public void setAnswers(String answers) {
 		this.answers = answers;
+	}
+	public int getAnnouncementId() {
+		return announcementId;
+	}
+	public void setAnnouncementId(int announcementId) {
+		this.announcementId = announcementId;
 	}
 }
