@@ -237,7 +237,7 @@
 						'<td width="80px"></td>'+
 						'<td width="80px">% </td>'+
 						'<td width="180px;" id="compResName">'+response[obj].resourceName+'</td>'+
-						'<td width="295px"></td>'+
+						'<td width="295px">'+response[obj].workDesc+'</td>'+
 						'<td><img alt="edit project" src="./resources/edit.gif"	width="20px;"></td>'+
 						'<td><img alt="delete project" src="./resources/delete.gif"	width="20px;"></td></tr>';
 					}
@@ -277,7 +277,7 @@
 			var compRelease=$("#releases").val();
 			$.ajax({
 				type : "POST",
-				url : "./getCompStEnDate.do",
+				url : "./getCompDetails.do",
 				data : {cmpName:compName,
 						cmpPhase:compPhase,
 						cmpRelease:compRelease,
@@ -289,13 +289,40 @@
 						$("#compStartDate").attr('disabled','disabled');
 						$('#compEndDate').val(response[2]);
 						$("#compEndDate").attr('disabled','disabled');
+						$('#functionalDesc').val(response[3]);
+						$("#functionalDesc").attr('disabled','disabled');
+						
 					} else {
 						$("#compStartDate").removeAttr('disabled');
 						$("#compEndDate").removeAttr('disabled');
+						$("#functionalDesc").removeAttr('disabled');
+						$('#compStartDate').val('');
+						$('#compEndDate').val('');
+						$('#compEndDate').val('');
 					}
 				}
 		});
 	});
+		
+		$("#compResourceList").unbind("change").on("change",function(){
+			var selCompName=$("#componentName").val();
+			var selCompPhase=$("#componentPhase  option:selected").text();
+			var selResource=$("#compResourceList  option:selected ").text();
+			
+			$("#componentTable tr").each(function () {
+		        var this_row = $(this);
+		        var tabCompName = $.trim(this_row.find('td:eq(0)').html());
+		        var tabCompPhase = $.trim(this_row.find('td:eq(1)').html());
+		        var tabResource = $.trim(this_row.find('td:eq(7)').html());
+		        
+		        if(selCompName==tabCompName && selCompPhase==tabCompPhase && selResource==tabResource){
+		        	alert(tabResource+" is already working on "+selCompPhase +" of component "+ selCompName);
+					$('#compResourceList').val(0);
+		        }
+		    });
+			
+		});
+		
 });
 	 
 	 function setCharAt(str,index,chr) {
@@ -470,7 +497,26 @@
 	        	<c:forEach var="component" items="${viewProjRelDetails.releases[0].components}">
 					<tr>
 						<td width="160px;" id="compName">${component.componentName}</td>
-						<td width="160px">${component.phaseId}</td>
+						<td width="160px">
+						<c:forEach var = "cphase" items="${component.phaseId}">
+									<c:choose>
+										<c:when test="${cphase.trim() =='1'}">
+											Analysis
+										</c:when>
+										<c:when test="${cphase.trim() =='2'}">
+											Design
+										</c:when>
+										<c:when test="${cphase.trim() =='3'}">
+											Build
+										</c:when>
+										<c:when test="${cphase.trim() =='4'}">
+											Test
+										</c:when>
+										<c:otherwise>
+											Support
+										</c:otherwise>
+									</c:choose>
+						</c:forEach></td>
 						<td width="295px;" id="compFuncDesc"><div style="height:20px;display:table-cell;vertical-align:middle;">${component.functionalDesc}</div></td>
 						<td awidth="80px;" id="comStDate">${component.startDate}</td>
 						<td width="80px;" id="compEtDate">${component.endDate}</td>

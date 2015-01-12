@@ -182,9 +182,9 @@ public class ProjectManagementControlller extends AbstractEdbBaseController {
 		ProjectForm planData = getProjectManagementService().getProjectPlanDetails(addReleaseForm.getReleaseId(), addReleaseForm.getProjectId());
 		
 		LOG.debug("Result Data -> Project Id:[{}] Release Id:[{}]",planData.getProjectId(),planData.getReleases().get(0).getReleaseId());
-		for(ComponentForm cf:planData.getReleases().get(0).getComponents()){
+		/*for(ComponentForm cf:planData.getReleases().get(0).getComponents()){
 			LOG.debug("Component Name:[{}] Resource:[{}]",cf.getComponentName(),cf.getResourceName());
-		}
+		}*/
 		
 		model.addAttribute("viewProjRelDetails", planData);
 		
@@ -208,8 +208,8 @@ public class ProjectManagementControlller extends AbstractEdbBaseController {
 		return planData.getReleases().get(0).getComponents();		
 	}
 	
-	@RequestMapping(value = "/getCompStEnDate.do")
-	public @ResponseBody List<Object> getComponentDates(
+	@RequestMapping(value = "/getCompDetails.do")
+	public @ResponseBody List<Object> getComponentDetails(
 			@RequestParam("cmpName") String componentName,
 			@RequestParam("cmpPhase") Integer phaseId,
 			@RequestParam("cmpRelease") Integer releaseId,

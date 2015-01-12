@@ -260,7 +260,7 @@ public class ProjectManagementDaoImpl extends AbstractEdbDao implements ProjectM
                                 }
                                 projectPlanData.getReleases().add(release);
                                 final ComponentForm component = new ComponentForm();
-                                mapComponentData(rs,release,component);
+//                                mapComponentData(rs,release,component);
                                 releaseMap.put(rReleaseId, release);
                                 
                             }
@@ -553,7 +553,7 @@ public List<ReferenceData> editRelease(String releaseId,String editRelArti,Strin
 		try{
 			//Employee table
 			final StringBuffer compEmpTable=new StringBuffer();
-			compEmpTable.append("SELECT COMPNT_ID,COMPNT_ST_DT,COMPNT_END_DT FROM EDB_PROJ_COMPNT WHERE COMPNT_NAME='");
+			compEmpTable.append("SELECT COMPNT_ID,COMPNT_ST_DT,COMPNT_END_DT,COMPNT_FUNC_DESC FROM EDB_PROJ_COMPNT WHERE COMPNT_NAME='");
 			compEmpTable.append(componentName);
 			compEmpTable.append("' AND COMPNT_PHASE=");
 			compEmpTable.append(phaseId);
@@ -567,6 +567,7 @@ public List<ReferenceData> editRelease(String releaseId,String editRelArti,Strin
 				componentDet.add(r1.getInt("COMPNT_ID"));
 				componentDet.add(r1.getDate("COMPNT_ST_DT"));
 				componentDet.add(r1.getDate("COMPNT_END_DT"));
+				componentDet.add(r1.getString("COMPNT_FUNC_DESC"));
 			}
 			else {
 				componentDet.add(0);
