@@ -21,11 +21,29 @@ public class ProjectWorkServiceImpl implements ProjectWorkService {
 		return projectWorkDao.getMyTasks(userId);
 	}
 
-	public List<ComponentForm> addTasks(TaskForm taskForm) {
+	public void  addTasks(TaskForm taskForm) {
 		
-		return projectWorkDao.addTasks(taskForm);
+		 projectWorkDao.addTasks(taskForm);
 	}
 	public List<ProjectForm> getMyTeamTasks(String supervisorId){
 		return projectWorkDao.getMyTeamTasks(supervisorId);
 	}
+	
+	public void deleteTasks(int taskId) {
+		
+		projectWorkDao.deleteTasks(taskId);
+	}
+	public List<TaskForm> editTasks(int taskId) {
+		
+		return projectWorkDao.editTasks(taskId);
+	}
+	public void saveTasks(TaskForm taskForm) {
+		
+		projectWorkDao.saveTasks(taskForm);
+	}
+	public TaskForm retrieveTasks() {
+		
+		return projectWorkDao.retrieveTasks();
+	}
+
 }

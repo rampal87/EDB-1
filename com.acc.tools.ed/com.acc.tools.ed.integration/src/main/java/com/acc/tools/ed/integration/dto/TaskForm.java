@@ -18,9 +18,9 @@ public class TaskForm implements Serializable {
 	private String taskAction;
 	private String rejComment;
 	private String taskReviewUser;
-	private DateTime taskCreateDate;
-	private DateTime taskStartDate;
-	private DateTime taskEndDate;
+	private String taskCreateDate;
+	private String taskStartDate;
+	private String taskEndDate;
 	private String existingTask;
 	private String newTaskName;
 	private String newTaskId;
@@ -106,27 +106,27 @@ public class TaskForm implements Serializable {
 		this.taskReviewUser = taskReviewUser;
 	}
 
-	public DateTime getTaskCreateDate() {
+	public String getTaskCreateDate() {
 		return taskCreateDate;
 	}
 
-	public void setTaskCreateDate(DateTime taskCreateDate) {
+	public void setTaskCreateDate(String taskCreateDate) {
 		this.taskCreateDate = taskCreateDate;
 	}
 
-	public DateTime getTaskStartDate() {
+	public String getTaskStartDate() {
 		return taskStartDate;
 	}
 
-	public void setTaskStartDate(DateTime taskStartDate) {
+	public void setTaskStartDate(String taskStartDate) {
 		this.taskStartDate = taskStartDate;
 	}
 
-	public DateTime getTaskEndDate() {
+	public String getTaskEndDate() {
 		return taskEndDate;
 	}
 
-	public void setTaskEndDate(DateTime taskEndDate) {
+	public void setTaskEndDate(String taskEndDate) {
 		this.taskEndDate = taskEndDate;
 	}
 

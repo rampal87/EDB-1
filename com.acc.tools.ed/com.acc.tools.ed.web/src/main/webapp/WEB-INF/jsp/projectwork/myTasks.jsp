@@ -61,7 +61,8 @@
 								</tr>
 								<tr id="component${component.componentId}" class="taskData">
 									<td colspan="7" style="background-color: white;">
-										<table class="innertable1" style="width: 100%;">
+										<table class="innertable1" id="taskTable${component.componentId}">
+										  <tbody>
 											<tr>
 												<th style="width: 150px;">Task Name</th>
 												<th style="width: 220px;">Task Description</th>
@@ -75,18 +76,21 @@
 											 <c:forEach var="tasks" items="${component.taskFormList}">
 											 <c:choose>
         										<c:when test="${fn:length(component.taskFormList) gt 0}">
-													<tr>
-														<td>${tasks.taskName}</td>
+													<tr id="taskDatta_${tasks.taskId}" style="width: 100%;">
+														<td>${tasks.taskName}
+														<input type="hidden" id="taskIdValue" value="${tasks.taskId}"/>
+														</td>
 														<td>${tasks.taskDesc}</td>
 														<td>${tasks.taskHrs}</td>
 														<td>${tasks.taskCreateDate}</td>
-														<td>${tasks.taskStatus}</td>
+														<td>${tasks.taskAction}</td>
 														<td>${tasks.taskReviewUser}</td>
 														<td>${tasks.rejComment}</td>
-														<td><img alt="edit project" src="./resources/edit.gif"
-						width="20px;"></td>
-														<td><img alt="delete project" src="./resources/delete.gif"
-						width="20px;"></td>
+														<td><a href="#"  id="editTask" onclick="edit('${tasks.taskId}');"><img alt="edit project" src="./resources/edit.gif"
+						width="20px;"></a>
+											</td>
+														<td><a href="#"  id="deleteTask" onclick="deleteTask('${tasks.taskId}');"><img alt="delete project" src="./resources/delete.gif"
+						width="20px;"></a></td>
 													</tr>
 													</c:when>
 													<c:otherwise>
@@ -96,6 +100,7 @@
 													</c:otherwise>
 													</c:choose>
 											</c:forEach>
+											</tbody>
 										</table>
 									</td>
 								</tr>
@@ -106,7 +111,7 @@
 			</c:forEach>
 		</c:forEach>
 	</table>
-	
+	<input type="hidden" id="popupDisplay"/>
 	<!-- Add Task Popup -->
 	<div id="addTaskPanel" title="Add Tasks" edbUser="${edbUser.employeeId}">
 	<form:form commandName="addTaskForm" id="addTaskForm">
@@ -127,7 +132,7 @@
 					</tr>
 					<tr>
 					<th style="text-align: right;">Task Name</th>
-						<td>
+						<td id="taskNamePosition">
 						<select id="taskNameSelect" >
 								<option value=""></option>
 								<option value="0">-- Select --</option>
@@ -137,7 +142,8 @@
 								<td>
 								<div id="newTask" style="display: none;">
 									<form:input type="text" path="taskName" id="taskName" class="textbox" />
-									<form:hidden path="componentId" id="componentId"/>					
+									<form:hidden path="componentId" id="componentId"/>	
+									<form:hidden path="taskId" id="taskId"/>					
 								</div>
 								</td>
 					</tr>
@@ -217,7 +223,7 @@
 			</div>	
 		</fieldset>
 		</form:form>
-	</div>			
+	</div>	
 </body>
 </html>
 

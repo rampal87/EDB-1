@@ -45,7 +45,7 @@ public class AbstractEdbDao {
         component.setFunctionalDesc(rs.getString("COMPNT_FUNC_DESC"));
         component.setResourceId(rs.getInt("EMP_ID"));
         component.setResourceName(rs.getString("EMP_RESOURCE_NAME"));
-        component.setWorkDesc(rs.getString("WORK_DESC"));
+       /* component.setWorkDesc(rs.getString("WORK_DESC"));*/
         component.setPhaseId(rs.getString("COMPNT_PHASE"));
         SimpleDateFormat sdf2 = new SimpleDateFormat("yyyy-MM-dd hh:mm:ss");
         String cStDt = rs.getString("COMPNT_ST_DT");
@@ -82,18 +82,18 @@ public class AbstractEdbDao {
         }
 	}
 	
-	public void mapTaskData(ResultSet rs,TaskForm taskForm,Integer componentId) throws SQLException{
+	public void mapTaskData(ResultSet rs,TaskForm taskForm,Integer componentId,Integer taskId) throws SQLException{
+		taskForm.setTaskId(taskId);
 		taskForm.setTaskName(rs.getString("TASK_NAME"));
 		taskForm.setComponentId(componentId);
 		taskForm.setTaskDesc(rs.getString("TASK_DESC"));
 		taskForm.setTaskHrs(rs.getInt("TASK_HRS"));
 		taskForm.setTaskStatus(rs.getString("TASK_STATUS"));
 		taskForm.setTaskType(rs.getString("TASK_TYPE"));
-		//taskForm.setTaskAction(rs.getString("TASK_ACTIONS"));
-		//taskForm.setRejComment(rs.getString("TASK_REVIEW_COMMENTS"));
-		//taskForm.setTaskCreateDate(new DateTime(rs.getString("TASK_CT_DT")));
-		//taskForm.setTaskReviewUser(rs.getString("TASK_REVIEW_USER"));
-	    //TO DO:Set create date,start date and end date time if displaying
+		taskForm.setTaskAction(rs.getString("TASK_ACTIONS"));
+		taskForm.setRejComment(rs.getString("TASK_REVIEW_COMMENTS"));
+		taskForm.setTaskCreateDate(rs.getString("TASK_CT_DT"));
+		taskForm.setTaskReviewUser(rs.getString("TASK_REVIEW_USER"));
 	}
 	
 	public void mapReleaseData(ResultSet rs,ProjectForm project,ReleaseForm release,Integer releaseId) throws SQLException{

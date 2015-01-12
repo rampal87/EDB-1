@@ -7,11 +7,13 @@ $(document).ready(
 			width : 650,
 			modal : true,
 			buttons : {
-				"Add Task" : function() {
-
+				"Add Task" :  {
+					text:"Add Task",
+					id:"addTaskButton",
+					click:function(){
 					var cId = $('#addTaskPanel').data('param');
 					var uId = $('#addTaskPanel').attr("edbUser");
-					$("#componentId").val(cId);
+					//$("#componentId").val(cId);
 					$.ajax({
 						type : "POST",
 						url : "./addTask.do",
@@ -20,8 +22,7 @@ $(document).ready(
 						beforeSend : function() {
 						},
 						success : function(response) {
-							$("#taskDiv").html(response);
-							$("#addTaskPanel").dialog("close");
+							$("#taskTable"+cId).append(response);
 						},
 						error : function(data) {
 							$("#addTaskPanel").dialog("close");
@@ -32,22 +33,77 @@ $(document).ready(
 							function(data)
 							{
 							reset();
+							$("#addTaskPanel").dialog("close");
 							}
 					});
+					}
+				},
+				"Edit Task" :  {
+					text:"Edit Task",
+					id:"editTaskButton",
+					click:function(){
+					var cId = $('#addTaskPanel').data('param');
+					var uId = $('#addTaskPanel').attr("edbUser");
+					var taskId= "taskDatta_"+$("#taskId").val();
+					$.ajax({
+						type : "POST",
+						url : "./saveTask.do",
+						data : 
+							$("#addTaskForm").serialize(),
+						beforeSend : function() {
+						},
+						success : function(response) {
+							$("#pwMainContainer #taskTable"+cId).find('tr[id="'+taskId+'"]').replaceWith(response);
+						},
+						error : function(data) {
+							$("#addTaskPanel").dialog("close");
+							$("#projectWorkMenu").click();
+
+						},
+						complete:
+							function(data)
+							{
+							$("#addTaskPanel").dialog("close");
+							reset();
+							}
+					});
+					}
 				},
 				Cancel : function() {
 					$("#addTaskPanel").dialog("close");
 					reset();
 				},
 			},
+			 open:function () {
+				 if($("#popupDisplay").val()=="edit")
+				 {
+					 $("#addTaskButton").hide();
+					 $("#editTaskButton").show();
+					 $("#taskNameSelect").attr('disabled',true);
+					
+				 }
+				 else
+				 {
+					 $("#addTaskButton").show();
+					 $("#editTaskButton").hide();
+					 $("#taskNameSelect").removeAttr('disabled');
+					 
+				 }
+			 }
 
 		});
 
 	
 		$(".addTaskPopup").unbind("click").on("click", function() {
 			var componentId=$(this).attr("id");
+			$("#popupDisplay").val('add');
 			$("#addTaskPanel").data('param', componentId).dialog('open');
+			
 		});
+		
+		
+		
+		
 										
 		
 		$(".componentData").hide();	
@@ -130,6 +186,68 @@ $("#taskAction").unbind("change").on("change",function(){
 		$("#div1").hide();
 }); 
 
+ function edit(taskId) {
+	$.ajax({
+		type : "POST",
+		url : "./editTask.do",
+		data :{taskId:taskId},
+		dataType : 'json',
+		beforeSend : function() {
+		},
+		success : function(response) {
+			for(var obj in response)
+			{
+				$("#taskId").val(response[obj].taskId);
+				$("#taskType").val(response[obj].taskType);
+				$("#newTask").show();
+				$("#taskName").val(response[obj].taskName);
+				$("#componentId").val(response[obj].componentId);
+				$("#taskDesc").val(response[obj].taskDesc);
+				$("#taskHrs").val(response[obj].taskHrs);
+				$("#taskCreateDate").val(response[obj].taskCreateDate);
+				$("#taskStartDate").val(response[obj].taskStartDate);
+				$("#taskEndDate").val(response[obj].taskEndDate);
+				$("#taskStatus").val(response[obj].taskStatus);
+				$("#taskAction").val(response[obj].taskAction);
+				if($("#taskAction").val()=="rejected")
+				{
+					$("#rejComment").val(response[obj].rejComment);
+					$("#rejComment").show();
+				}
+			}
+			$("#popupDisplay").val('edit');
+			$("#addTaskPanel").dialog("open");
+		},
+		error : function(data) {
+			$("#addTaskPanel").dialog("close");
+			$("#projectWorkMenu").click();
+
+		}
+		
+		
+	});
+}
+
+ function deleteTask(taskId) {
+	 var taskIdRow="taskDatta_"+taskId;
+	 var cId = $('#addTaskPanel').data('param');
+		$.ajax({
+			type : "POST",
+			url : "./deleteTask.do",
+			data :{taskId:taskId},
+			beforeSend : function() {
+			},
+			success : function(response) {
+				$("#pwMainContainer #taskTable"+cId).find('tr[id="'+taskIdRow+'"]').remove();
+			},
+			error : function(data) {
+				$("#projectWorkMenu").click();
+
+			}
+			
+		});
+
+	}
 function reset()
 {
 	$("#taskAction").val('');

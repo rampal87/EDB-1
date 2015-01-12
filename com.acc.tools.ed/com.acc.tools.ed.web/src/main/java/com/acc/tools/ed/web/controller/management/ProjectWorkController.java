@@ -13,6 +13,8 @@ import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.SessionAttributes;
 
 import com.acc.tools.ed.integration.dto.ComponentForm;
@@ -99,14 +101,53 @@ public class ProjectWorkController extends AbstractEdbBaseController {
 	@RequestMapping(value = "/addTask.do")
 	public  String addTask(@ModelAttribute("addTaskForm")TaskForm taskform,@ModelAttribute("edbUser")EDBUser edbUser,Model model) {
 		
+		LOG.debug("addTask:[{}]",taskform.getTaskName());
+		if(edbUser.getRole().equalsIgnoreCase("SUPERVISOR")||edbUser.getRole().equalsIgnoreCase("Lead")||edbUser.getRole().equalsIgnoreCase("MANAGER"))
+		{
+			taskform.setTaskReviewUser(edbUser.getEmployeeId());
+		}
+		else
+		{
+			taskform.setTaskReviewUser("");
+		}
+		getProjectWorkService().addTasks(taskform);
+		TaskForm taskData=projectWorkService.retrieveTasks();
+		taskform.setTaskId(taskData.getTaskId());
+		model.addAttribute("addTaskForm", taskform);
+		return "/projectwork/newTask";
+	}
+	
+	@RequestMapping(value = "/deleteTask.do")
+	public String deleteTask(@RequestParam("taskId") int taskId,Model model) {
+		
 		LOG.debug("Project Name:[{--}] addTask:[{}]");
-		taskform.setTaskReviewUser(edbUser.getEmployeeId());
-		List<ComponentForm> list = projectWorkService.addTasks(taskform);
-		model.addAttribute("componentList", list);
-		List<ProjectForm> projData =projectWorkService.getMyTasks(taskform.getTaskReviewUser());
-		model.addAttribute("projData", projData);
-		model.addAttribute("addTaskForm", new TaskForm());
-		return "/projectwork/index";
+		getProjectWorkService().deleteTasks(taskId);
+		return "/projectwork/newTask";
+	}
+	
+	@RequestMapping(value = "/editTask.do")
+	public @ResponseBody List<TaskForm> editTask(@RequestParam("taskId") int taskId,Model model) {
+		
+		LOG.debug("Project Name:[{--}] addTask:[{}]");
+		List<TaskForm> taskFormList = projectWorkService.editTasks(taskId);
+		return taskFormList;
+	}
+	
+	@RequestMapping(value = "/saveTask.do")
+	public String saveTask(@ModelAttribute("addTaskForm")TaskForm taskform,@ModelAttribute("edbUser")EDBUser edbUser,Model model) {
+		
+		LOG.debug("Project Name:[{--}] addTask:[{}]");
+		if(edbUser.getRole().equalsIgnoreCase("SUPERVISOR")||edbUser.getRole().equalsIgnoreCase("Lead")||edbUser.getRole().equalsIgnoreCase("MANAGER"))
+		{
+			taskform.setTaskReviewUser(edbUser.getEmployeeId());
+		}
+		else
+		{
+			taskform.setTaskReviewUser("");
+		}
+		getProjectWorkService().saveTasks(taskform);
+		model.addAttribute("addTaskForm", taskform);
+		return "/projectwork/newTask";
 	}
 	
 
