@@ -71,7 +71,7 @@
 												</tr>
 												<tr id="component${component.componentId}" class="taskData">
 													<td colspan="7" style="background-color: white;">
-														<table class="innertable1" style="width: 100%;">
+														<table class="innertable1" id="taskTable${component.componentId}" style="width: 100%;">
 															<tr>
 																<th style="width: 150px;">Task Name</th>
 																<th style="width: 220px;">Task Description</th>
@@ -82,19 +82,24 @@
 																<th style="width: 220px;">Review Comments</th>
 																<th colspan="2" style="width: 150px;">Actions</th>
 															</tr>
+														
 															 <c:forEach var="tasks" items="${component.taskFormList}">
 															 <c:choose>
 				        										<c:when test="${fn:length(component.taskFormList) gt 0}">
-																	<tr>
-																		<td>${tasks.taskName}</td>
+																	<tr id="taskDatta_${tasks.taskId}" style="width: 100%;">
+																		<td>${tasks.taskName}<input type="hidden" id="taskIdValue" value="${tasks.taskId}"/></td>
 																		<td>${tasks.taskDesc}</td>
 																		<td>${tasks.taskHrs}</td>
 																		<td>01/01/2015</td>
 																		<td>Submitted</td>
-																		<td></td>
-																		<td></td>
-																		<td></td>
-																		<td></td>
+																		<td>${tasks.taskReviewUser}</td>
+																		<td>${tasks.rejComment}</td>
+																		<td><a href="#"  id="editTask" onclick="edit('${tasks.taskId}');"><img alt="edit project" src="./resources/edit.gif"
+																			width="20px;"></a>
+																		</td>
+																		<td><a href="#"  id="deleteTask" onclick="deleteTask('${tasks.taskId}');"><img alt="delete project" src="./resources/delete.gif"
+																			width="20px;"></a>
+																		</td>
 																	</tr>
 																	</c:when>
 																	<c:otherwise>
@@ -118,7 +123,7 @@
 			</c:forEach>
 		</c:forEach>
 	</table>
-	
+	<input type="hidden" id="popupDisplay"/>
 	<!-- Add Task Popup -->
 	<div id="addTaskPanel" title="Add Tasks" edbUser="${edbUser.employeeId}">
 	<form:form commandName="addTaskForm" action="addTask.do">
@@ -172,19 +177,21 @@
 							<jstl:when
 								test="${(edbUser.role =='SUPERVISOR') || (edbUser.role =='Lead') || (edbUser.role =='MANAGER')}">
 								<th style="text-align: right;">Task Action</th>
-								<td><select name="taskAction"  onchange="action(this.value)">
-										<option value=""></option>
-										<option value="approved">Approved</option>
-										<option value="rejected">Rejected</option>
-								</select></td>
+								<td><form:select path="taskAction" id="taskAction"  style="width:135px;" multiple="false" >
+									<form:option value="" label="---Select---" />
+									<form:option value="approved" label="Approved" />
+    								<form:option value="rejected" label="Rejected" />
+								</form:select></td>
 								<td>
 									<div id="div1" style="display: none;">
-										<textarea name="rejComment">Enter text here</textarea>
+										<form:textarea style="overflow: auto; resize: none" rows="3" id="rejComment" path="rejComment"
+									cols="20" class="textarea" />
 									</div>
 								</td>
 							</jstl:when>
 							<jstl:otherwise>
-								<td><textarea name="comment">Enter text here</textarea></td>
+								<td><form:textarea style="overflow: auto; resize: none" id="rejComment" rows="3" path="rejComment"
+									cols="20" class="textarea" /></td>
 							</jstl:otherwise>
 						</jstl:choose>
 					</tr>
