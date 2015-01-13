@@ -13,7 +13,7 @@ $(document).ready(
 					click:function(){
 					var cId = $('#addTaskPanel').data('param');
 					var uId = $('#addTaskPanel').attr("edbUser");
-					//$("#componentId").val(cId);
+					$("#componentId").val(cId);
 					$.ajax({
 						type : "POST",
 						url : "./addTask.do",
