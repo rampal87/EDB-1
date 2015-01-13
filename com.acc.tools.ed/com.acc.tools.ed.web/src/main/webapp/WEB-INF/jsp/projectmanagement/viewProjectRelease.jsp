@@ -228,7 +228,7 @@
 				dataType : 'json',
 				success : function(response) {
 					var tableResp = '';
-					for(var obj in response) {
+					/* for(var obj in response) {
 						tableResp = '<tr><td width="165px;" id="compName">'+response[obj].componentName+'</td>'+
 						'<td width="160px"></td>'+
 						'<td width="385px;" id="compFuncDesc"><div style="height:20px;display:table-cell;vertical-align:middle;">'+response[obj].functionalDesc+'</div></td>'+
@@ -242,14 +242,14 @@
 						'<td><img alt="delete project" src="./resources/delete.gif"	width="20px;"></td></tr>';
 					}
 					
-					
+					 */
 					if($('#children').length){
 						$('#componentTable > tbody:first').append(tableResp);	
 					} else {
 						$("#noComponetMsg").hide();
 						$('#componentTable').append('<tbody>'+tableResp+'</tbody>');
 					}
-					
+					$("#releases").trigger("change");
 					
 				},
 				error : function(data) {	
@@ -298,7 +298,7 @@
 						$("#functionalDesc").removeAttr('disabled');
 						$('#compStartDate').val('');
 						$('#compEndDate').val('');
-						$('#compEndDate').val('');
+						$('#functionalDesc').val('');
 					}
 				}
 		});
