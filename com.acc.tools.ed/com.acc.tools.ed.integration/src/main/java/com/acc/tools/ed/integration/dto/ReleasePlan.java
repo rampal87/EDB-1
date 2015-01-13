@@ -6,7 +6,7 @@ import java.util.Map;
 public class ReleasePlan {
 		
 	//property which holds resource and their hours
-	private Map<String,List<Long>> resourcesAndHours;
+	private Map<ReferenceData,List<Long>> resourcesAndHours; 
 	
 	//property which holds month and its count of Days in the month
 	private Map<String,Long> monthsNoOfDays;
@@ -24,11 +24,11 @@ public class ReleasePlan {
 		this.weeklyTotalHours = weeklyTotalHours;
 	}
 
-	public Map<String, List<Long>> getResourcesAndHours() {
+	public Map<ReferenceData, List<Long>> getResourcesAndHours() {
 		return resourcesAndHours;
 	}
 
-	public void setResourcesAndHours(Map<String, List<Long>> resourcesAndHours) {
+	public void setResourcesAndHours(Map<ReferenceData, List<Long>> resourcesAndHours) {
 		this.resourcesAndHours = resourcesAndHours;
 	}
 

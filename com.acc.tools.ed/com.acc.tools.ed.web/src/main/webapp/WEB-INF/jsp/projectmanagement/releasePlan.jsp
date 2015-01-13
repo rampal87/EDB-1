@@ -3,7 +3,7 @@
 <%@taglib uri="http://java.sun.com/jsp/jstl/functions" prefix="fn"%>
 
 
-<tr> 
+<tr>
   <td colspan="4">
 
   <table style="overflow:scroll;">
@@ -28,8 +28,9 @@
 	  </jstl:forEach>
 	</tr>
 	 <jstl:forEach var="resourceHours" items="${releasePlan.resourcesAndHours}" varStatus="res">
-	  <tr>	 
-	     <td id="resource${res.index}">${resourceHours.key}</td>
+	  <tr>	 	    	
+	     <td id="resource${res.index}" >${resourceHours.key.label}</td>	
+	       <input type="hidden" id="resId${res.index}" value="${resourceHours.key.id}"></input>      
 	       <jstl:forEach var="hour" items="${resourceHours.value}" varStatus="days">
 	         <c:choose>
                 <c:when test="${hour=='0'}">

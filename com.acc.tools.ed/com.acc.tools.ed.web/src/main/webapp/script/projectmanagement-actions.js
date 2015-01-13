@@ -111,17 +111,16 @@
 									var jsonString = "{";
 									$.each(releaseForm,
 									    function(i, v) {
-										if(v.name=="releaseStartDate" || v.name=="releaseEndDate"){
-											var dataValue=new Date(v.value);
-											jsonString=jsonString+" \""+v.name+"\":\""+dataValue.yyyymmdd()+"\",";
+										 if(v.name=="releaseStartDate" || v.name=="releaseEndDate"){																															
+											jsonString=jsonString+" \""+v.name+"\":\""+$("input[id^='"+v.name+"']").val()+"\",";
 										} else {
 											jsonString=jsonString+" \""+v.name+"\":\""+v.value+"\",";
 										}
 									 });
 									jsonString=jsonString+"\"resourcesAndHours\" : {";
 									
-									for(var i=0; i<resources;i++){
-										jsonString=jsonString+"\""+$("#resource"+i).text()+"\": [";
+									for(var i=0; i<resources;i++){										
+										jsonString=jsonString+"\""+$("#resId"+i).val()+"\": [";
 										for(var j=0;j<days;j++){
 											if(i==(resources-1) && j==(days-1)){
 												jsonString=jsonString+"\""+$("#resDayHour"+i+j).val()+"\" ] }," ;
@@ -236,9 +235,10 @@
 						$("#createReleasePlan").unbind("click").on("click",function(){
 							var releaseStDt=$("#releaseStartDate").val();
 							var releaseEndDt=$("#releaseEndDate").val();
+							var projId = $("#projects").val();
 							$.ajax({
 								url : "./createReleasePlan.do",
-								data : "releaseStartDate="+releaseStDt+"&releaseEndDate="+releaseEndDt,									
+								data : "releaseStartDate="+releaseStDt+"&releaseEndDate="+releaseEndDt+"&projId="+projId,									
 								success : function(response) {
 									$('#release tr:last').after(response);
 								},

@@ -7,6 +7,7 @@ import java.util.List;
 import java.util.Map;
 
 import org.apache.commons.lang3.StringUtils;
+import org.joda.time.DateTime;
 import org.joda.time.LocalDate;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -20,7 +21,7 @@ import com.acc.tools.ed.integration.dto.ReleasePlan;
 import com.acc.tools.ed.integration.service.ProjectManagementService;
 import com.acc.tools.ed.integration.util.CalendarEnum;
 
-@Service("projectManagementService") 
+@Service("projectManagementService")
 public class ProjectManagementServiceImpl implements ProjectManagementService{
 	
 	@Autowired
@@ -32,47 +33,25 @@ public class ProjectManagementServiceImpl implements ProjectManagementService{
 	public List<ReferenceData> getProjectReleaseIds(String projectId){
 		return projectManagementDao.getProjectReleaseIds(projectId);
 	}
-
-	public ReleasePlan createReleasePlan(String releaseStartDate,String releaseEndDate){
-		/*LocalDate dateStart = new LocalDate(releaseStartDate);
-		LocalDate dateEnd = new LocalDate(releaseEndDate);
-		Map<String,Map<String,Map<String,String>>> resourceWeeksMap=new LinkedHashMap<String,Map<String,Map<String,String>>>();
-		Map<String,Map<String,String>> weeksMap=new LinkedHashMap<String,Map<String,String>>();
-		int weekIdCount=0;
-		int weekIdRunningCount=0;
-		String firstDayInWeek="Mon";
-		while(dateStart.isBefore(dateEnd)){
-			String dayType=dateStart.dayOfWeek().getAsShortText();
-			int dayId=CalendarEnum.getDayId(dayType);
-			if(weekIdCount==0 && !StringUtils.containsIgnoreCase("SunSat", dayType)){
-				weekIdCount=1;
-				firstDayInWeek=dayType;
-			} 
-			Map<String,String> weekDaysMap=weeksMap.get(weekIdCount+"-Week");
-			if(weekDaysMap==null){
-				weekDaysMap=new LinkedHashMap<String,String>();
-			}
-			weekDaysMap.put(dayType, dateStart.dayOfMonth().getAsString());
-			weeksMap.put(weekIdCount+"-Week",weekDaysMap);
-		    dateStart = dateStart.plusDays(1);
-			if(weekIdCount==0 && (dayId==6 || dayId==7)){
-				weekIdRunningCount++;
-				if(dayId==7){
-					weekIdCount++;
-					weekIdRunningCount=0;
-				}
-			} else if(weekIdRunningCount==CalendarEnum.getDaysInWeek(firstDayInWeek)-1){
-				weekIdCount++;
-				weekIdRunningCount=0;
-				firstDayInWeek=dateStart.dayOfWeek().getAsShortText();
-			} else {
-				weekIdRunningCount++;
-			}
-			
-		}
-		resourceWeeksMap.put("Developer A", weeksMap);
-		resourceWeeksMap.put("Developer B", weeksMap);
-		return resourceWeeksMap;*/
+    /**
+     * This method splits resource hours week wise before saving the release plan week wise.
+     */
+	public void addReleasePlan(ReleaseForm releaseForm, String empId,
+			LocalDate weekDateStart, LocalDate weekDateEnd, int dayFromIndex, int dayToIndex, boolean isLastWeek) {
+		 Long weeklyPlannedHr = 0L;	
+		 List<Long> hours = releaseForm.getResourcesAndHours().get(empId);
+		 List<Long> weekHourSubList = hours.subList(dayFromIndex, dayToIndex);
+		 for (Long hr : weekHourSubList) {
+			 if(hr!=null)
+			 weeklyPlannedHr = weeklyPlannedHr +hr;
+		  }		
+		projectManagementDao.addReleasePlan(releaseForm.getReleaseId(),empId,weekDateStart, weekDateEnd, weekHourSubList, weeklyPlannedHr, isLastWeek);
+	}
+	
+	public ReleasePlan createReleasePlan(String releaseStartDate,String releaseEndDate, Integer projId){
+		
+		List<ReferenceData> resourceDetails = projectManagementDao.getProjectResourceDetails(projId);
+		
 		LocalDate relDateStart = new LocalDate(releaseStartDate);
 		LocalDate dateStart = relDateStart;
 		System.out.println(CalendarEnum.getMonthName(dateStart.getMonthOfYear()));
@@ -85,9 +64,9 @@ public class ProjectManagementServiceImpl implements ProjectManagementService{
 		 dateStart = relDateStart;dateEnd = relDateEnd;
 		 calculateAndSetMonthsNoOfDays(dateStart, dateEnd, releasePlan);
 		 dateStart = relDateStart;dateEnd = relDateEnd;
-		 calculateAndSetResourceHours(dateStart, dateEnd, releasePlan);
+		 calculateAndSetResourceHours(dateStart, dateEnd,resourceDetails, releasePlan);
 		 dateStart = relDateStart;dateEnd = relDateEnd;
-		 calculateAndSetTotalHoursPerWeek(dateStart, dateEnd, releasePlan);
+		 calculateAndSetTotalHoursPerWeek(dateStart, dateEnd,resourceDetails, releasePlan);
 		
 		
 		
@@ -99,23 +78,16 @@ public class ProjectManagementServiceImpl implements ProjectManagementService{
 	}
 
 	private void calculateAndSetTotalHoursPerWeek(LocalDate dateStart,
-			LocalDate dateEnd, ReleasePlan releasePlan) {
+			LocalDate dateEnd, List<ReferenceData> resourceDetails, ReleasePlan releasePlan) {
 		 // List<Long> weeklyTotalHoursList = new ArrayList<Long>();
 		  List<String> weekTotHourStrList = new ArrayList<String>();	  
 		  Long weeklyTotalHours = 0L;
-		  String weekOfYear=dateStart.weekOfWeekyear().getAsShortText();
-		  List<String> resources = new ArrayList<String>();
+		  String weekOfYear=dateStart.weekOfWeekyear().getAsShortText();		
 		  Long noOfdaysInWeek = 0L;
-		  
-			resources.add("DeveloperA");
-			resources.add("DeveloperB");
-			if(StringUtils.containsIgnoreCase("SunSat", dateStart.dayOfWeek().getAsShortText())){
-				dateStart.plusDays(1);
-			}
-		  
+		  					  
 			while(dateStart.isBefore(dateEnd) || dateStart.equals(dateEnd)){
 				
-		      for (int i = 0; i < resources.size(); i++) {
+		      for (int i = 0; i < resourceDetails.size(); i++) {
 				
 				if(weekOfYear.equalsIgnoreCase(dateStart.weekOfWeekyear().getAsShortText())){
 			           if(!StringUtils.containsIgnoreCase("SunSat", dateStart.dayOfWeek().getAsShortText())){
@@ -128,7 +100,7 @@ public class ProjectManagementServiceImpl implements ProjectManagementService{
 				           }
 				else{	
 					//weeklyTotalHoursList.add(weeklyTotalHours);
-					weekTotHourStrList.add(String.valueOf(noOfdaysInWeek/resources.size())+"~"+weeklyTotalHours);
+					weekTotHourStrList.add(String.valueOf(noOfdaysInWeek/resourceDetails.size())+"~"+weeklyTotalHours);
 					noOfdaysInWeek = 1L;
 					weeklyTotalHours = 9L;  
 					weekOfYear=dateStart.weekOfWeekyear().getAsShortText();
@@ -138,32 +110,29 @@ public class ProjectManagementServiceImpl implements ProjectManagementService{
 		          }	
 		      dateStart=dateStart.plusDays(1);
 			 }
-			weekTotHourStrList.add(String.valueOf(noOfdaysInWeek/resources.size())+"~"+weeklyTotalHours);
+			weekTotHourStrList.add(String.valueOf(noOfdaysInWeek/resourceDetails.size())+"~"+weeklyTotalHours);
 			//weeklyTotalHoursList.add(weeklyTotalHours);
 			releasePlan.setWeeklyTotalHours(weekTotHourStrList);
 			
 		
 	}
 	private void calculateAndSetResourceHours(LocalDate dateStart,
-			LocalDate dateEnd, ReleasePlan releasePlan) {
-		Map<String,List<Long>> resourcesAndHours = new LinkedHashMap<String, List<Long>>();
-		List<String> resources = new ArrayList<String>();
+			LocalDate dateEnd, List<ReferenceData> resourceDetails, ReleasePlan releasePlan) {
+		Map<ReferenceData,List<Long>> resourcesAndHours = new LinkedHashMap<ReferenceData, List<Long>>();		
 		LocalDate tempDateStart;
 		LocalDate tempDateEnd;
 		
 		String weekOfYear=dateStart.weekOfWeekyear().getAsShortText();
 		
-		resources.add("DeveloperA");
-		resources.add("DeveloperB");
+
 		
-		if(StringUtils.containsIgnoreCase("SunSat", dateStart.dayOfWeek().getAsShortText())){
-			dateStart.plusDays(1);
-		}
+
 		
-		for (String resource : resources) {	
+		for (ReferenceData resource : resourceDetails) {	
 			List<Long> tempHours = new ArrayList<Long>();
 			tempDateStart = dateStart;
 			tempDateEnd = dateEnd;
+			weekOfYear = tempDateStart.weekOfWeekyear().getAsShortText();
 		while(tempDateStart.isBefore(tempDateEnd) || tempDateStart.equals(tempDateEnd)){
 				
 				if(weekOfYear.equalsIgnoreCase(tempDateStart.weekOfWeekyear().getAsShortText())){
@@ -195,9 +164,6 @@ public class ProjectManagementServiceImpl implements ProjectManagementService{
 		int year = dateStart.getYear();
 		Long days = 0L;
 		
-		if(StringUtils.containsIgnoreCase("SunSat", dateStart.dayOfWeek().getAsShortText())){
-			dateStart.plusDays(1);
-		}
 		
 		while(dateStart.isBefore(dateEnd) || dateStart.equals(dateEnd)){
 			if(month.equalsIgnoreCase(dateStart.monthOfYear().getAsShortText())){				
@@ -222,9 +188,7 @@ public class ProjectManagementServiceImpl implements ProjectManagementService{
 		List<String> days = new ArrayList<String>();
 		String weekOfYear=dateStart.weekOfWeekyear().getAsShortText();
 		Long weekCount = 0L;
-		if(StringUtils.containsIgnoreCase("SunSat", dateStart.dayOfWeek().getAsShortText())){
-			dateStart.plusDays(1);
-		}
+		
 		while(dateStart.isBefore(dateEnd) || dateStart.equals(dateEnd)){
 			if(weekOfYear.equalsIgnoreCase(dateStart.weekOfWeekyear().getAsShortText())){
 			weekOfYear =dateStart.weekOfWeekyear().getAsShortText();

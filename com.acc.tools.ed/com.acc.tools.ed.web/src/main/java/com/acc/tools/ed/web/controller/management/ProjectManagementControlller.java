@@ -2,11 +2,14 @@ package com.acc.tools.ed.web.controller.management;
 
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import org.apache.commons.lang3.StringUtils;
 import org.joda.time.DateTime;
+import org.joda.time.LocalDate;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Controller;
@@ -28,7 +31,7 @@ import com.acc.tools.ed.web.controller.common.AbstractEdbBaseController;
 
 @Controller
 @SessionAttributes({ "edbUser" }) 
-public class ProjectManagementControlller extends AbstractEdbBaseController {
+public class ProjectManagementControlller extends AbstractEdbBaseController { 
 
 	private static final Logger LOG = LoggerFactory
 			.getLogger(ProjectManagementControlller.class);
@@ -87,13 +90,15 @@ public class ProjectManagementControlller extends AbstractEdbBaseController {
 	public String createReleasePlan(
 			@RequestParam("releaseStartDate") String releaseStartDate,
 			@RequestParam("releaseEndDate") String releaseEndDate,
+			@RequestParam("projId") String projId,
 			Model model) throws ParseException {
 		
 		LOG.debug("Release Start Date:{} End Date:{}",releaseStartDate,releaseEndDate);
 		SimpleDateFormat sdf = new SimpleDateFormat("dd/MM/yyyy");
 		DateTime stDate =  new DateTime(sdf.parse(releaseStartDate));
 		DateTime etDate =  new DateTime(sdf.parse(releaseEndDate));
-		ReleasePlan releasePlan=getProjectManagementService().createReleasePlan(stDate.toString("yyyy-MM-dd"),etDate.toString("yyyy-MM-dd"));
+				
+		ReleasePlan releasePlan=getProjectManagementService().createReleasePlan(stDate.toString("yyyy-MM-dd"),etDate.toString("yyyy-MM-dd"), Integer.valueOf(projId));
 		LOG.debug("------------------Release Plan ------------------------------");
 		/*for(Map.Entry<String,Map<String,Map<String,String>>> resourceWeek:releasePlan.entrySet()){
 			System.out.print(resourceWeek.getKey()+" --> ");
@@ -109,10 +114,46 @@ public class ProjectManagementControlller extends AbstractEdbBaseController {
 	@RequestMapping(value = "/addRelease.do")
 	public @ResponseBody ReferenceData addRelease(
 			@RequestBody  ReleaseForm addReleaseForm,
-			Model model) {
+			Model model) throws ParseException {
 		LOG.debug("Project Id:{} | Release Id:[{}]",
 				addReleaseForm.getProjectId(), addReleaseForm.getReleaseId());
 		final ReferenceData refData = getProjectManagementService().addRelease(addReleaseForm);
+		SimpleDateFormat sdf = new SimpleDateFormat("dd/MM/yyyy");
+		LocalDate dateStart =  new LocalDate(sdf.parse(addReleaseForm.getReleaseStartDate()));
+		LocalDate dateEnd =  new LocalDate(sdf.parse(addReleaseForm.getReleaseEndDate()));	
+		LocalDate releaseStrtDate = dateStart;
+		LocalDate tempDateStart = dateStart;
+		LocalDate tempDateEnd = dateEnd;	
+		String weekOfYear=dateStart.weekOfWeekyear().getAsShortText();
+		int dayFromIndex;
+		int dayToIndex;				
+		
+	
+			
+	    for ( String empId : addReleaseForm.getResourcesAndHours().keySet()) {
+	    	dayFromIndex = 0;
+	    	dayToIndex = 0;
+	    	tempDateStart = releaseStrtDate;
+	    	dateStart = releaseStrtDate;
+	    	weekOfYear=dateStart.weekOfWeekyear().getAsShortText();
+		  	while(tempDateStart.isBefore(tempDateEnd) || tempDateStart.equals(tempDateEnd)){
+											
+				if(weekOfYear.equalsIgnoreCase(tempDateStart.weekOfWeekyear().getAsShortText()))										
+					 dayToIndex++;	
+				else{										 
+				     getProjectManagementService().addReleasePlan(addReleaseForm, empId,dateStart,tempDateStart.minusDays(1),dayFromIndex,dayToIndex,false);				    
+					 weekOfYear=tempDateStart.weekOfWeekyear().getAsShortText();
+					 dateStart = tempDateStart;
+					 dayFromIndex = dayToIndex++;
+				    }
+				 
+				tempDateStart = tempDateStart.plusDays(1);
+		         }			  					 
+		     getProjectManagementService().addReleasePlan(addReleaseForm,empId,dateStart,tempDateStart.minusDays(1),dayFromIndex,dayToIndex,true);		     
+		     
+			 }
+		
+		
 		return refData;
 	}
 	
